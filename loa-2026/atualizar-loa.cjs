@@ -21,10 +21,10 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   mod
 ));
 
-// github-portal/update-cli.ts
+// rp-work/update-cli.ts
 var import_node_fs = __toESM(require("node:fs"));
 
-// github-portal/lib/budget.ts
+// rp-work/lib/budget.ts
 var UGS = { "120038": "DIRMAB", "120026": "PAMA-LS", "120001": "GABAER", "120068": "PAMA-SP", "120048": "PAME-RJ", "120071": "CELOG", "120049": "PAMA-GL", "120090": "CABW", "120036": "DECEA", "120058": "DIRSA", "120111": "EMAER", "120136": "DIRAP", "120142": "IEAv", "120700": "DIREF", "120106": "CENIPA", "120110": "DCTA", "120047": "PAMB-RJ", "120624": "BAAN", "120115": "COMAE", "120128": "CCA-RJ", "120132": "DIRENS", "120032": "DTI", "120130": "COMGAP", "120054": "UNIFA", "120035": "CTLA", "120091": "CABE", "120127": "CISCEA", "120141": "IAE", "120143": "IFI", "120197": "IAOp", "120283": "GECAMP", "120299": "IPEV" };
 var normalize = (v) => String(v ?? "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]/g, "");
 var aliases = { ug: ["ugresponsavelcodigo", "codigougresponsavel", "ugresponsavel", "ugr", "ug"], ugName: ["ugresponsavelsigla", "siglaugr", "siglaug", "sigla"], action: ["acaoorcamentariacodigo", "acaoorcamentaria", "acaogoverno", "codigoacao", "acao"], pi: ["planointernocodigo", "planointerno", "pi"], nd: ["naturezadedespesacodigo", "naturezadespesacodigo", "naturezadedespesa", "naturezadespesa", "nd"], month: ["meslancamento", "mesreferencia", "mes", "competencia", "periodo", "data"], paid: ["despesaspagas", "despesapaga", "pagamentosrealizados", "valorpago", "pago", "pagamentos"], committed: ["despesasempenhadas", "despesaempenhada", "empenhado", "valorempenhado"], settled: ["despesasliquidadas", "despesaliquidada", "liquidado", "valorliquidado"], budget: ["dotacaoatualizada", "creditorecebido", "creditodisponivel", "creditoautorizado", "dotacao", "provisao"] };
@@ -158,7 +158,62 @@ function prepareTesouro(matrix, percentBase = "credit") {
   return { matrix: out, derived: true, reference: blocks.map((b) => b.month).sort().at(-1) };
 }
 
-// github-portal/lib/drive-update.ts
+// rp-work/lib/rp.ts
+function parseTesouroRP(matrix) {
+  const metric = matrix.findIndex((r) => r.some((v) => normalize(v) === "rpinscrito"));
+  if (metric < 0) return null;
+  const headers = matrix[metric];
+  const dims = matrix.slice(0, metric).findLast((r) => r.some((v) => normalize(v) === "ugresponsavel"));
+  if (!dims) throw Error("Cabe\xE7alho de dimens\xF5es do RP ausente.");
+  const index = (s) => dims.findIndex((v) => normalize(v).startsWith(s));
+  const ug = index("ugresponsavel"), action = index("acao"), nd = index("naturezadespesa"), pi = index("pi");
+  if ([ug, action, nd, pi].some((i) => i < 0)) throw Error("Dimens\xF5es do RP incompletas.");
+  const blocks = [];
+  for (let ins = 0; ins < headers.length; ins++) {
+    if (normalize(headers[ins]) !== "rpinscrito") continue;
+    let end = headers.findIndex((v, k) => k > ins && normalize(v) === "rpinscrito");
+    if (end < 0) end = headers.length;
+    const paid = headers.findIndex((v, k) => k >= ins && k < end && normalize(v) === "rppago");
+    const pending = headers.findIndex((v, k) => k >= ins && k < end && normalize(v) === "rpapagar");
+    const cancelled = headers.findIndex((v, k) => k >= ins && k < end && normalize(v).startsWith("rpcancelad"));
+    if (paid < 0 || pending < 0 || cancelled < 0) throw Error("S\xE3o necess\xE1rias RP Inscrito, % RP pago, % RP a pagar e % RP cancelados.");
+    const period = matrix.slice(0, metric).flatMap((r) => r.slice(ins, end)).find((v) => /^(JAN|FEV|MAR|ABR|MAI|JUN|JUL|AGO|SET|OUT|NOV|DEZ)\/?\d{4}$/i.test(v.trim()));
+    if (!period) throw Error("Compet\xEAncia do RP ausente.");
+    blocks.push({ ins, paid, pending, cancelled, month: monthValue(period, "2026-01") });
+  }
+  const blank = (v) => v == null || String(v).trim() === "";
+  const ratio = (v) => v.trim().endsWith("%") ? numberValue(v.trim().slice(0, -1)) / 100 : numberValue(v);
+  const cents = (v) => Math.round(v * 100) / 100;
+  const rows = [], aliases2 = {};
+  for (let i = metric + 1; i < matrix.length; i++) {
+    const r = matrix[i], id = String(r[ug] || "").trim();
+    if (!/^-?\d+$/.test(id)) continue;
+    for (const b of blocks) {
+      if ([r[b.ins], r[b.paid], r[b.pending], r[b.cancelled]].every(blank)) continue;
+      if (blank(r[b.ins])) throw Error(`Linha ${i + 1}: RP Inscrito ausente.`);
+      const inscribed = cents(numberValue(r[b.ins]));
+      if (inscribed !== 0 && [r[b.paid], r[b.pending], r[b.cancelled]].some(blank)) throw Error(`Linha ${i + 1}: percentual de RP ausente.`);
+      const paidRate = ratio(r[b.paid] || ""), pendingRate = ratio(r[b.pending] || ""), cancelledRate = ratio(r[b.cancelled] || "");
+      if (inscribed < 0 || [paidRate, pendingRate, cancelledRate].some((v) => v < 0 || v > 1)) throw Error(`Linha ${i + 1}: valor ou percentual de RP inv\xE1lido.`);
+      if (paidRate + pendingRate + cancelledRate > 1.0003) throw Error(`Linha ${i + 1}: percentuais de RP excedem 100%.`);
+      const actionCode = String(r[action] || "").trim(), ndCode = String(r[nd] || "").trim(), piCode = String(r[pi] || "").trim();
+      if (!actionCode || !ndCode || !piCode || !b.month.startsWith("2026-")) throw Error(`Linha ${i + 1}: dimens\xE3o ou per\xEDodo de RP inv\xE1lido.`);
+      const extra = {};
+      for (const [title, j] of [["Nome UG [2]", ug + 1], ["Descri\xE7\xE3o A\xE7\xE3o [4]", action + 1], ["Descri\xE7\xE3o ND [6]", nd + 1], ["Descri\xE7\xE3o PI [8]", pi + 1]]) {
+        if (r[j]) extra[title] = r[j];
+      }
+      extra["% RP pago (original)"] = r[b.paid] || "";
+      extra["% RP a pagar (original)"] = r[b.pending] || "";
+      extra["% RP cancelado (original)"] = r[b.cancelled] || "";
+      rows.push({ ug: id, action: actionCode, nd: ndCode, pi: piCode, month: b.month, extra, inscribed, paid: cents(inscribed * paidRate), pending: cents(inscribed * pendingRate), cancelled: cents(inscribed * cancelledRate), paidRate, pendingRate, cancelledRate });
+      if (r[ug + 1]) aliases2[id] = id.startsWith("-") ? "UG n\xE3o informada (" + id + ")" : r[ug + 1];
+    }
+  }
+  return { rows, aliases: aliases2 };
+}
+var sumRP = (rows, key) => rows.reduce((s, r) => s + Math.round(r[key] * 100), 0) / 100;
+
+// rp-work/lib/drive-update.ts
 function decodeCSV(bytes) {
   let text = new TextDecoder(bytes[0] === 255 && bytes[1] === 254 ? "utf-16le" : bytes[0] === 254 && bytes[1] === 255 ? "utf-16be" : "utf-8").decode(bytes).replace(/^\uFEFF/, "");
   if (text.trimStart().startsWith("{")) {
@@ -203,8 +258,9 @@ function csvMatrix(text) {
   }
   return rows;
 }
-function mergeDriveCSV(text, previous, fileName) {
-  const prepared2 = prepareTesouro(csvMatrix(text), "credit");
+function mergeDriveCSV(text, previous, fileName, importRPHistory = false) {
+  const matrix = csvMatrix(text), rp = parseTesouroRP(matrix);
+  const prepared2 = prepareTesouro(matrix, "credit");
   if (!prepared2.derived || !prepared2.reference) throw Error("O arquivo deve conter o relat\xF3rio Tesouro com m\xEAs, cr\xE9dito recebido e percentuais.");
   const parsed = parseRows(prepared2.matrix, 0, autoMap(prepared2.matrix[0].map(String)), prepared2.reference);
   if (parsed.rows.some((r) => !r.month.startsWith("2026-") || r.ug === "N\xE3o informado" || r.action === "N\xE3o informado" || r.pi === "N\xE3o informado" || r.nd === "N\xE3o informado")) throw Error("Per\xEDodo ou dimens\xF5es inv\xE1lidas no relat\xF3rio LOA 2026.");
@@ -214,21 +270,29 @@ function mergeDriveCSV(text, previous, fileName) {
   const latestExisting = [...new Set(previous.rows.map((r) => r.month))].sort().at(-1);
   if (latestExisting && latest < latestExisting) throw Error("O arquivo \xE9 de m\xEAs anterior \xE0 \xFAltima compet\xEAncia do painel; nenhuma altera\xE7\xE3o foi feita.");
   const data = { ...previous, rows: [...previous.rows.filter((r) => r.month !== latest), ...incoming], fileName, reference: latest, mode: "snapshot", currency: "USD", derived: true, percentBase: "credit", updatedAt: (/* @__PURE__ */ new Date()).toISOString(), ugAliases: { ...parsed.ugAliases, ...previous.ugAliases }, available: [.../* @__PURE__ */ new Set([...previous.available, ...parsed.available])], skipped: parsed.skipped };
-  return { data, summary: { month: latest, records: incoming.length, paid: sum(incoming, "paid"), committed: sum(incoming, "committed"), credit: sum(incoming, "budget"), preservedMonths: [...new Set(previous.rows.filter((r) => r.month !== latest).map((r) => r.month))].sort() } };
+  const rpUpdatedMonths = rp ? importRPHistory ? [...new Set(rp.rows.filter((r) => r.month <= latest).map((r) => r.month))].sort() : [latest] : [];
+  if (rp) {
+    data.rpRows = [...(previous.rpRows || []).filter((r) => !rpUpdatedMonths.includes(r.month)), ...rp.rows.filter((r) => rpUpdatedMonths.includes(r.month))];
+    data.ugAliases = { ...rp.aliases, ...data.ugAliases };
+  }
+  const rpIncoming = (data.rpRows || []).filter((r) => r.month === latest);
+  return { data, summary: { month: latest, records: incoming.length, paid: sum(incoming, "paid"), committed: sum(incoming, "committed"), credit: sum(incoming, "budget"), rpAvailable: rp !== null, rpUpdatedMonths, rpRecords: rpIncoming.length, rpInscribed: rpIncoming.length ? sumRP(rpIncoming, "inscribed") : null, rpPaid: rpIncoming.length ? sumRP(rpIncoming, "paid") : null, rpPending: rpIncoming.length ? sumRP(rpIncoming, "pending") : null, rpCancelled: rpIncoming.length ? sumRP(rpIncoming, "cancelled") : null, preservedMonths: [...new Set(previous.rows.filter((r) => r.month !== latest).map((r) => r.month))].sort() } };
 }
 
-// github-portal/update-cli.ts
-var [rawPath, currentPath, outPath] = process.argv.slice(2);
+// rp-work/update-cli.ts
+var [rawPath, currentPath, outPath, historyFlag] = process.argv.slice(2);
+if (historyFlag && historyFlag !== "--import-rp-history") throw Error("Op\xE7\xE3o inv\xE1lida.");
 if (!rawPath || !currentPath || !outPath) throw Error("Uso: node atualizar-loa.cjs fonte.csv dados.json novos-dados.json");
 var old = JSON.parse(import_node_fs.default.readFileSync(currentPath, "utf8"));
-var prepared = mergeDriveCSV(decodeCSV(import_node_fs.default.readFileSync(rawPath)), old.data, "Pagamentos LOA 2026 CABW.csv");
+var prepared = mergeDriveCSV(decodeCSV(import_node_fs.default.readFileSync(rawPath)), old.data, "Pagamentos LOA 2026 CABW.csv", historyFlag === "--import-rp-history");
 var month = prepared.summary.month;
 var before = old.data.rows.filter((r) => r.month !== month);
 var after = prepared.data.rows.filter((r) => r.month !== month);
 if (JSON.stringify(before) !== JSON.stringify(after)) throw Error("Hist\xF3rico alterado: publica\xE7\xE3o cancelada");
 var oldTarget = old.data.rows.filter((r) => r.month === month);
 var newTarget = prepared.data.rows.filter((r) => r.month === month);
-var changed = JSON.stringify(oldTarget) !== JSON.stringify(newTarget);
+if (JSON.stringify((old.data.rpRows || []).filter((r) => !prepared.summary.rpUpdatedMonths.includes(r.month))) !== JSON.stringify((prepared.data.rpRows || []).filter((r) => !prepared.summary.rpUpdatedMonths.includes(r.month)))) throw Error("Hist\xF3rico de RP alterado: publica\xE7\xE3o cancelada");
+var changed = JSON.stringify(oldTarget) !== JSON.stringify(newTarget) || JSON.stringify((old.data.rpRows || []).filter((r) => prepared.summary.rpUpdatedMonths.includes(r.month))) !== JSON.stringify((prepared.data.rpRows || []).filter((r) => prepared.summary.rpUpdatedMonths.includes(r.month))) || JSON.stringify(old.data.ugAliases) !== JSON.stringify(prepared.data.ugAliases);
 if (changed) {
   import_node_fs.default.writeFileSync(outPath, JSON.stringify({ data: prepared.data, etag: "github", source: { fileId: "1vSKMEtAoZemky6ZUvtqC0pbTXIZD9zP5", folderId: "1cts6q4qAOZwsw3Vtz_Gq9g3cFDVuFCvU" } }));
 }

@@ -1,0 +1,79 @@
+'use client';
+import {useState} from 'react';
+import {Download,ArrowUpRight} from 'lucide-react';
+import {sum,type Dataset,type BudgetRow,type DimRow,type RPRow} from '../lib/budget';
+import {sumRP} from '../lib/rp';
+type Key='ug'|'action'|'pi'|'nd';
+const keys:Key[]=['ug','action','pi','nd'];
+const titles={ug:'UG',action:'Ação',pi:'PI',nd:'ND'};
+const money=(v:number|null,c:string)=>v===null?'—':new Intl.NumberFormat('pt-BR',{style:'currency',currency:c}).format(v);
+const percent=(value:number,base:number)=>base>0?new Intl.NumberFormat('pt-BR',{style:'percent',maximumFractionDigits:1}).format(value/base):'—';
+const compact=(v:number)=>new Intl.NumberFormat('pt-BR',{notation:'compact',maximumFractionDigits:1}).format(v);
+const monthLabel=(m:string)=>new Intl.DateTimeFormat('pt-BR',{month:'short',year:'numeric',timeZone:'UTC'}).format(new Date(m+'-01T12:00:00Z'));
+
+function exportRP(rows:RPRow[],data:Dataset){
+ const quote=(v:unknown)=>{let s=String(v??'');if(/^[=+@-]/.test(s))s="'"+s;return '"'+s.replaceAll('"','""')+'"';};
+ const values=[['Competência','UG código','UG identificação','Ação','PI','ND','RP inscrito','RP pago','RP a pagar','RP cancelado','% RP pago','% RP a pagar','% RP cancelado'],...rows.map(r=>[r.month,r.ug,data.ugAliases[r.ug]||r.ug,r.action,r.pi,r.nd,...[r.inscribed,r.paid,r.pending,r.cancelled,r.paidRate*100,r.pendingRate*100,r.cancelledRate*100].map(n=>n.toFixed(2).replace('.',','))])];
+ const url=URL.createObjectURL(new Blob(['\ufeff'+values.map(r=>r.map(quote).join(';')).join('\r\n')],{type:'text/csv;charset=utf-8'}));
+ const a=document.createElement('a');a.href=url;a.download='CABW-RP-filtrado.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+
+export default function RPSection({data,month,loaRows,matches,label,description,onSelect}:{data:Dataset|null;month:string;loaRows:BudgetRow[];matches:(r:DimRow)=>boolean;label:(k:Key,v:string)=>string;description:(k:Key,v:string)=>string;onSelect:(k:Key,v:string)=>void}){
+ const [group,setGroup]=useState<Key>('ug'),[sort,setSort]=useState('pending'),[detailSort,setDetailSort]=useState('pending');
+ if(!data)return null;
+ const available=(data.rpRows||[]).some(r=>r.month===month),rows=(data.rpRows||[]).filter(r=>r.month===month&&matches(r));
+ if(!available)return <section className="panel rp-unavailable" id="rp"><span className="eyebrow">RESTOS A PAGAR</span><h2>RP de anos anteriores</h2><p>Sem posição de RP enviada para {monthLabel(month)}. Os pagamentos da LOA permanecem disponíveis. Selecione uma competência com dados de RP para comparar.</p></section>;
+ const inscribed=sumRP(rows,'inscribed'),paid=sumRP(rows,'paid'),pending=sumRP(rows,'pending'),cancelled=sumRP(rows,'cancelled'),loaPaid=sum(loaRows,'paid')||0,credit=sum(loaRows,'budget')||0;
+ const totalPaid=Math.round((loaPaid+paid)*100)/100,residual=Math.round((inscribed-paid-pending-cancelled)*100)/100;
+ const mismatches=rows.filter(r=>Math.abs(Math.round((r.inscribed-r.paid-r.pending-r.cancelled)*100))>2);
+ const c=data.currency,max=Math.max(credit,inscribed,1);
+ const groups=new Map<string,{id:string;loaPaid:number;rpPaid:number;rpPending:number;rpCancelled:number;rpInscribed:number}>();
+ const get=(id:string)=>{if(!groups.has(id))groups.set(id,{id,loaPaid:0,rpPaid:0,rpPending:0,rpCancelled:0,rpInscribed:0});return groups.get(id)!;};
+ for(const r of loaRows)get(r[group]).loaPaid+=Math.round(r.paid*100);
+ for(const r of rows){const g=get(r[group]);g.rpPaid+=Math.round(r.paid*100);g.rpPending+=Math.round(r.pending*100);g.rpCancelled+=Math.round(r.cancelled*100);g.rpInscribed+=Math.round(r.inscribed*100);}
+ const grouped=[...groups.values()].map(g=>({...g,loaPaid:g.loaPaid/100,rpPaid:g.rpPaid/100,rpPending:g.rpPending/100,rpCancelled:g.rpCancelled/100,rpInscribed:g.rpInscribed/100})).sort((a,b)=>sort==='paid'?b.loaPaid+b.rpPaid-a.loaPaid-a.rpPaid:sort==='cancelled'?b.rpCancelled-a.rpCancelled:sort==='rate'?(b.rpInscribed?b.rpPending/b.rpInscribed:-1)-(a.rpInscribed?a.rpPending/a.rpInscribed:-1):b.rpPending-a.rpPending);
+ const maxGroup=Math.max(...grouped.flatMap(g=>[g.loaPaid,g.rpPaid]),1);
+ const ordered=[...rows].sort((a,b)=>detailSort==='cancelled'?b.cancelled-a.cancelled:b.pending-a.pending);
+ return <section className="rp-section" id="rp">
+  <div className="rp-section-heading"><div><span className="eyebrow">EXERCÍCIO ATUAL × EXERCÍCIOS ANTERIORES</span><h2>LOA 2026 e restos a pagar</h2><p>Mesma competência e mesmos filtros · RP agregado de anos anteriores.</p></div><span className="mini-badge">{monthLabel(month)}</span></div>
+  <div className="rp-kpis">
+   <article className="kpi"><div><span>RP INSCRITO</span></div><strong>{money(inscribed,c)}</strong><p>Empenhos de exercícios anteriores</p></article>
+   <article className="kpi"><div><span>RP PAGO</span></div><strong>{money(paid,c)}</strong><p>{percent(paid,inscribed)} do inscrito</p></article>
+   <article className="kpi rp-pending"><div><span>RP A PAGAR</span></div><strong>{money(pending,c)}</strong><p>{percent(pending,inscribed)} do inscrito</p></article>
+   <article className="kpi rp-cancelled"><div><span>RP CANCELADO</span></div><strong>{money(cancelled,c)}</strong><p>{percent(cancelled,inscribed)} do inscrito · não executado</p></article>
+   <article className="kpi featured"><div><span>TOTAL PAGO · LOA + RP</span></div><strong>{money(totalPaid,c)}</strong><p>{percent(paid,totalPaid)} dos pagamentos são de RP</p></article>
+  </div>
+  <div className="chart-grid rp-grid">
+   <section className="panel"><div className="panel-heading"><div><span className="eyebrow">BASES E EXECUÇÃO</span><h2>Quanto foi pago de cada origem?</h2><p>LOA: crédito recebido. RP: valor inscrito.</p></div></div>
+    <div className="rp-origin"><div className="rp-origin-head"><strong>LOA 2026</strong><b>{percent(loaPaid,credit)} pago</b></div><div className="rp-origin-track" style={{width:Math.max(1,credit/max*100)+'%'}} title={'Crédito recebido '+money(credit,c)+'; pago '+money(loaPaid,c)}><span style={{width:Math.min(100,credit?loaPaid/credit*100:0)+'%'}}/></div><p>Pago <strong>{money(loaPaid,c)}</strong><span>Crédito recebido {money(credit,c)}</span><span>Crédito sem pagamento {money(Math.round((credit-loaPaid)*100)/100,c)}</span></p></div>
+    <div className="rp-origin previous"><div className="rp-origin-head"><strong>RP de anos anteriores</strong><b>{percent(paid,inscribed)} pago</b></div><div className="rp-origin-track" style={{width:Math.max(1,inscribed/max*100)+'%'}} title={'Inscrito '+money(inscribed,c)+'; pago '+money(paid,c)+'; a pagar '+money(pending,c)}><span style={{width:Math.min(100,inscribed?paid/inscribed*100:0)+'%'}}/></div><p>Pago <strong>{money(paid,c)}</strong><span>RP inscrito {money(inscribed,c)}</span><span>A pagar {money(pending,c)}</span><span className="rp-cancelled-text">Cancelado {money(cancelled,c)} · {percent(cancelled,inscribed)}</span></p></div>
+    <div className="chart-caption">Percentuais ponderados pelas bases. Crédito sem pagamento inclui recursos ainda não empenhados; não representa apenas contas vencidas.</div>
+   </section>
+   <section className="panel"><div className="panel-heading"><div><span className="eyebrow">DESTINO DOS PAGAMENTOS</span><h2>LOA × RP por {titles[group]}</h2><p>Clique em um grupo para filtrar todo o painel.</p></div><ArrowUpRight size={20}/></div>
+    <div className="chart-controls"><div className="segmented">{keys.map(k=><button key={k} className={group===k?'selected':''} onClick={()=>setGroup(k)}>{titles[k]}</button>)}</div><select aria-label="Ordenar comparação de LOA e RP" value={sort} onChange={e=>setSort(e.target.value)}><option value="pending">Maior RP a pagar</option><option value="rate">Maior % RP a pagar</option><option value="cancelled">Maior RP cancelado</option><option value="paid">Maior pagamento total</option></select></div>
+    <div className="rp-compare-scroll" role="region" aria-label="Todos os grupos de LOA e RP" tabIndex={0}>{grouped.map(g=><button className="rp-group" key={g.id} onClick={()=>onSelect(group,g.id)} title={`${label(group,g.id)} · LOA paga ${money(g.loaPaid,c)} · RP pago ${money(g.rpPaid,c)} · RP a pagar ${money(g.rpPending,c)} · RP cancelado ${money(g.rpCancelled,c)}`}><span className="rp-group-name"><strong>{label(group,g.id)}</strong>{description(group,g.id)&&<small>{description(group,g.id)}</small>}</span><span className="rp-pair"><span><i style={{width:g.loaPaid/maxGroup*100+'%'}}/><em>LOA {money(g.loaPaid,c)}</em></span><span className="previous"><i style={{width:g.rpPaid/maxGroup*100+'%'}}/><em>RP {money(g.rpPaid,c)}</em></span></span><span className="rp-group-pending">A pagar RP <b>{money(g.rpPending,c)}</b><small>{percent(g.rpPending,g.rpInscribed)}</small><span className="rp-cancelled-text">Cancelado {money(g.rpCancelled,c)}</span></span></button>)}{!grouped.length&&<p className="small-empty">Nenhum registro nos filtros selecionados.</p>}</div>
+    <div className="chart-caption">{grouped.length} grupos · LOA em azul e RP em dourado · role para ver todos.</div>
+   </section>
+  </div>
+  <section className="panel rp-cancel-history"><div className="panel-heading"><div><span className="eyebrow">RECURSOS NÃO EXECUTADOS</span><h2>Evolução dos cancelamentos de RP</h2><p>Valor cancelado acumulado em cada competência · posições não são somadas.</p></div></div><CancellationHistory data={data} month={month} matches={matches}/></section>
+  <section className="panel rp-evolution"><div className="panel-heading"><div><span className="eyebrow">EVOLUÇÃO COMPARADA</span><h2>Pagamentos da LOA e de RP ao longo do ano</h2><p>Posições acumuladas por competência. Não são somadas entre meses.</p></div></div><RPTrend data={data} month={month} matches={matches}/></section>
+  {mismatches.length>0&&<div className="rp-reconciliation" role="note"><strong>Diferença de conciliação dos percentuais: {money(residual,c)}</strong><p>Em {mismatches.length} registros, os percentuais de pago, a pagar e cancelado não completam o valor inscrito. Os três valores foram calculados como informados na planilha; a diferença não foi classificada como cancelamento. Como os percentuais estão arredondados, os valores são aproximados a centavos.</p></div>}
+  <section className="panel rp-details"><div className="panel-heading"><div><span className="eyebrow">PRIORIDADES E CONSULTA</span><h2>Prioridades de RP: a pagar e cancelados</h2><p>Todos os registros do recorte. Ordene por RP a pagar ou por valores cancelados para identificar os recursos não executados.</p></div><button className="button secondary" disabled={!rows.length} onClick={()=>exportRP(ordered,data)}><Download size={15}/>Exportar RP</button></div><div className="rp-detail-controls"><label>Ordenar registros<select aria-label="Ordenar detalhamento de RP" value={detailSort} onChange={e=>setDetailSort(e.target.value)}><option value="pending">Maior RP a pagar</option><option value="cancelled">Maior RP cancelado</option></select></label></div><div className="table-scroll rp-table-scroll" role="region" aria-label="Detalhamento dos restos a pagar" tabIndex={0}><table><thead><tr>{['UG','Ação','PI','ND','Inscrito','Pago','A pagar','Cancelado','% a pagar','% cancelado'].map(v=><th key={v}>{v}</th>)}</tr></thead><tbody>{ordered.map((r,i)=><tr key={[r.ug,r.action,r.pi,r.nd,i].join(':')}><td><button className="table-link" title={r.ug} onClick={()=>onSelect('ug',r.ug)}>{label('ug',r.ug)}</button></td><td title={description('action',r.action)}>{r.action}</td><td title={description('pi',r.pi)}>{r.pi}</td><td title={description('nd',r.nd)}>{r.nd}</td><td>{money(r.inscribed,c)}</td><td>{money(r.paid,c)}</td><td className="rp-amount">{money(r.pending,c)}</td><td className="rp-cancelled-text">{money(r.cancelled,c)}</td><td>{percent(r.pending,r.inscribed)}</td><td>{percent(r.cancelled,r.inscribed)}</td></tr>)}</tbody></table>{!rows.length&&<p className="small-empty">Sem RP nos filtros selecionados.</p>}</div><div className="chart-caption">{rows.length} registros de RP · percentuais a partir de RP inscrito · valores em {c}.</div></section>
+  <p className="calculation-note">RP pago = RP inscrito × % RP pago. RP a pagar = RP inscrito × % RP a pagar. RP cancelado = RP inscrito × % RP cancelado, referente a valores não executados. Sem discriminação do ano de inscrição na fonte, os exercícios anteriores são apresentados em conjunto.</p>
+ </section>;
+}
+
+function RPTrend({data,month,matches}:{data:Dataset;month:string;matches:(r:DimRow)=>boolean}){
+ const months=[...new Set([...data.rows,...(data.rpRows||[])].filter(r=>r.month<=month&&r.month.slice(0,4)===month.slice(0,4)).map(r=>r.month))].sort();
+ const points=months.map(m=>({month:m,loa:sum(data.rows.filter(r=>r.month===m&&matches(r)),'paid')||0,rp:(data.rpRows||[]).some(r=>r.month===m)?sumRP((data.rpRows||[]).filter(r=>r.month===m&&matches(r)),'paid'):null}));
+ const max=Math.max(...points.flatMap(p=>[p.loa,p.rp||0]),1),x=(i:number)=>points.length===1?290:55+i*470/(points.length-1),y=(v:number)=>190-v/max*145;
+ const cancelled=months.map(m=>(data.rpRows||[]).some(r=>r.month===m)?sumRP((data.rpRows||[]).filter(r=>r.month===m&&matches(r)),'cancelled'):null);
+ const segments:string[][]=[];let current:string[]=[];points.forEach((p,i)=>{if(p.rp===null){if(current.length)segments.push(current);current=[];}else current.push(x(i)+','+y(p.rp));});if(current.length)segments.push(current);
+ return <><svg className="rp-trend" viewBox="0 0 580 235" role="img" aria-label="Evolução dos pagamentos acumulados da LOA e dos restos a pagar">{[0,.5,1].map(t=><g key={t}><line x1="55" x2="525" y1={45+145*t} y2={45+145*t} stroke="#e8edf5" strokeDasharray="4 4"/><text x="45" y={49+145*t} textAnchor="end">{compact(max*(1-t))}</text></g>)}<polyline points={points.map((p,i)=>x(i)+','+y(p.loa)).join(' ')} fill="none" stroke="#244ec7" strokeWidth="3"/>{segments.map((s,i)=><polyline key={i} points={s.join(' ')} fill="none" stroke="#b38a1c" strokeWidth="3"/>)}{points.map((p,i)=><g key={p.month}><circle cx={x(i)} cy={y(p.loa)} r="4" fill="#244ec7"><title>{monthLabel(p.month)+' · LOA '+money(p.loa,data.currency)}</title></circle>{p.rp!==null&&<circle cx={x(i)} cy={y(p.rp)} r="5" fill="#b38a1c"><title>{monthLabel(p.month)+' · RP '+money(p.rp,data.currency)}</title></circle>}<text x={x(i)} y="218" textAnchor="middle">{monthLabel(p.month).split(' ')[0]}</text></g>)}</svg><div className="rp-legend"><span><i/>LOA 2026</span><span><i className="rp-dot"/>RP de anos anteriores</span></div><div className="rp-history-table table-scroll"><table><thead><tr><th>Competência</th><th>LOA paga</th><th>RP pago</th><th>RP cancelado</th><th>Total pago</th></tr></thead><tbody>{points.map((p,i)=><tr key={p.month}><td>{monthLabel(p.month)}</td><td>{money(p.loa,data.currency)}</td><td>{p.rp===null?'Sem dados de RP':money(p.rp,data.currency)}</td><td>{cancelled[i]===null?'Sem dados de RP':money(cancelled[i],data.currency)}</td><td>{p.rp===null?'—':money(Math.round((p.loa+p.rp)*100)/100,data.currency)}</td></tr>)}</tbody></table></div><p className="chart-caption">Meses sem RP enviado aparecem como “Sem dados de RP”; não são considerados zero.</p></>;
+}
+
+function CancellationHistory({data,month,matches}:{data:Dataset;month:string;matches:(r:DimRow)=>boolean}){
+ const months=[...new Set((data.rpRows||[]).filter(r=>r.month<=month&&r.month.slice(0,4)===month.slice(0,4)).map(r=>r.month))].sort();
+ const values=months.map(m=>sumRP((data.rpRows||[]).filter(r=>r.month===m&&matches(r)),'cancelled')),max=Math.max(...values,1);
+ return <div className="rp-cancel-bars">{months.map((m,i)=><div key={m} className="rp-cancel-bar" title={monthLabel(m)+' · RP cancelado '+money(values[i],data.currency)}><strong>{monthLabel(m)}</strong><span><i style={{width:values[i]/max*100+'%'}}/></span><b>{money(values[i],data.currency)}</b></div>)}<div className="chart-caption">Cancelado = RP inscrito × % RP cancelado. Inclui os filtros de UG, ação, PI e ND.</div></div>;
+}

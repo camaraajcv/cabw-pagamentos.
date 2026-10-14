@@ -1,5 +1,7 @@
 export type BudgetRow = {ug:string;action:string;pi:string;nd:string;month:string;paid:number;committed:number|null;settled:number|null;budget:number|null;extra:Record<string,string>};
-export type Dataset = {rows:BudgetRow[];fileName:string;updatedAt:string;currency:string;mode:'snapshot'|'monthly';reference:string;available:string[];ugAliases:Record<string,string>;skipped:number;derived?:boolean;percentBase?:'credit'|'committed'};
+export type DimRow = Pick<BudgetRow,'ug'|'action'|'pi'|'nd'|'month'|'extra'>;
+export type RPRow = DimRow & {inscribed:number;paid:number;pending:number;cancelled:number;paidRate:number;pendingRate:number;cancelledRate:number};
+export type Dataset = {rows:BudgetRow[];rpRows?:RPRow[];fileName:string;updatedAt:string;currency:string;mode:'snapshot'|'monthly';reference:string;available:string[];ugAliases:Record<string,string>;skipped:number;derived?:boolean;percentBase?:'credit'|'committed'};
 export const UGS:Record<string,string>={'120038':'DIRMAB','120026':'PAMA-LS','120001':'GABAER','120068':'PAMA-SP','120048':'PAME-RJ','120071':'CELOG','120049':'PAMA-GL','120090':'CABW','120036':'DECEA','120058':'DIRSA','120111':'EMAER','120136':'DIRAP','120142':'IEAv','120700':'DIREF','120106':'CENIPA','120110':'DCTA','120047':'PAMB-RJ','120624':'BAAN','120115':'COMAE','120128':'CCA-RJ','120132':'DIRENS','120032':'DTI','120130':'COMGAP','120054':'UNIFA','120035':'CTLA','120091':'CABE','120127':'CISCEA','120141':'IAE','120143':'IFI','120197':'IAOp','120283':'GECAMP','120299':'IPEV'};
 export const fields=[['ug','UG responsável'],['ugName','Sigla da UG (opcional)'],['action','Código da ação'],['pi','Plano interno (PI)'],['nd','Natureza de despesa (ND)'],['month','Mês / competência'],['paid','Pagamentos realizados'],['committed','Empenhado'],['settled','Liquidado'],['budget','Dotação / crédito disponível']] as const;
 export const normalize=(v:unknown)=>String(v??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]/g,'');
@@ -41,3 +43,4 @@ if(credit!==0&&[r[b.ep],r[b.pg]].some(blank))throw Error(`Linha ${i+1}, ${b.mont
 const committed=credit*ratio(r[b.ep]),paid=(percentBase==='credit'?credit:committed)*ratio(r[b.pg]);
 out.push([r[ug],r[ug+1],r[action],r[action+1],r[nd],r[nd+1],r[pi],r[pi+1],b.month,credit,committed,paid,r[b.ep],r[b.pg]]);}}
 return {matrix:out,derived:true,reference:blocks.map(b=>b.month).sort().at(-1)};}
+

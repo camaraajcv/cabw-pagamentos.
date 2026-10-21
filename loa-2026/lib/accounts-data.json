@@ -1407,5 +1407,2133 @@
         "note": "TM do Ano informado inclui setembro; não exibido como média até agosto"
       }
     ]
+  },
+  "2026-09": {
+    "month": "2026-09",
+    "closeDate": "30/09/2026",
+    "banks": [
+      {
+        "currency": "USD",
+        "opening": 80000,
+        "credits": 3294196.29,
+        "redemptions": 325966721.97,
+        "payments": 23256714.04,
+        "applications": 306004204.22,
+        "closing": 80000.0,
+        "invested": 119425568.92,
+        "comparable": 119505568.92,
+        "siscab": 119428149.81,
+        "source": "RESUMO 880001382 USD SET 26.xlsx",
+        "sheet": "Sheet1",
+        "dcbsSource": "DCBS Tesouro USD SET - 26.xlsx",
+        "siafi": 119507186.45,
+        "adjusted": 119507186.45,
+        "creditAdjustment": 500,
+        "debitAdjustment": 2117.53,
+        "lines": [
+          {
+            "label": "SALDO DO EXTRATO BANCÁRIO DO MÊS ANTERIOR",
+            "value": 80000
+          },
+          {
+            "label": "SOMATÓRIO DOS CRÉDITOS (Ingressos)",
+            "value": 3294196.29
+          },
+          {
+            "label": "SOMATÓRIO DOS RESGATES DE APLICAÇÕES",
+            "value": 325966721.97
+          },
+          {
+            "label": "SOMATÓRIO DOS DÉBITOS  (Dispêndios Efetivos)",
+            "value": 23256714.04
+          },
+          {
+            "label": "SOMATÓRIO DOS VALORES APLICADOS",
+            "value": 306004204.22
+          },
+          {
+            "label": "SALDO DO EXTRATO BANCÁRIO QUE PASSA PARA O MÊS SEGUINTE",
+            "value": 80000
+          },
+          {
+            "label": "CRÉDITOS NÃO CONSTANTES DO EXTRATO",
+            "value": 0
+          },
+          {
+            "label": "DÉBITOS NÃO CONSTANTES DO EXTRATO",
+            "value": 0
+          },
+          {
+            "label": "SALDO CONTA CORRENTE  USD",
+            "value": 80000
+          },
+          {
+            "label": "SALDO DA CONTA APLICAÇÃO FINANCEIRA (US$)",
+            "value": 119425568.92
+          },
+          {
+            "label": "CRÉDITOS NÃO CONSTANTES DO SIAFI",
+            "value": 500
+          },
+          {
+            "label": "DÉBITOS NÃO CONSTANTES DO SIAFI",
+            "value": 2117.53
+          },
+          {
+            "label": "SALDO A COMPARAR COM A 1.1.1.2.1.02.00 - BANCOS CONTA MOVIMENTO (SIAFI)",
+            "value": 119507186.45
+          },
+          {
+            "label": "SALDO DA CONTA 1.1.1.2.1.02.00 - BANCOS CONTA MOVIMENTO (SIAFI)",
+            "value": 119507186.45
+          }
+        ]
+      },
+      {
+        "currency": "EUR",
+        "opening": 980053.22,
+        "credits": 0,
+        "redemptions": 2504308.9,
+        "payments": 199078.28,
+        "applications": 2500000,
+        "closing": 785283.84,
+        "invested": 1500000,
+        "comparable": 2285283.84,
+        "siscab": 2285283.83,
+        "source": "RESUMO 880000226 EUR SET  26.xlsx",
+        "sheet": "Resumo extrato-22",
+        "dcbsSource": "DCBS Tesouro EUR SET - 26.xlsx",
+        "siafi": 2285283.83,
+        "adjusted": 2285283.83,
+        "creditAdjustment": 0,
+        "debitAdjustment": 0.01,
+        "lines": [
+          {
+            "label": "SALDO DO EXTRATO BANCÁRIO DO MÊS ANTERIOR",
+            "value": 980053.22
+          },
+          {
+            "label": "SOMATÓRIO DOS CRÉDITOS (Ingressos)",
+            "value": 0
+          },
+          {
+            "label": "SOMATÓRIO DOS RESGATES DE APLICAÇÕES",
+            "value": 2504308.9
+          },
+          {
+            "label": "SOMATÓRIO DOS DÉBITOS  (Dispêndios Efetivos)",
+            "value": 199078.28
+          },
+          {
+            "label": "SOMATÓRIO DOS VALORES APLICADOS",
+            "value": 2500000
+          },
+          {
+            "label": "SALDO DO EXTRATO BANCÁRIO QUE PASSA PARA O MÊS SEGUINTE",
+            "value": 785283.84
+          },
+          {
+            "label": "CRÉDITOS NÃO CONSTANTES DO EXTRATO",
+            "value": 0
+          },
+          {
+            "label": "DÉBITOS NÃO CONSTANTES DO EXTRATO",
+            "value": 0
+          },
+          {
+            "label": "SALDO CONTA CORRENTE  EUR",
+            "value": 785283.84
+          },
+          {
+            "label": "SALDO DA CONTA APLICAÇÃO FINANCEIRA (EUR$)",
+            "value": 1500000
+          },
+          {
+            "label": "CRÉDITOS NÃO CONSTANTES DO SIAFI",
+            "value": 0
+          },
+          {
+            "label": "DÉBITOS NÃO CONSTANTES DO SIAFI",
+            "value": 0.01
+          },
+          {
+            "label": "SALDO A COMPARAR COM A 1.1.1.2.1.02.00 - BANCOS CONTA MOVIMENTO (SIAFI)",
+            "value": 2285283.83
+          },
+          {
+            "label": "SALDO DA CONTA 1.1.1.2.1.02.00 - BANCOS CONTA MOVIMENTO (SIAFI)",
+            "value": 2285283.83
+          }
+        ]
+      },
+      {
+        "currency": "GBP",
+        "opening": 12502.65,
+        "credits": 0,
+        "redemptions": 0,
+        "payments": 0,
+        "applications": 0,
+        "closing": 12502.65,
+        "invested": 0,
+        "comparable": 12502.65,
+        "siscab": 11618.47,
+        "source": "RESUMO 880000227 GBP SET 26.xlsx",
+        "sheet": "Sheet4",
+        "dcbsSource": "DCBS Tesouro GBP SET - 26.xlsx",
+        "siafi": 11618.47,
+        "adjusted": 12502.65,
+        "creditAdjustment": 0,
+        "debitAdjustment": 0,
+        "lines": [
+          {
+            "label": "SALDO DO EXTRATO BANCÁRIO DO MÊS ANTERIOR",
+            "value": 12502.65
+          },
+          {
+            "label": "SOMATÓRIO DOS CRÉDITOS (Ingressos)",
+            "value": 0
+          },
+          {
+            "label": "SOMATÓRIO DOS RESGATES DE APLICAÇÕES",
+            "value": 0
+          },
+          {
+            "label": "SOMATÓRIO DOS DÉBITOS  (Dispêndios Efetivos)",
+            "value": 0
+          },
+          {
+            "label": "SOMATÓRIO DOS VALORES APLICADOS",
+            "value": 0
+          },
+          {
+            "label": "SALDO DO EXTRATO BANCÁRIO QUE PASSA PARA O MÊS SEGUINTE",
+            "value": 12502.65
+          },
+          {
+            "label": "CRÉDITOS NÃO CONSTANTES DO EXTRATO",
+            "value": 0
+          },
+          {
+            "label": "DÉBITOS NÃO CONSTANTES DO EXTRATO",
+            "value": 0
+          },
+          {
+            "label": "SALDO CONTA CORRENTE  GBP",
+            "value": 12502.65
+          },
+          {
+            "label": "SALDO DA CONTA APLICAÇÃO FINANCEIRA (GBP$)",
+            "value": 0
+          },
+          {
+            "label": "CRÉDITOS NÃO CONSTANTES DO SIAFI",
+            "value": 0
+          },
+          {
+            "label": "DÉBITOS NÃO CONSTANTES DO SIAFI",
+            "value": 0
+          },
+          {
+            "label": "SALDO A COMPARAR COM A 1.1.1.2.1.02.00 - BANCOS CONTA MOVIMENTO (SIAFI)",
+            "value": 12502.65
+          },
+          {
+            "label": "SALDO DA CONTA 1.1.1.2.1.02.00 - BANCOS CONTA MOVIMENTO (SIAFI)",
+            "value": 11618.47
+          }
+        ]
+      },
+      {
+        "currency": "CAD",
+        "opening": 1906.86,
+        "credits": 0,
+        "redemptions": 0,
+        "payments": 0,
+        "applications": 0,
+        "closing": 1906.86,
+        "invested": 0,
+        "comparable": 1906.86,
+        "siscab": 1906.86,
+        "source": "RESUMO 880000610 CAD SET 26.xlsx",
+        "sheet": "Resumo extrato-15",
+        "dcbsSource": "DCBS Tesouro CAD SETEMBRO -  26.xlsx",
+        "siafi": 1906.86,
+        "adjusted": 1906.86,
+        "creditAdjustment": 0,
+        "debitAdjustment": 0,
+        "lines": [
+          {
+            "label": "SALDO DO EXTRATO BANCÁRIO DO MÊS ANTERIOR",
+            "value": 1906.86
+          },
+          {
+            "label": "SOMATÓRIO DOS CRÉDITOS (Ingressos)",
+            "value": 0
+          },
+          {
+            "label": "SOMATÓRIO DOS RESGATES DE APLICAÇÕES",
+            "value": 0
+          },
+          {
+            "label": "SOMATÓRIO DOS DÉBITOS  (Dispêndios Efetivos)",
+            "value": 0
+          },
+          {
+            "label": "SOMATÓRIO DOS VALORES APLICADOS",
+            "value": 0
+          },
+          {
+            "label": "SALDO DO EXTRATO BANCÁRIO QUE PASSA PARA O MÊS SEGUINTE",
+            "value": 1906.86
+          },
+          {
+            "label": "CRÉDITOS NÃO CONSTANTES DO EXTRATO",
+            "value": 0
+          },
+          {
+            "label": "DÉBITOS NÃO CONSTANTES DO EXTRATO",
+            "value": 0
+          },
+          {
+            "label": "SALDO CONTA CORRENTE  CAD",
+            "value": 1906.86
+          },
+          {
+            "label": "SALDO DA CONTA APLICAÇÃO FINANCEIRA (CAD$)",
+            "value": 0
+          },
+          {
+            "label": "CRÉDITOS NÃO CONSTANTES DO SIAFI",
+            "value": 0
+          },
+          {
+            "label": "DÉBITOS NÃO CONSTANTES DO SIAFI",
+            "value": 0
+          },
+          {
+            "label": "SALDO A COMPARAR COM A 1.1.1.2.1.02.00 - BANCOS CONTA MOVIMENTO (SIAFI)",
+            "value": 1906.86
+          },
+          {
+            "label": "SALDO DA CONTA 1.1.1.2.1.02.00 - BANCOS CONTA MOVIMENTO (SIAFI)",
+            "value": 1906.86
+          }
+        ]
+      }
+    ],
+    "investments": [
+      {
+        "currency": "USD",
+        "principal": 5000000,
+        "rate": 4.26,
+        "interest": 86975,
+        "start": "2026-05-13",
+        "end": "2026-10-07",
+        "days": 147,
+        "bank": "11WGH",
+        "document": "Bradesco 452260304"
+      },
+      {
+        "currency": "USD",
+        "principal": 5000000,
+        "rate": 4.24,
+        "interest": 90688.89,
+        "start": "2026-05-13",
+        "end": "2026-10-14",
+        "days": 154,
+        "bank": "11WGF",
+        "document": "NYKMMFU261330003"
+      },
+      {
+        "currency": "USD",
+        "principal": 5000000,
+        "rate": 4.31,
+        "interest": 92186.11,
+        "start": "2026-05-20",
+        "end": "2026-10-21",
+        "days": 154,
+        "bank": "11WGF",
+        "document": "NYKMMFU261400001"
+      },
+      {
+        "currency": "USD",
+        "principal": 5000000,
+        "rate": 4.22,
+        "interest": 86158.33,
+        "start": "2026-06-03",
+        "end": "2026-10-28",
+        "days": 147,
+        "bank": "11WGF",
+        "document": "NYKMMFU261540001"
+      },
+      {
+        "currency": "USD",
+        "principal": 5000000,
+        "rate": 4.31,
+        "interest": 83805.56,
+        "start": "2026-06-17",
+        "end": "2026-11-04",
+        "days": 140,
+        "bank": "11WGH",
+        "document": "Bradesco 452260382"
+      },
+      {
+        "currency": "USD",
+        "principal": 5000000,
+        "rate": 4.33,
+        "interest": 89005.56,
+        "start": "2026-06-17",
+        "end": "2026-11-12",
+        "days": 148,
+        "bank": "11WGH",
+        "document": "Bradesco 452260383"
+      },
+      {
+        "currency": "USD",
+        "principal": 5000000,
+        "rate": 4.29,
+        "interest": 91758.33,
+        "start": "2026-06-17",
+        "end": "2026-11-18",
+        "days": 154,
+        "bank": "11WGF",
+        "document": "NYKMMFU261680003"
+      },
+      {
+        "currency": "USD",
+        "principal": 5000000,
+        "rate": 4.31,
+        "interest": 96376.39,
+        "start": "2026-06-17",
+        "end": "2026-11-25",
+        "days": 161,
+        "bank": "11WGF",
+        "document": "NYKMMFU261680004"
+      },
+      {
+        "currency": "USD",
+        "principal": 5000000,
+        "rate": 4.34,
+        "interest": 101266.67,
+        "start": "2026-06-17",
+        "end": "2026-12-02",
+        "days": 168,
+        "bank": "11WGF",
+        "document": "NYKMMFU261680005"
+      },
+      {
+        "currency": "USD",
+        "principal": 5000000,
+        "rate": 4.37,
+        "interest": 106215.28,
+        "start": "2026-06-17",
+        "end": "2026-12-09",
+        "days": 175,
+        "bank": "11WGF",
+        "document": "NYKMMFU261680006"
+      },
+      {
+        "currency": "USD",
+        "principal": 5000000,
+        "rate": 4.41,
+        "interest": 102900,
+        "start": "2026-07-01",
+        "end": "2026-12-16",
+        "days": 168,
+        "bank": "11WGF",
+        "document": "NYKMMFU261820003"
+      },
+      {
+        "currency": "USD",
+        "principal": 5000000,
+        "rate": 4.44,
+        "interest": 107916.67,
+        "start": "2026-07-01",
+        "end": "2026-12-23",
+        "days": 175,
+        "bank": "11WGF",
+        "document": "NYKMMFU261820004"
+      },
+      {
+        "currency": "USD",
+        "principal": 5000000,
+        "rate": 4.52,
+        "interest": 118650.0,
+        "start": "2026-07-08",
+        "end": "2027-01-13",
+        "days": 189,
+        "bank": "11WGF",
+        "document": "NYKMMFU261890001"
+      },
+      {
+        "currency": "USD",
+        "principal": 5000000,
+        "rate": 4.5,
+        "interest": 118125,
+        "start": "2026-07-15",
+        "end": "2027-01-20",
+        "days": 189,
+        "bank": "11WGH",
+        "document": "Bradesco 452260434"
+      },
+      {
+        "currency": "USD",
+        "principal": 5000000,
+        "rate": 4.52,
+        "interest": 123044.44,
+        "start": "2026-07-15",
+        "end": "2027-01-27",
+        "days": 196,
+        "bank": "11WGH",
+        "document": "Bradesco 452260435"
+      },
+      {
+        "currency": "USD",
+        "principal": 5000000,
+        "rate": 4.51,
+        "interest": 122772.22,
+        "start": "2026-07-22",
+        "end": "2027-02-03",
+        "days": 196,
+        "bank": "11WGF",
+        "document": "NYKMMFU262030002"
+      },
+      {
+        "currency": "USD",
+        "principal": 5000000,
+        "rate": 4.47,
+        "interest": 117337.5,
+        "start": "2026-08-05",
+        "end": "2027-02-10",
+        "days": 189,
+        "bank": "11WGF",
+        "document": "NYKMMFU262170002"
+      },
+      {
+        "currency": "USD",
+        "principal": 5000000,
+        "rate": 4.49,
+        "interest": 122227.78,
+        "start": "2026-08-05",
+        "end": "2027-02-17",
+        "days": 196,
+        "bank": "11WGF",
+        "document": "NYKMMFU262170003"
+      },
+      {
+        "currency": "USD",
+        "principal": 5000000,
+        "rate": 4.45,
+        "interest": 112486.11,
+        "start": "2026-08-26",
+        "end": "2027-02-24",
+        "days": 182,
+        "bank": "11WGF",
+        "document": "NYKMMFU262380007"
+      },
+      {
+        "currency": "USD",
+        "principal": 5000000,
+        "rate": 4.55,
+        "interest": 115013.89,
+        "start": "2026-09-02",
+        "end": "2027-03-03",
+        "days": 182,
+        "bank": "11WGF",
+        "document": "NYKMMFU262450004"
+      },
+      {
+        "currency": "USD",
+        "principal": 5000000,
+        "rate": 4.79,
+        "interest": 121080.56,
+        "start": "2026-09-09",
+        "end": "2027-03-10",
+        "days": 182,
+        "bank": "11WGH",
+        "document": "Bradesco 452260581"
+      },
+      {
+        "currency": "USD",
+        "principal": 5000000,
+        "rate": 4.84,
+        "interest": 112933.33,
+        "start": "2026-09-30",
+        "end": "2027-03-17",
+        "days": 168,
+        "bank": "11WGF",
+        "document": "NYKMMFU262730004"
+      },
+      {
+        "currency": "EUR",
+        "principal": 500000,
+        "rate": 2.27,
+        "interest": 662.08,
+        "start": "2026-09-15",
+        "end": "2026-10-06",
+        "days": 21,
+        "bank": "11WGF",
+        "document": "NYKMMSU262580002"
+      },
+      {
+        "currency": "EUR",
+        "principal": 500000,
+        "rate": 2.25,
+        "interest": 875,
+        "start": "2026-09-15",
+        "end": "2026-10-13",
+        "days": 28,
+        "bank": "11WGF",
+        "document": "NYKMMSU262580003"
+      },
+      {
+        "currency": "EUR",
+        "principal": 500000,
+        "rate": 2.25,
+        "interest": 875,
+        "start": "2026-09-22",
+        "end": "2026-10-20",
+        "days": 28,
+        "bank": "11WGF",
+        "document": "NYKMMSU262650001"
+      }
+    ],
+    "overnight": [
+      {
+        "start": "31/08/2026",
+        "end": "01/09/2026",
+        "days": 1,
+        "principal": 18729009.2,
+        "rate": 0.66,
+        "interest": 343.37
+      },
+      {
+        "start": "01/09/2026",
+        "end": "02/09/2026",
+        "days": 1,
+        "principal": 18811993.06,
+        "rate": 0.66,
+        "interest": 344.89
+      },
+      {
+        "start": "02/09/2026",
+        "end": "03/09/2026",
+        "days": 1,
+        "principal": 18893764.33,
+        "rate": 0.66,
+        "interest": 346.39
+      },
+      {
+        "start": "03/09/2026",
+        "end": "04/09/2026",
+        "days": 1,
+        "principal": 19952023.28,
+        "rate": 0.66,
+        "interest": 365.79
+      },
+      {
+        "start": "04/09/2026",
+        "end": "08/09/2026",
+        "days": 4,
+        "principal": 19577938.3,
+        "rate": 0.66,
+        "interest": 1435.76
+      },
+      {
+        "start": "08/09/2026",
+        "end": "09/09/2026",
+        "days": 1,
+        "principal": 20260686.14,
+        "rate": 0.66,
+        "interest": 371.45
+      },
+      {
+        "start": "09/09/2026",
+        "end": "10/09/2026",
+        "days": 1,
+        "principal": 20335903.38,
+        "rate": 0.66,
+        "interest": 372.82
+      },
+      {
+        "start": "10/09/2026",
+        "end": "11/09/2026",
+        "days": 1,
+        "principal": 20082879.4,
+        "rate": 0.66,
+        "interest": 368.19
+      },
+      {
+        "start": "11/09/2026",
+        "end": "14/09/2026",
+        "days": 3,
+        "principal": 19592993.44,
+        "rate": 0.66,
+        "interest": 1077.63
+      },
+      {
+        "start": "14/09/2026",
+        "end": "15/09/2026",
+        "days": 1,
+        "principal": 19348788.14,
+        "rate": 0.66,
+        "interest": 354.73
+      },
+      {
+        "start": "15/09/2026",
+        "end": "16/09/2026",
+        "days": 1,
+        "principal": 7773182.15,
+        "rate": 0.66,
+        "interest": 142.51
+      },
+      {
+        "start": "16/09/2026",
+        "end": "17/09/2026",
+        "days": 1,
+        "principal": 12095298.82,
+        "rate": 0.66,
+        "interest": 221.75
+      },
+      {
+        "start": "17/09/2026",
+        "end": "18/09/2026",
+        "days": 1,
+        "principal": 8670579.86,
+        "rate": 0.7,
+        "interest": 168.59
+      },
+      {
+        "start": "18/09/2026",
+        "end": "21/09/2026",
+        "days": 3,
+        "principal": 8427377.94,
+        "rate": 0.7,
+        "interest": 491.61
+      },
+      {
+        "start": "21/09/2026",
+        "end": "22/09/2026",
+        "days": 1,
+        "principal": 8063575.08,
+        "rate": 0.7,
+        "interest": 156.79
+      },
+      {
+        "start": "22/09/2026",
+        "end": "23/09/2026",
+        "days": 1,
+        "principal": 7568104.62,
+        "rate": 0.7,
+        "interest": 147.16
+      },
+      {
+        "start": "23/09/2026",
+        "end": "24/09/2026",
+        "days": 1,
+        "principal": 10858530.36,
+        "rate": 0.7,
+        "interest": 211.14
+      },
+      {
+        "start": "24/09/2026",
+        "end": "25/09/2026",
+        "days": 1,
+        "principal": 11246854.27,
+        "rate": 0.7,
+        "interest": 218.69
+      },
+      {
+        "start": "25/09/2026",
+        "end": "28/09/2026",
+        "days": 3,
+        "principal": 11023430.7,
+        "rate": 0.7,
+        "interest": 643.04
+      },
+      {
+        "start": "28/09/2026",
+        "end": "29/09/2026",
+        "days": 1,
+        "principal": 9592134.46,
+        "rate": 0.7,
+        "interest": 186.51
+      },
+      {
+        "start": "29/09/2026",
+        "end": "30/09/2026",
+        "days": 1,
+        "principal": 9402597.57,
+        "rate": 0.7,
+        "interest": 182.83
+      }
+    ],
+    "rfmdf": [
+      {
+        "label": "Saldo Disponível nos Bancos",
+        "eur": 2285283.83,
+        "gbp": 12502.65,
+        "cad": 1906.86,
+        "usd": 119425568.92,
+        "consolidated": null
+      },
+      {
+        "label": "Saldo Bancário SISCAB",
+        "eur": 2285283.83,
+        "gbp": 11618.47,
+        "cad": 1906.86,
+        "usd": 119428149.81,
+        "consolidated": 122126115.89
+      },
+      {
+        "label": "(+) Saldo Moeda 'CONTA EUR', 'CONTA GBP' e \"CONTA XXX' (Compromissos), e 'CONTA USD' (Compromissos e Disponível) ",
+        "eur": 1968294.75,
+        "gbp": 0,
+        "cad": 0,
+        "usd": 119428149.81,
+        "consolidated": 121771070.35
+      },
+      {
+        "label": "(+) Diferido referente a cancelamento de PO (Saldo líquido)",
+        "eur": 312680.18,
+        "gbp": 11618.47,
+        "cad": 1906.86,
+        "usd": null,
+        "consolidated": 355045.54
+      },
+      {
+        "label": "(+) Rendimentos de aplicação financeiras",
+        "eur": 4308.9,
+        "gbp": null,
+        "cad": null,
+        "usd": null,
+        "consolidated": 0
+      },
+      {
+        "label": "Contrapartida SISCAB",
+        "eur": 1968295.2,
+        "gbp": 0,
+        "cad": 0,
+        "usd": 105982605.72,
+        "consolidated": 122205342.52
+      },
+      {
+        "label": "Compromissos",
+        "eur": 1968295.2,
+        "gbp": 0,
+        "cad": 0,
+        "usd": 105982605.72,
+        "consolidated": 108325496.33
+      },
+      {
+        "label": "(+)  Crédito Disponível (exceto Fonte 1449)",
+        "eur": null,
+        "gbp": null,
+        "cad": null,
+        "usd": null,
+        "consolidated": 8448788.59
+      },
+      {
+        "label": "Numerário a Receber",
+        "eur": null,
+        "gbp": null,
+        "cad": null,
+        "usd": null,
+        "consolidated": -5431057.6
+      },
+      {
+        "label": "Saldo Financeiro SIAFI",
+        "eur": null,
+        "gbp": null,
+        "cad": null,
+        "usd": 119681561.69,
+        "consolidated": 122380686.22
+      },
+      {
+        "label": "(+)  Bancos Conta Movimento Bancos Oficiais",
+        "eur": null,
+        "gbp": null,
+        "cad": null,
+        "usd": 119507186.45,
+        "consolidated": 122206302.31
+      },
+      {
+        "label": "(+)  Valores em Trânsito - UG Exterior",
+        "eur": null,
+        "gbp": null,
+        "cad": null,
+        "usd": null,
+        "consolidated": 0
+      },
+      {
+        "label": "(+) Outras variações cambiais (lançamentos com contrapartida na conta 1.1.1.2.1.02.00 ou 1.1.3.8.1.06.06)",
+        "eur": null,
+        "gbp": null,
+        "cad": null,
+        "usd": 174375.24,
+        "consolidated": 174384.25
+      },
+      {
+        "label": "(-) Outras variações cambiais (lançamentos com contrapartida na conta 1.1.1.2.1.02.00 ou 1.1.3.8.1.06.06)",
+        "eur": null,
+        "gbp": null,
+        "cad": null,
+        "usd": null,
+        "consolidated": 0.34
+      },
+      {
+        "label": "Saldo Disponível Bancos - Saldo bancário SISCAB ",
+        "eur": 0,
+        "gbp": 884.18,
+        "cad": 0,
+        "usd": -2580.89,
+        "consolidated": null
+      },
+      {
+        "label": "Disp. SICAB - Saldo bancário SISCAB (valores nas moedas originais)\nDESEQUILIBRIO ENTRE BANCO E COMPROMISSOS NAS MOEDAS",
+        "eur": -0.45,
+        "gbp": 0,
+        "cad": 0,
+        "usd": null,
+        "consolidated": 95157.28
+      },
+      {
+        "label": "Diferencial Bancario\nBancos Conta Movimento SIAFI - Saldo Bancário SISCAB",
+        "eur": null,
+        "gbp": null,
+        "cad": null,
+        "usd": null,
+        "consolidated": 80186.42
+      },
+      {
+        "label": "Diferencial SIAFI-SISCAB\nSaldo Financeiro SIAFI - Contrapartidas SISCAB (base taxas historicas das PO em moeda)",
+        "eur": null,
+        "gbp": null,
+        "cad": null,
+        "usd": null,
+        "consolidated": 175343.7
+      }
+    ],
+    "commitments": [
+      {
+        "year": "2023",
+        "usd": 201977.92
+      },
+      {
+        "year": "2024",
+        "usd": 1211430.33
+      },
+      {
+        "year": "2025",
+        "usd": 35363065.35
+      },
+      {
+        "year": "2026",
+        "usd": 71549022.73
+      }
+    ],
+    "notes": [
+      {
+        "title": "RFMDF: diferença com justificativa registrada",
+        "text": "Diferença referente a despesas a pagar no SIAFI (US$ 2,117.53 - NP002352 e NP002353); Complemento do  empenho 2026NE000846 processado em 01OUT26 (US$ -745.21); RP bloqueados (US$ -412.87); Ajuste cambial historicamente acumulado conta Euro (US$ 9.01) e Ajuste cambial patrimonial do processo 67102.260013_2026-14 (US$ 174,375.24). A soma das parcelas resulta em US$ 175.343,70. O valor é uma diferença de conciliação, não recurso livre."
+      },
+      {
+        "title": "Bases de comparação em USD",
+        "text": "A resenha totaliza US$ 122.204.693,79 em equivalências informadas. O SIAFI na resenha é US$ 122.206.311,32: diferença de US$ 1.617,53, explicada por US$ 2.117,53 em débitos e US$ 500,00 em créditos não constantes do SIAFI. O RFMDF usa US$ 122.206.302,31 em bancos; os US$ 9,01 entre as bases correspondem ao ajuste de EUR indicado no fechamento."
+      },
+      {
+        "title": "Instituição do contrato Bradesco 452260581",
+        "text": "A resenha informa 11WGF na linha 29. O comprovante 452260581 identifica Banco Bradesco S.A.; a distribuição por instituição usa 11WGH para este contrato de US$ 5.000.000,00. Taxa de 4,79% e vencimento de 10/03/2027 preservados."
+      },
+      {
+        "title": "Rendimentos realizados e juros contratuais",
+        "text": "Overnight: US$ 8.151,64, em 21 operações, conferido com a NS 2026NS012336 e o extrato. Resgates EUR: EUR 4.308,90 de juros, pela diferença entre os cinco resgates e seus principais. Juros futuros da resenha não são somados às receitas do mês."
+      },
+      {
+        "title": "Aba jul26 do RFMDF",
+        "text": "A aba jul26 contém discrepância de US$ 41.790,00 para o empenho 2026NE000759. Como o título não identifica setembro e a nota principal usa outra composição, essa aba não foi usada como discrepância adicional do fechamento."
+      },
+      {
+        "title": "Ajuste de EUR 0,01 no DCBS",
+        "text": "O DCBS EUR registra débito de EUR 0,01 não constante do SIAFI. Após o ajuste, o saldo a comparar e o SIAFI em moeda original coincidem em EUR 2.285.283,83. Extrato e resumo mantêm EUR 785.283,84 em conta corrente."
+      },
+      {
+        "title": "Garantias atualizadas",
+        "text": "A carteira de setembro contém 15 instrumentos, totalizando US$ 15.480.815,68. THALES foi atualizada para US$ 371.986,39, com vencimento em 28/11/2028; AERONAV para US$ 143.767,90 e 30/09/2027; U-TT para US$ 576.626,45."
+      },
+      {
+        "title": "Valores em trânsito e créditos agrupados",
+        "text": "O controle apresenta 26 registros de origem, com US$ 3.294.196,24 registrados e US$ 3.294.196,29 recebidos no banco. Diferença de US$ 0,05 ajustada pelos documentos 2026PA65104, 2026PA65201, 2026PA65203, 2026PA65237 e 2026PA65238. O crédito de US$ 561.279,78 reúne as transferências 60191, 60192 e 60189; foi contado uma única vez."
+      },
+      {
+        "title": "Receitas por GRU",
+        "text": "O Anexo 13G de setembro ainda não foi recebido. As NS e GRNs permitem apresentar os recolhimentos identificados, sem presumir códigos de GRU ou considerar a lista um total exaustivo das receitas do mês. Documentos repetidos são deduplicados pelo número da NS."
+      },
+      {
+        "title": "Dois documentos de US$ 947,00 para a mesma PO",
+        "text": "NS 2026NS012256 de 28/09 e NS 2026NS012344 de 30/09 citam a PO 26T000947. A primeira usa o empenho 2026NE000683 nos eventos; a segunda usa 2026NE000947. Para evitar duplicar o mesmo recolhimento, apenas a NS012344 integra o subtotal documental. Confirmar o estorno ou a substituição da NS012256."
+      },
+      {
+        "title": "DCF de setembro: PDFs como referência",
+        "text": "Os PDFs DCF Tesouro SET - 26 e Anexos e quadro 1 e 2 identificam SET/2026 e trazem disponibilidade total de US$ 123.809.673,20, compromissos de US$ 116.775.657,24 e diferença de US$ 7.034.015,96. Esses PDFs prevalecem sobre as abas de abril e agosto presentes na planilha. A consolidação resulta em US$ 174.375,24, relativos ao ajuste cambial patrimonial indicado na nota."
+      }
+    ],
+    "sources": [
+      {
+        "file": "2026NS012336 - OVERNIGHT SETEMBRO 2026.pdf",
+        "sheets": [
+          "Setembro/2026"
+        ],
+        "use": "Rendimentos overnight e registro contábil",
+        "note": "Documento de apoio; não somado novamente aos totais."
+      },
+      {
+        "file": "452260581 - BRAZILIAN AERONAUTICAL COMMISSION-DC - TD CONFIRMATION.pdf",
+        "sheets": [
+          "Setembro/2026"
+        ],
+        "use": "Carteira, datas, taxas e juros contratuais",
+        "note": "Documento de apoio; não somado novamente aos totais."
+      },
+      {
+        "file": "Account_Activity_880000226-9-2026.pdf",
+        "sheets": [
+          "Setembro/2026"
+        ],
+        "use": "Movimentos bancários e saldos por moeda",
+        "note": "Documento de apoio; não somado novamente aos totais."
+      },
+      {
+        "file": "Account_Activity_880000227-9-2026 (1).pdf",
+        "sheets": [
+          "Setembro/2026"
+        ],
+        "use": "Movimentos bancários e saldos por moeda",
+        "note": "Documento de apoio; não somado novamente aos totais."
+      },
+      {
+        "file": "Account_Activity_880000610-9-2026 (1).pdf",
+        "sheets": [
+          "Setembro/2026"
+        ],
+        "use": "Movimentos bancários e saldos por moeda",
+        "note": "Documento de apoio; não somado novamente aos totais."
+      },
+      {
+        "file": "Account_Activity_880001382-9-2026.pdf",
+        "sheets": [
+          "Setembro/2026"
+        ],
+        "use": "Movimentos bancários e saldos por moeda",
+        "note": "Documento de apoio; não somado novamente aos totais."
+      },
+      {
+        "file": "COMPROVANTES DA RESENHA EUR SETEMBRO - 26.pdf",
+        "sheets": [
+          "Setembro/2026"
+        ],
+        "use": "Carteira, datas, taxas e juros contratuais",
+        "note": "Documento de apoio; não somado novamente aos totais."
+      },
+      {
+        "file": "COMPROVANTES DA RESENHA USD SETEMBRO - 26.pdf",
+        "sheets": [
+          "Setembro/2026"
+        ],
+        "use": "Carteira, datas, taxas e juros contratuais",
+        "note": "Documento de apoio; não somado novamente aos totais."
+      },
+      {
+        "file": "OVERNIGHT - SETEMBRO 2026.pdf",
+        "sheets": [
+          "Setembro/2026"
+        ],
+        "use": "Rendimentos overnight e registro contábil",
+        "note": "Documento de apoio; não somado novamente aos totais."
+      },
+      {
+        "file": "RESENHA CAD Setembro -26.pdf",
+        "sheets": [
+          "Setembro/2026"
+        ],
+        "use": "Carteira, datas, taxas e juros contratuais",
+        "note": "Documento de apoio; não somado novamente aos totais."
+      },
+      {
+        "file": "RESENHA EUR Setembro -26.pdf",
+        "sheets": [
+          "Setembro/2026"
+        ],
+        "use": "Carteira, datas, taxas e juros contratuais",
+        "note": "Documento de apoio; não somado novamente aos totais."
+      },
+      {
+        "file": "RESENHA GBP Setembro -26.pdf",
+        "sheets": [
+          "Setembro/2026"
+        ],
+        "use": "Carteira, datas, taxas e juros contratuais",
+        "note": "Documento de apoio; não somado novamente aos totais."
+      },
+      {
+        "file": "RESENHA Setembro -26.xlsx",
+        "sheets": [
+          "Setembro/2026"
+        ],
+        "use": "Carteira, datas, taxas e juros contratuais",
+        "note": "Documento de apoio; não somado novamente aos totais."
+      },
+      {
+        "file": "RESENHA USD Setembro -26.pdf",
+        "sheets": [
+          "Setembro/2026"
+        ],
+        "use": "Carteira, datas, taxas e juros contratuais",
+        "note": "Documento de apoio; não somado novamente aos totais."
+      },
+      {
+        "file": "RESUMO 880000226 EUR SET  26.pdf",
+        "sheets": [
+          "Setembro/2026"
+        ],
+        "use": "Movimentos bancários e saldos por moeda",
+        "note": "Documento de apoio; não somado novamente aos totais."
+      },
+      {
+        "file": "RESUMO 880000226 EUR SET  26.xlsx",
+        "sheets": [
+          "Setembro/2026"
+        ],
+        "use": "Movimentos bancários e saldos por moeda",
+        "note": "Documento de apoio; não somado novamente aos totais."
+      },
+      {
+        "file": "RESUMO 880000227 GBP SET 26.pdf",
+        "sheets": [
+          "Setembro/2026"
+        ],
+        "use": "Movimentos bancários e saldos por moeda",
+        "note": "Documento de apoio; não somado novamente aos totais."
+      },
+      {
+        "file": "RESUMO 880000227 GBP SET 26.xlsx",
+        "sheets": [
+          "Setembro/2026"
+        ],
+        "use": "Movimentos bancários e saldos por moeda",
+        "note": "Documento de apoio; não somado novamente aos totais."
+      },
+      {
+        "file": "RESUMO 880000610 CAD SET 26.pdf",
+        "sheets": [
+          "Setembro/2026"
+        ],
+        "use": "Movimentos bancários e saldos por moeda",
+        "note": "Documento de apoio; não somado novamente aos totais."
+      },
+      {
+        "file": "RESUMO 880000610 CAD SET 26.xlsx",
+        "sheets": [
+          "Setembro/2026"
+        ],
+        "use": "Movimentos bancários e saldos por moeda",
+        "note": "Documento de apoio; não somado novamente aos totais."
+      },
+      {
+        "file": "RESUMO 880001382 USD SET 26.pdf",
+        "sheets": [
+          "Setembro/2026"
+        ],
+        "use": "Movimentos bancários e saldos por moeda",
+        "note": "Documento de apoio; não somado novamente aos totais."
+      },
+      {
+        "file": "RESUMO 880001382 USD SET 26.xlsx",
+        "sheets": [
+          "Setembro/2026"
+        ],
+        "use": "Movimentos bancários e saldos por moeda",
+        "note": "Documento de apoio; não somado novamente aos totais."
+      },
+      {
+        "file": "RFMDF - SALDOS CONTÁBEIS SINTÉTICO - SET 2026.pdf",
+        "sheets": [
+          "Setembro/2026"
+        ],
+        "use": "Saldos do fechamento e documentos de apoio",
+        "note": "Documento de apoio; não somado novamente aos totais."
+      },
+      {
+        "file": "RFMDF - SETEMBRO 2026.pdf",
+        "sheets": [
+          "Setembro/2026"
+        ],
+        "use": "Saldos do fechamento e documentos de apoio",
+        "note": "Documento de apoio; não somado novamente aos totais."
+      },
+      {
+        "file": "RFMDF - Versão 09jul24 - Atualizada SETEMBRO 2026(1).xlsx",
+        "sheets": [
+          "Setembro/2026"
+        ],
+        "use": "Saldos do fechamento e documentos de apoio",
+        "note": "Documento de apoio; não somado novamente aos totais."
+      },
+      {
+        "file": "SISCAB - EXTRATO CONTA 880000226 - EUR DIFERIDA - SETEMBRO 2026(1).pdf",
+        "sheets": [
+          "Setembro/2026"
+        ],
+        "use": "Saldos do fechamento e documentos de apoio",
+        "note": "Documento de apoio; não somado novamente aos totais."
+      },
+      {
+        "file": "SISCAB - EXTRATO CONTA 880000226 -EUR - SETEMBRO 2026(1).pdf",
+        "sheets": [
+          "Setembro/2026"
+        ],
+        "use": "Saldos do fechamento e documentos de apoio",
+        "note": "Documento de apoio; não somado novamente aos totais."
+      },
+      {
+        "file": "SISCAB - EXTRATO CONTA 880000227 - GBP - SETEMBRO 2026(1).pdf",
+        "sheets": [
+          "Setembro/2026"
+        ],
+        "use": "Saldos do fechamento e documentos de apoio",
+        "note": "Documento de apoio; não somado novamente aos totais."
+      },
+      {
+        "file": "SISCAB - EXTRATO CONTA 880000227 - GBP DIFERIDA - SETEMBRO 2026(1).pdf",
+        "sheets": [
+          "Setembro/2026"
+        ],
+        "use": "Saldos do fechamento e documentos de apoio",
+        "note": "Documento de apoio; não somado novamente aos totais."
+      },
+      {
+        "file": "SISCAB - EXTRATO CONTA 880000610 - CAD - SETEMBRO 2026(1).pdf",
+        "sheets": [
+          "Setembro/2026"
+        ],
+        "use": "Saldos do fechamento e documentos de apoio",
+        "note": "Documento de apoio; não somado novamente aos totais."
+      },
+      {
+        "file": "SISCAB - EXTRATO CONTA 880000610 - CAD DIFERIDA - SETEMBRO 2026(1).pdf",
+        "sheets": [
+          "Setembro/2026"
+        ],
+        "use": "Saldos do fechamento e documentos de apoio",
+        "note": "Documento de apoio; não somado novamente aos totais."
+      },
+      {
+        "file": "SISCAB - EXTRATO CONTA 880001382 - USD - SETEMBRO 2026(1).pdf",
+        "sheets": [
+          "Setembro/2026"
+        ],
+        "use": "Saldos do fechamento e documentos de apoio",
+        "note": "Documento de apoio; não somado novamente aos totais."
+      },
+      {
+        "file": "WForSaldo_07 10 26 09 04 54(1).xls",
+        "sheets": [
+          "Setembro/2026"
+        ],
+        "use": "Compromissos por empenho e PO, posição 30/09/2026",
+        "note": "Documento de apoio; não somado novamente aos totais."
+      },
+      {
+        "file": "sweepAccount-880001382.pdf",
+        "sheets": [
+          "Setembro/2026"
+        ],
+        "use": "Rendimentos overnight e registro contábil",
+        "note": "Documento de apoio; não somado novamente aos totais."
+      },
+      {
+        "file": "timeDeposit-NYKMMFU262450004.pdf",
+        "sheets": [
+          "Setembro/2026"
+        ],
+        "use": "Carteira, datas, taxas e juros contratuais",
+        "note": "Documento de apoio; não somado novamente aos totais."
+      },
+      {
+        "file": "timeDeposit-NYKMMFU262730004.pdf",
+        "sheets": [
+          "Setembro/2026"
+        ],
+        "use": "Carteira, datas, taxas e juros contratuais",
+        "note": "Documento de apoio; não somado novamente aos totais."
+      },
+      {
+        "file": "timeDeposit-NYKMMSU262580002.pdf",
+        "sheets": [
+          "Setembro/2026"
+        ],
+        "use": "Carteira, datas, taxas e juros contratuais",
+        "note": "Documento de apoio; não somado novamente aos totais."
+      },
+      {
+        "file": "timeDeposit-NYKMMSU262580003.pdf",
+        "sheets": [
+          "Setembro/2026"
+        ],
+        "use": "Carteira, datas, taxas e juros contratuais",
+        "note": "Documento de apoio; não somado novamente aos totais."
+      },
+      {
+        "file": "timeDeposit-NYKMMSU262650001.pdf",
+        "sheets": [
+          "Setembro/2026"
+        ],
+        "use": "Carteira, datas, taxas e juros contratuais",
+        "note": "Documento de apoio; não somado novamente aos totais."
+      },
+      {
+        "file": "2026NS012278 - $5.13.pdf",
+        "sheets": [
+          "Setembro/2026"
+        ],
+        "use": "Recolhimentos e documentos contábeis de apoio",
+        "note": "Valores repetidos não somados novamente."
+      },
+      {
+        "file": "2026NS012279 - $1.53.pdf",
+        "sheets": [
+          "Setembro/2026"
+        ],
+        "use": "Recolhimentos e documentos contábeis de apoio",
+        "note": "Valores repetidos não somados novamente."
+      },
+      {
+        "file": "2026NS012283.pdf",
+        "sheets": [
+          "Setembro/2026"
+        ],
+        "use": "Recolhimentos e documentos contábeis de apoio",
+        "note": "Valores repetidos não somados novamente."
+      },
+      {
+        "file": "2026NS012285.pdf",
+        "sheets": [
+          "Setembro/2026"
+        ],
+        "use": "Recolhimentos e documentos contábeis de apoio",
+        "note": "Valores repetidos não somados novamente."
+      },
+      {
+        "file": "2026NS012345 - $ 114.00.pdf",
+        "sheets": [
+          "Setembro/2026"
+        ],
+        "use": "Recolhimentos e documentos contábeis de apoio",
+        "note": "Valores repetidos não somados novamente."
+      },
+      {
+        "file": "2026NS012350 - $232.05.pdf",
+        "sheets": [
+          "Setembro/2026"
+        ],
+        "use": "Recolhimentos e documentos contábeis de apoio",
+        "note": "Valores repetidos não somados novamente."
+      },
+      {
+        "file": "2026NS012352 - $800.45.pdf",
+        "sheets": [
+          "Setembro/2026"
+        ],
+        "use": "Recolhimentos e documentos contábeis de apoio",
+        "note": "Valores repetidos não somados novamente."
+      },
+      {
+        "file": "CONTROLE DE GARANTIAS CONTRATUAIS_30 SETEMBRO.xlsx",
+        "sheets": [
+          "Setembro/2026"
+        ],
+        "use": "Garantias em 30/09/2026",
+        "note": "Valores repetidos não somados novamente."
+      },
+      {
+        "file": "CONTROLE DE VALORES EM TRANSITO.pdf",
+        "sheets": [
+          "Setembro/2026"
+        ],
+        "use": "Controle de recebimentos e ajustes",
+        "note": "Valores repetidos não somados novamente."
+      },
+      {
+        "file": "DCBS Tesouro CAD SETEMBRO -  26.xlsx",
+        "sheets": [
+          "Setembro/2026"
+        ],
+        "use": "Conciliação por moeda com o SIAFI",
+        "note": "Valores repetidos não somados novamente."
+      },
+      {
+        "file": "DCBS Tesouro EUR SET - 26.xlsx",
+        "sheets": [
+          "Setembro/2026"
+        ],
+        "use": "Conciliação por moeda com o SIAFI",
+        "note": "Valores repetidos não somados novamente."
+      },
+      {
+        "file": "DCBS Tesouro GBP SET - 26.xlsx",
+        "sheets": [
+          "Setembro/2026"
+        ],
+        "use": "Conciliação por moeda com o SIAFI",
+        "note": "Valores repetidos não somados novamente."
+      },
+      {
+        "file": "DCBS Tesouro USD SET - 26.xlsx",
+        "sheets": [
+          "Setembro/2026"
+        ],
+        "use": "Conciliação por moeda com o SIAFI",
+        "note": "Valores repetidos não somados novamente."
+      },
+      {
+        "file": "DCF Tesouro SET - 26.xlsx",
+        "sheets": [
+          "Setembro/2026"
+        ],
+        "use": "Consolidação de setembro; quadros de abril/agosto não utilizados",
+        "note": "Valores repetidos não somados novamente."
+      },
+      {
+        "file": "GRN 004 FIN 2026 - METLIFE.pdf",
+        "sheets": [
+          "Setembro/2026"
+        ],
+        "use": "Recolhimentos e documentos contábeis de apoio",
+        "note": "Valores repetidos não somados novamente."
+      },
+      {
+        "file": "GRN_02_MTAB_2026.pdf",
+        "sheets": [
+          "Setembro/2026"
+        ],
+        "use": "Recolhimentos e documentos contábeis de apoio",
+        "note": "Valores repetidos não somados novamente."
+      },
+      {
+        "file": "Lançamento SISCAB.pdf",
+        "sheets": [
+          "Setembro/2026"
+        ],
+        "use": "Recolhimentos e documentos contábeis de apoio",
+        "note": "Valores repetidos não somados novamente."
+      },
+      {
+        "file": "NS's Setembro.pdf",
+        "sheets": [
+          "Setembro/2026"
+        ],
+        "use": "Recolhimentos e documentos contábeis de apoio",
+        "note": "Valores repetidos não somados novamente."
+      },
+      {
+        "file": "cheque-880001382-0141 - AGUINALDO.pdf",
+        "sheets": [
+          "Setembro/2026"
+        ],
+        "use": "Recolhimentos e documentos contábeis de apoio",
+        "note": "Valores repetidos não somados novamente."
+      },
+      {
+        "file": "cheque-880001382-0701-MARILDA.pdf",
+        "sheets": [
+          "Setembro/2026"
+        ],
+        "use": "Recolhimentos e documentos contábeis de apoio",
+        "note": "Valores repetidos não somados novamente."
+      },
+      {
+        "file": "2026NS012344.pdf",
+        "sheets": [
+          "Setembro/2026"
+        ],
+        "use": "Conferência dos registros de devolução de suprimento",
+        "note": "Documentos de apoio; não somados novamente."
+      },
+      {
+        "file": "2026NS012281.pdf",
+        "sheets": [
+          "Setembro/2026"
+        ],
+        "use": "Conferência dos registros de devolução de suprimento",
+        "note": "Documentos de apoio; não somados novamente."
+      },
+      {
+        "file": "2026NS12282.pdf",
+        "sheets": [
+          "Setembro/2026"
+        ],
+        "use": "Conferência dos registros de devolução de suprimento",
+        "note": "Documentos de apoio; não somados novamente."
+      },
+      {
+        "file": "2026NS012280.pdf",
+        "sheets": [
+          "Setembro/2026"
+        ],
+        "use": "Conferência dos registros de devolução de suprimento",
+        "note": "Documentos de apoio; não somados novamente."
+      },
+      {
+        "file": "2026NS012256 - $947.00.pdf",
+        "sheets": [
+          "Setembro/2026"
+        ],
+        "use": "Conferência dos registros de devolução de suprimento",
+        "note": "Documentos de apoio; não somados novamente."
+      },
+      {
+        "file": "DCF Tesouro SET - 26 e Anexos.pdf",
+        "sheets": [
+          "SET/2026"
+        ],
+        "use": "Quadros e consolidação do DCF de setembro",
+        "note": "PDFs de setembro prevalecem sobre as abas de abril/agosto da planilha."
+      },
+      {
+        "file": "quadro 1 e 2.pdf",
+        "sheets": [
+          "SET/2026"
+        ],
+        "use": "Quadros e consolidação do DCF de setembro",
+        "note": "PDFs de setembro prevalecem sobre as abas de abril/agosto da planilha."
+      },
+      {
+        "file": "DCF Tesouro SET - 26.pdf",
+        "sheets": [
+          "SET/2026"
+        ],
+        "use": "Quadros e consolidação do DCF de setembro",
+        "note": "PDFs de setembro prevalecem sobre as abas de abril/agosto da planilha."
+      },
+      {
+        "file": "quadro 3.pdf",
+        "sheets": [
+          "SET/2026"
+        ],
+        "use": "Quadros e consolidação do DCF de setembro",
+        "note": "PDFs de setembro prevalecem sobre as abas de abril/agosto da planilha."
+      }
+    ],
+    "metrics": {
+      "siscab": 122126115.89,
+      "banksSiafi": 122206302.31,
+      "financialSiafi": 122380686.22,
+      "counterpart": 122205342.52,
+      "commitments": 108325496.33,
+      "credit": 8448788.59,
+      "receivable": -5431057.6,
+      "deferred": 355045.54,
+      "bankDifference": 80186.42,
+      "financialDifference": 175343.7,
+      "resenhaTotal": 122204693.79,
+      "resenhaSiafi": 122206311.32,
+      "resenhaDifference": 1617.53,
+      "transit": 0,
+      "eurInterest": 4308.9
+    },
+    "guarantees": [
+      {
+        "company": "22819 - BOEING DISTRIBUTION INC",
+        "number": "150STB23300362",
+        "status": "VIGENTE",
+        "value": 1432432.54,
+        "expiry": "10/11/2026",
+        "contract": "010/CABW/2020"
+      },
+      {
+        "company": "3X182 - TECHNO-SCIENCES LLC",
+        "number": "68182457",
+        "status": "VIGENTE",
+        "value": 189499.99,
+        "expiry": "23/02/2027",
+        "contract": "156/CAE-PAME-RJ/2022"
+      },
+      {
+        "company": "L08Q1 - AERONAV, INC.",
+        "number": "SBGM612081",
+        "status": "VIGENTE",
+        "value": 143767.9,
+        "expiry": "30/09/2027",
+        "contract": "110/CAE-CABW-CISCEA/2025"
+      },
+      {
+        "company": "05ZJ1 - INTEGRATED PROCUREMENT TECHNOLOGIES DBA IPT",
+        "number": "IS000597163U",
+        "status": "VIGENTE",
+        "value": 63000,
+        "expiry": "15/06/2027",
+        "contract": "027/CABW-PAMAGL/2025"
+      },
+      {
+        "company": "L9657 - STANDARDAERO ATLANTIC, INC",
+        "number": "SBGT170317",
+        "status": "VIGENTE",
+        "value": 1713854.94,
+        "expiry": "31/08/2027",
+        "contract": "051/CELOG-PAMASP/2024"
+      },
+      {
+        "company": "1KZL3 - STANDARD AERO ALLIANCE INC",
+        "number": "68186254",
+        "status": "VIGENTE",
+        "value": 768927.08,
+        "expiry": "30/06/2028",
+        "contract": "027/CELOG-PAMAGL/2023"
+      },
+      {
+        "company": "0EUD7 - UNITED AERONAUTICAL CORPORATION",
+        "number": "SLC10005038",
+        "status": "VIGENTE",
+        "value": 75000,
+        "expiry": "31/07/2028",
+        "contract": "028/CABW-PAMAGL/2024"
+      },
+      {
+        "company": "F8224 - THALES LAS FRANCE SAS",
+        "number": "LGGE202312061522",
+        "status": "VIGENTE",
+        "value": 371986.39,
+        "expiry": "28/11/2028",
+        "contract": "061/CAE-PAME-RJ/2023"
+      },
+      {
+        "company": "6WZB6 - LOCKHEED MARTIN GLOBAL, INC. DBA LMGI",
+        "number": "LBCMNY2024076",
+        "status": "VIGENTE",
+        "value": 553582,
+        "expiry": "08/12/2028",
+        "contract": "007/CABW-PAMASP/2024"
+      },
+      {
+        "company": "5CDE7 - STANDARDAERO ATLANTIC, INC",
+        "number": "68206293",
+        "status": "VIGENTE",
+        "value": 148821,
+        "expiry": "31/10/2029",
+        "contract": "033/CELOG-PAMAGL/2025"
+      },
+      {
+        "company": "3W0D8 - U-TT INTERNATIONAL, INC",
+        "number": "60136433",
+        "status": "VIGENTE",
+        "value": 576626.45,
+        "expiry": "09/04/2030",
+        "contract": "004/CABW-PAMERJ/2025"
+      },
+      {
+        "company": "H1L04 - SITA B.V.(SITA INFO NETWORKING COMPUTING)",
+        "number": "SGAX324-4386545",
+        "status": "VIGENTE",
+        "value": 140262.39,
+        "expiry": "02/06/2030",
+        "contract": "009/CABW-PAMERJ/2025"
+      },
+      {
+        "company": "22819 - BOEING DISTRIBUTION INC",
+        "number": "150STB25300087",
+        "status": "VIGENTE",
+        "value": 1695528.73,
+        "expiry": "13/06/2030",
+        "contract": "029/CABW-PAMASP/2024"
+      },
+      {
+        "company": "11WBE - PARK AIR SYSTEMS LTD",
+        "number": "GTSD500015530",
+        "status": "VIGENTE",
+        "value": 708421.6,
+        "expiry": "03/07/2030",
+        "contract": "001/CABW-CISCEA/2025"
+      },
+      {
+        "company": "7F5X5 - ACE AERONAUTICS, LLC",
+        "number": "2600080029",
+        "status": "VIGENTE",
+        "value": 6899104.67,
+        "expiry": "01/12/2032",
+        "contract": "021/CABW-PAMASP/2025"
+      }
+    ],
+    "dcfConsolidation": {
+      "gap": 7034015.96,
+      "q2": -5225,
+      "q3": 6854415.72,
+      "result": 174375.24,
+      "note": "Ajuste cambial patrimonial do processo 67102.260013_2026-14"
+    },
+    "transit": [
+      {
+        "date": "1-Sep",
+        "ug": "120093",
+        "sefaDoc": "NS000965",
+        "sent": 2075.91,
+        "bankDate": "1-set",
+        "received": 2075.91,
+        "transfer": "60176",
+        "cabwDoc": "NS010673",
+        "recorded": 2075.91
+      },
+      {
+        "date": "1-Sep",
+        "ug": "120093",
+        "sefaDoc": "NS000968",
+        "sent": 80564.58,
+        "bankDate": "1-set",
+        "received": 80564.58,
+        "transfer": "60177",
+        "cabwDoc": "NS010674",
+        "recorded": 80564.58
+      },
+      {
+        "date": "1-Sep",
+        "ug": "120002",
+        "sefaDoc": "NS000920",
+        "sent": 26084.16,
+        "bankDate": "3-set",
+        "received": 26084.16,
+        "transfer": "60178",
+        "cabwDoc": "NS010828",
+        "recorded": 26084.16
+      },
+      {
+        "date": "1-Sep",
+        "ug": "121002",
+        "sefaDoc": "NS006422",
+        "sent": 932093.13,
+        "bankDate": "3-set",
+        "received": 932093.13,
+        "transfer": "60179",
+        "cabwDoc": "NS010829",
+        "recorded": 932093.13
+      },
+      {
+        "date": "1-Sep",
+        "ug": "121002",
+        "sefaDoc": "NS006423",
+        "sent": 100000.0,
+        "bankDate": "3-set",
+        "received": 100000.0,
+        "transfer": "60180",
+        "cabwDoc": "NS010830",
+        "recorded": 100000.0
+      },
+      {
+        "date": "1-Sep",
+        "ug": "121002",
+        "sefaDoc": "NS006424",
+        "sent": 647.27,
+        "bankDate": "3-set",
+        "received": 647.27,
+        "transfer": "60181",
+        "cabwDoc": "NS010831",
+        "recorded": 647.27
+      },
+      {
+        "date": "1-Sep",
+        "ug": "121002",
+        "sefaDoc": "NS006426",
+        "sent": 150.0,
+        "bankDate": "3-set",
+        "received": 150.0,
+        "transfer": "60182",
+        "cabwDoc": "NS010833",
+        "recorded": 150.0
+      },
+      {
+        "date": "3-Sep",
+        "ug": "121002",
+        "sefaDoc": "NS006485",
+        "sent": 38220.0,
+        "bankDate": "8-set",
+        "received": 38220.0,
+        "transfer": "60183",
+        "cabwDoc": "NS011031",
+        "recorded": 38220.0
+      },
+      {
+        "date": "3-Sep",
+        "ug": "121002",
+        "sefaDoc": "NS006475",
+        "sent": 90953.86,
+        "bankDate": "8-set",
+        "received": 90953.86,
+        "transfer": "60184",
+        "cabwDoc": "NS011032",
+        "recorded": 90953.86
+      },
+      {
+        "date": "3-Sep",
+        "ug": "121002",
+        "sefaDoc": "NS006476",
+        "sent": 52255.15,
+        "bankDate": "8-set",
+        "received": 52255.16,
+        "transfer": "60186",
+        "cabwDoc": "NS011033",
+        "recorded": 52255.15
+      },
+      {
+        "date": "3-Sep",
+        "ug": "121002",
+        "sefaDoc": "NS006477",
+        "sent": 425560.25,
+        "bankDate": "8-set",
+        "received": 425560.25,
+        "transfer": "60187",
+        "cabwDoc": "NS011034",
+        "recorded": 425560.25
+      },
+      {
+        "date": "3-Sep",
+        "ug": "121002",
+        "sefaDoc": "NS006482",
+        "sent": 80701.75,
+        "bankDate": "8-set",
+        "received": 80701.75,
+        "transfer": "60188",
+        "cabwDoc": "NS011035",
+        "recorded": 80701.75
+      },
+      {
+        "date": "10-Sep",
+        "ug": "121002",
+        "sefaDoc": "NS006590",
+        "sent": 350399.06,
+        "bankDate": "14-set",
+        "received": 350399.07,
+        "transfer": "60190",
+        "cabwDoc": "NS011381",
+        "recorded": 350399.06
+      },
+      {
+        "date": "10-Sep",
+        "ug": "121002",
+        "sefaDoc": "NS006592",
+        "sent": 526607.92,
+        "bankDate": "14-set",
+        "received": null,
+        "transfer": "60191",
+        "cabwDoc": "NS011386",
+        "recorded": 526607.92
+      },
+      {
+        "date": "10-Sep",
+        "ug": "121002",
+        "sefaDoc": "NS006593",
+        "sent": 8904.0,
+        "bankDate": "14-set",
+        "received": 561279.78,
+        "transfer": "60192",
+        "cabwDoc": "NS011391",
+        "recorded": 8904.0
+      },
+      {
+        "date": "10-Sep",
+        "ug": "120002",
+        "sefaDoc": "NS000945",
+        "sent": 25767.86,
+        "bankDate": "14-set",
+        "received": null,
+        "transfer": "60189",
+        "cabwDoc": "NS011370",
+        "recorded": 25767.86
+      },
+      {
+        "date": "15-Sep",
+        "ug": "121002",
+        "sefaDoc": "NS006674",
+        "sent": 127441.92,
+        "bankDate": "17-set",
+        "received": 127441.92,
+        "transfer": "60193",
+        "cabwDoc": "NS011626",
+        "recorded": 127441.92
+      },
+      {
+        "date": "15-Sep",
+        "ug": "121002",
+        "sefaDoc": "NS006673",
+        "sent": 23534.1,
+        "bankDate": "17-set",
+        "received": 23534.11,
+        "transfer": "60194",
+        "cabwDoc": "NS011627",
+        "recorded": 23534.1
+      },
+      {
+        "date": "17-Sep",
+        "ug": "121002",
+        "sefaDoc": "NS006717",
+        "sent": 1229.32,
+        "bankDate": "21-set",
+        "received": 1229.32,
+        "transfer": "60195",
+        "cabwDoc": "NS012287",
+        "recorded": 1229.32
+      },
+      {
+        "date": "17-Sep",
+        "ug": "120002",
+        "sefaDoc": "NS000995",
+        "sent": 321.04,
+        "bankDate": "21-set",
+        "received": 321.05,
+        "transfer": "60196",
+        "cabwDoc": "NS012288",
+        "recorded": 321.04
+      },
+      {
+        "date": "22-Sep",
+        "ug": "121002",
+        "sefaDoc": "NS006803",
+        "sent": 20968.0,
+        "bankDate": "24-set",
+        "received": 20968.0,
+        "transfer": "60197",
+        "cabwDoc": "NS012289",
+        "recorded": 20968.0
+      },
+      {
+        "date": "22-Sep",
+        "ug": "121002",
+        "sefaDoc": "NS006804",
+        "sent": 201846.94,
+        "bankDate": "24-set",
+        "received": 201846.94,
+        "transfer": "60198",
+        "cabwDoc": "NS012290",
+        "recorded": 201846.94
+      },
+      {
+        "date": "22-Sep",
+        "ug": "121002",
+        "sefaDoc": "NS006805",
+        "sent": 12042.2,
+        "bankDate": "24-set",
+        "received": 12042.2,
+        "transfer": "60199",
+        "cabwDoc": "NS012291",
+        "recorded": 12042.2
+      },
+      {
+        "date": "22-Sep",
+        "ug": "120002",
+        "sefaDoc": "NS000997",
+        "sent": 12484.65,
+        "bankDate": "24-set",
+        "received": 12484.65,
+        "transfer": "60200",
+        "cabwDoc": "NS012292",
+        "recorded": 12484.65
+      },
+      {
+        "date": "22-Sep",
+        "ug": "120002",
+        "sefaDoc": "NS000998",
+        "sent": 50000.0,
+        "bankDate": "24-set",
+        "received": 50000.0,
+        "transfer": "60201",
+        "cabwDoc": "NS012293",
+        "recorded": 50000.0
+      },
+      {
+        "date": "22-Sep",
+        "ug": "120002",
+        "sefaDoc": "NS001003",
+        "sent": 103343.17,
+        "bankDate": "24-set",
+        "received": 103343.18,
+        "transfer": "60202",
+        "cabwDoc": "NS012294",
+        "recorded": 103343.17
+      }
+    ],
+    "receiptDocuments": [
+      {
+        "document": "2026NS012176",
+        "value": 68.55,
+        "category": "Arrecadação registrada",
+        "description": "Dividendos de seguro METLIFE · referência agosto, registro setembro"
+      },
+      {
+        "document": "2026NS012177",
+        "value": 182550.33,
+        "category": "Arrecadação registrada",
+        "description": "Acordo de cooperação MTAB/DINAC · inspeção em voo"
+      },
+      {
+        "document": "2026NS012278",
+        "value": 5.13,
+        "category": "Devolução de suprimento",
+        "description": "Saldo não aplicado de suprimento de fundos"
+      },
+      {
+        "document": "2026NS012279",
+        "value": 1.53,
+        "category": "Devolução de suprimento",
+        "description": "Saldo não aplicado de suprimento de fundos"
+      },
+      {
+        "document": "2026NS012280",
+        "value": 800.0,
+        "category": "Devolução de suprimento",
+        "description": "Saldo não aplicado de suprimento de fundos"
+      },
+      {
+        "document": "2026NS012281",
+        "value": 2.63,
+        "category": "Devolução de suprimento",
+        "description": "Saldo não aplicado de suprimento de fundos"
+      },
+      {
+        "document": "2026NS012282",
+        "value": 12.7,
+        "category": "Devolução de suprimento",
+        "description": "Saldo não aplicado de suprimento de fundos"
+      },
+      {
+        "document": "2026NS012283",
+        "value": 1167.44,
+        "category": "Devolução de suprimento",
+        "description": "Saldo não aplicado de suprimento de fundos"
+      },
+      {
+        "document": "2026NS012284",
+        "value": 0.08,
+        "category": "Devolução de suprimento",
+        "description": "Saldo não aplicado de suprimento de fundos"
+      },
+      {
+        "document": "2026NS012285",
+        "value": 33790.8,
+        "category": "Arrecadação registrada",
+        "description": "Contrato 006/CABW-CELOG/2019 · GRN 002/DARC/PALMALS/2026"
+      },
+      {
+        "document": "2026NS012286",
+        "value": 1402.88,
+        "category": "Restituição de despesa",
+        "description": "Restituição COBRA/UHC · GRNs 01 e 02/SPES-CABW/2026"
+      },
+      {
+        "document": "2026NS012336",
+        "value": 8151.64,
+        "category": "Rendimento overnight",
+        "description": "Rendimento de aplicações overnight · setembro"
+      },
+      {
+        "document": "2026NS012344",
+        "value": 947.0,
+        "category": "Devolução de suprimento",
+        "description": "Saldo não aplicado de suprimento de fundos"
+      },
+      {
+        "document": "2026NS012345",
+        "value": 114.0,
+        "category": "Devolução de suprimento",
+        "description": "Saldo não aplicado de suprimento de fundos"
+      },
+      {
+        "document": "2026NS012350",
+        "value": 232.05,
+        "category": "Devolução de suprimento",
+        "description": "Saldo não aplicado de suprimento de fundos"
+      },
+      {
+        "document": "2026NS012352",
+        "value": 800.45,
+        "category": "Devolução de suprimento",
+        "description": "Saldo não aplicado de suprimento de fundos"
+      }
+    ],
+    "dcf": {
+      "availability": 123809673.2,
+      "commitments": 116775657.24,
+      "credit": 8448788.59,
+      "unsettled": 71548277.52,
+      "rpUnsettled": 36776060.73,
+      "rpBlocked": 412.87,
+      "obligations": 2117.53,
+      "gap": 7034015.96,
+      "q2": -5225,
+      "q3": 6854415.72,
+      "result": 174375.24,
+      "lines": [
+        {
+          "label": "01_(+)_SALDO BANCÁRIO",
+          "value": 122206302.31
+        },
+        {
+          "label": "02_(+)_VALORES EM TRÂNSITO",
+          "value": 0.0
+        },
+        {
+          "label": "03_(=)_DISPONIBILIDADE FINANCEIRA NA UG",
+          "value": 122206302.31
+        },
+        {
+          "label": "04_(+)_LIMITE DE SAQUE A RECEBER PARA PAGAMENTO DE RESTOS A PAGAR",
+          "value": -652258.42
+        },
+        {
+          "label": "05_(+)_LIMITE DE SAQUE A RECEBER PARA COMPROMISSOS DO ORÇAMENTO DO EXERCÍCIO",
+          "value": 2255629.31
+        },
+        {
+          "label": "06_(=)_RECURSO FINANCEIRO A RECEBER",
+          "value": 1603370.89
+        },
+        {
+          "label": "07_(=)_DISPONIBILIDADE FINANCEIRA TOTAL (1)",
+          "value": 123809673.2
+        },
+        {
+          "label": "08_(+)_OBRIGAÇÕES COM FORNECEDORES",
+          "value": 2117.53
+        },
+        {
+          "label": "10_(+)_OUTRAS OBRIGAÇÕES (DIÁRIAS, SUPRIMENTO DE FUNDOS E OUTRAS)",
+          "value": 0.0
+        },
+        {
+          "label": "12_(=)_OBRIGAÇÕES",
+          "value": 2117.53
+        },
+        {
+          "label": "13_(+)_CRÉDITO DISPONÍVEL",
+          "value": 8448788.59
+        },
+        {
+          "label": "15_(+)_EMPENHOS A LIQUIDAR",
+          "value": 71548277.52
+        },
+        {
+          "label": "17_(+)_RESTOS A PAGAR NÃO PROC A LIQUIDAR",
+          "value": 36776060.73
+        },
+        {
+          "label": "18_(+)_RESTOS A PAGAR BLOQUEADOS",
+          "value": 412.87
+        },
+        {
+          "label": "19_(=)_COMPROMISSOS POTENCIAIS",
+          "value": 116773539.71
+        },
+        {
+          "label": "20_(=)_TOTAL DE COMPROMISSOS (1)",
+          "value": 116775657.24
+        }
+      ]
+    }
   }
 }

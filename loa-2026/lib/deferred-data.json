@@ -1,0 +1,1326 @@
+{
+  "schemaVersion": 1,
+  "currency": "USD",
+  "months": {
+    "2026-01": {
+      "month": "2026-01",
+      "rows": [
+        {
+          "code": "1000000000",
+          "description": "RECURSOS LIVRES DA UNIAO",
+          "commitments": 23112496.9,
+          "availability": 23499174.53,
+          "deferred": 386677.63
+        },
+        {
+          "code": "1005000140",
+          "description": "ASSIST.MED.-HOSP.MIL.F.ARMADAS-F.AERONAUTICO",
+          "commitments": 144315.83,
+          "availability": 1666484.3,
+          "deferred": 1522168.47
+        },
+        {
+          "code": "1032000000",
+          "description": "FUNDAF - RFB",
+          "commitments": 957.02,
+          "availability": 957.02,
+          "deferred": 0
+        },
+        {
+          "code": "1050000140",
+          "description": "REC.PROP.LIV.UO-F.AERONAUTICO",
+          "commitments": 22728791.58,
+          "availability": 27417602.16,
+          "deferred": 4688810.58
+        },
+        {
+          "code": "1050000142",
+          "description": "REC.PROP.LIV.UO-F.EXERCITO",
+          "commitments": 92999.41,
+          "availability": 92999.41,
+          "deferred": 0
+        },
+        {
+          "code": "1050000144",
+          "description": "REC.PROP.LIV.UO-F.NAVAL",
+          "commitments": 0,
+          "availability": 0,
+          "deferred": 0
+        },
+        {
+          "code": "1050A00008",
+          "description": "SISCEAB - DECEA",
+          "commitments": 28376651.85,
+          "availability": 28376651.85,
+          "deferred": 0
+        },
+        {
+          "code": "1051000140",
+          "description": "REC.PROP.UO EXCL.DESP.CAP.-F.AERONAUTICO",
+          "commitments": 303778.13,
+          "availability": 307177.97,
+          "deferred": 3399.84
+        },
+        {
+          "code": "1444000000",
+          "description": "DEM.APL.REC.TIT.TN,EX.RF.DIV.PUB.",
+          "commitments": 0,
+          "availability": 60.87,
+          "deferred": 60.87
+        },
+        {
+          "code": "3000000000",
+          "description": "RECURSOS LIVRES DA UNIAO",
+          "commitments": 1280021.51,
+          "availability": 1280021.51,
+          "deferred": 0
+        },
+        {
+          "code": "3050000140",
+          "description": "REC.PROP.LIV.UO-F.AERONAUTICO",
+          "commitments": 19506191.34,
+          "availability": 19506191.34,
+          "deferred": 0
+        },
+        {
+          "code": "3050A0000G",
+          "description": "IMH-INDENIZACAO MEDICO-HOSPITALAR",
+          "commitments": 0,
+          "availability": 693.22,
+          "deferred": 693.22
+        },
+        {
+          "code": "1081000254",
+          "description": "CONVENIOS-MIN.DEFESA",
+          "commitments": 9314.04,
+          "availability": 9314.04,
+          "deferred": 0
+        },
+        {
+          "code": "1050000416",
+          "description": "NAO SE APLICA",
+          "commitments": 57720.97,
+          "availability": 57720.97,
+          "deferred": 0
+        },
+        {
+          "code": "1002A003W2",
+          "description": "TED 56/2024 - 969159",
+          "commitments": 284046.87,
+          "availability": 284046.87,
+          "deferred": 0
+        },
+        {
+          "code": "3129000000",
+          "description": "REC. ABANDONADOS PATRIMONIOS ACUM. PIS PASEP",
+          "commitments": 531115.96,
+          "availability": 531115.97,
+          "deferred": 0.01
+        },
+        {
+          "code": "1052000140",
+          "description": "REC.LIVRES UO-F.AERONAUTICO",
+          "commitments": 455402.99,
+          "availability": 455403,
+          "deferred": 0.01
+        }
+      ],
+      "totals": {
+        "commitments": 96883804.4,
+        "availability": 103485615.03,
+        "deferred": 6601810.63
+      },
+      "sourceFile": "Acompanhamento Diferido CABW.xlsx",
+      "sheet": "120090CABW, 220, Saldo - Moeda",
+      "extractedOn": "27/10/2026"
+    },
+    "2026-02": {
+      "month": "2026-02",
+      "rows": [
+        {
+          "code": "1000000000",
+          "description": "RECURSOS LIVRES DA UNIAO",
+          "commitments": 21476004.78,
+          "availability": 21814463.1,
+          "deferred": 338458.32
+        },
+        {
+          "code": "1005000140",
+          "description": "ASSIST.MED.-HOSP.MIL.F.ARMADAS-F.AERONAUTICO",
+          "commitments": 125431.06,
+          "availability": 1736741.5,
+          "deferred": 1611310.44
+        },
+        {
+          "code": "1032000000",
+          "description": "FUNDAF - RFB",
+          "commitments": 957.02,
+          "availability": 957.02,
+          "deferred": 0
+        },
+        {
+          "code": "1050000140",
+          "description": "REC.PROP.LIV.UO-F.AERONAUTICO",
+          "commitments": 20954854.05,
+          "availability": 25990805.51,
+          "deferred": 5035951.46
+        },
+        {
+          "code": "1050000142",
+          "description": "REC.PROP.LIV.UO-F.EXERCITO",
+          "commitments": 7072.67,
+          "availability": 7072.67,
+          "deferred": 0
+        },
+        {
+          "code": "1050000144",
+          "description": "REC.PROP.LIV.UO-F.NAVAL",
+          "commitments": 0,
+          "availability": 0,
+          "deferred": 0
+        },
+        {
+          "code": "1050A00008",
+          "description": "SISCEAB - DECEA",
+          "commitments": 16374611.61,
+          "availability": 16374611.61,
+          "deferred": 0
+        },
+        {
+          "code": "1051000140",
+          "description": "REC.PROP.UO EXCL.DESP.CAP.-F.AERONAUTICO",
+          "commitments": 258008.13,
+          "availability": 261407.97,
+          "deferred": 3399.84
+        },
+        {
+          "code": "1444000000",
+          "description": "DEM.APL.REC.TIT.TN,EX.RF.DIV.PUB.",
+          "commitments": 0,
+          "availability": 60.87,
+          "deferred": 60.87
+        },
+        {
+          "code": "3000000000",
+          "description": "RECURSOS LIVRES DA UNIAO",
+          "commitments": 1280021.51,
+          "availability": 1280021.51,
+          "deferred": 0
+        },
+        {
+          "code": "3050000140",
+          "description": "REC.PROP.LIV.UO-F.AERONAUTICO",
+          "commitments": 19476703.24,
+          "availability": 19476703.24,
+          "deferred": 0
+        },
+        {
+          "code": "3050A0000G",
+          "description": "IMH-INDENIZACAO MEDICO-HOSPITALAR",
+          "commitments": 0,
+          "availability": 693.22,
+          "deferred": 693.22
+        },
+        {
+          "code": "1081000254",
+          "description": "CONVENIOS-MIN.DEFESA",
+          "commitments": 9314.04,
+          "availability": 9314.04,
+          "deferred": 0
+        },
+        {
+          "code": "1050000416",
+          "description": "NAO SE APLICA",
+          "commitments": 35890.13,
+          "availability": 35890.13,
+          "deferred": 0
+        },
+        {
+          "code": "1002A003W2",
+          "description": "TED 56/2024 - 969159",
+          "commitments": 284046.87,
+          "availability": 284046.87,
+          "deferred": 0
+        },
+        {
+          "code": "3129000000",
+          "description": "REC. ABANDONADOS PATRIMONIOS ACUM. PIS PASEP",
+          "commitments": 502336.57,
+          "availability": 502336.58,
+          "deferred": 0.01
+        },
+        {
+          "code": "1052000140",
+          "description": "REC.LIVRES UO-F.AERONAUTICO",
+          "commitments": 17368222.18,
+          "availability": 17368220.12,
+          "deferred": -2.06
+        }
+      ],
+      "totals": {
+        "commitments": 98153473.86,
+        "availability": 105143345.96,
+        "deferred": 6989872.1
+      },
+      "sourceFile": "Acompanhamento Diferido CABW.xlsx",
+      "sheet": "120090CABW, 220, Saldo - Moeda",
+      "extractedOn": "27/10/2026"
+    },
+    "2026-03": {
+      "month": "2026-03",
+      "rows": [
+        {
+          "code": "1000000000",
+          "description": "RECURSOS LIVRES DA UNIAO",
+          "commitments": 21468270.56,
+          "availability": 21729946.81,
+          "deferred": 261676.25
+        },
+        {
+          "code": "1005000140",
+          "description": "ASSIST.MED.-HOSP.MIL.F.ARMADAS-F.AERONAUTICO",
+          "commitments": 279026.39,
+          "availability": 1683359.12,
+          "deferred": 1404332.73
+        },
+        {
+          "code": "1032000000",
+          "description": "FUNDAF - RFB",
+          "commitments": 957.02,
+          "availability": 957.02,
+          "deferred": 0
+        },
+        {
+          "code": "1050000140",
+          "description": "REC.PROP.LIV.UO-F.AERONAUTICO",
+          "commitments": 22198015.25,
+          "availability": 27433550.44,
+          "deferred": 5235535.19
+        },
+        {
+          "code": "1050000142",
+          "description": "REC.PROP.LIV.UO-F.EXERCITO",
+          "commitments": 0,
+          "availability": 0,
+          "deferred": 0
+        },
+        {
+          "code": "1050000144",
+          "description": "REC.PROP.LIV.UO-F.NAVAL",
+          "commitments": 0,
+          "availability": 0,
+          "deferred": 0
+        },
+        {
+          "code": "1050A00008",
+          "description": "SISCEAB - DECEA",
+          "commitments": 12154602.96,
+          "availability": 12154602.96,
+          "deferred": 0
+        },
+        {
+          "code": "1051000140",
+          "description": "REC.PROP.UO EXCL.DESP.CAP.-F.AERONAUTICO",
+          "commitments": 177858.13,
+          "availability": 181257.97,
+          "deferred": 3399.84
+        },
+        {
+          "code": "1444000000",
+          "description": "DEM.APL.REC.TIT.TN,EX.RF.DIV.PUB.",
+          "commitments": 0,
+          "availability": 60.87,
+          "deferred": 60.87
+        },
+        {
+          "code": "3000000000",
+          "description": "RECURSOS LIVRES DA UNIAO",
+          "commitments": 1280021.51,
+          "availability": 1280021.51,
+          "deferred": 0
+        },
+        {
+          "code": "3050000140",
+          "description": "REC.PROP.LIV.UO-F.AERONAUTICO",
+          "commitments": 20910057.42,
+          "availability": 20909992.1,
+          "deferred": -65.32
+        },
+        {
+          "code": "3050A0000G",
+          "description": "IMH-INDENIZACAO MEDICO-HOSPITALAR",
+          "commitments": 0,
+          "availability": 693.22,
+          "deferred": 693.22
+        },
+        {
+          "code": "1081000254",
+          "description": "CONVENIOS-MIN.DEFESA",
+          "commitments": 9314.04,
+          "availability": 9314.04,
+          "deferred": 0
+        },
+        {
+          "code": "1050000416",
+          "description": "NAO SE APLICA",
+          "commitments": 35565.05,
+          "availability": 35565.05,
+          "deferred": 0
+        },
+        {
+          "code": "1002A003W2",
+          "description": "TED 56/2024 - 969159",
+          "commitments": 125041.22,
+          "availability": 125041.22,
+          "deferred": 0
+        },
+        {
+          "code": "3129000000",
+          "description": "REC. ABANDONADOS PATRIMONIOS ACUM. PIS PASEP",
+          "commitments": 498135.03,
+          "availability": 498135.04,
+          "deferred": 0.01
+        },
+        {
+          "code": "1052000140",
+          "description": "REC.LIVRES UO-F.AERONAUTICO",
+          "commitments": 28942721.86,
+          "availability": 28942719.89,
+          "deferred": -1.97
+        }
+      ],
+      "totals": {
+        "commitments": 108079586.44,
+        "availability": 114985217.26,
+        "deferred": 6905630.82
+      },
+      "sourceFile": "Acompanhamento Diferido CABW.xlsx",
+      "sheet": "120090CABW, 220, Saldo - Moeda",
+      "extractedOn": "27/10/2026"
+    },
+    "2026-04": {
+      "month": "2026-04",
+      "rows": [
+        {
+          "code": "1000000000",
+          "description": "RECURSOS LIVRES DA UNIAO",
+          "commitments": 19219288.19,
+          "availability": 19258722.59,
+          "deferred": 39434.4
+        },
+        {
+          "code": "1005000140",
+          "description": "ASSIST.MED.-HOSP.MIL.F.ARMADAS-F.AERONAUTICO",
+          "commitments": 274502.15,
+          "availability": 1614660.32,
+          "deferred": 1340158.17
+        },
+        {
+          "code": "1032000000",
+          "description": "FUNDAF - RFB",
+          "commitments": 957.02,
+          "availability": 957.02,
+          "deferred": 0
+        },
+        {
+          "code": "1050000140",
+          "description": "REC.PROP.LIV.UO-F.AERONAUTICO",
+          "commitments": 21920201.88,
+          "availability": 26517953.57,
+          "deferred": 4597751.69
+        },
+        {
+          "code": "1050000142",
+          "description": "REC.PROP.LIV.UO-F.EXERCITO",
+          "commitments": 0,
+          "availability": 0,
+          "deferred": 0
+        },
+        {
+          "code": "1050000144",
+          "description": "REC.PROP.LIV.UO-F.NAVAL",
+          "commitments": 0,
+          "availability": 0,
+          "deferred": 0
+        },
+        {
+          "code": "1050A00008",
+          "description": "SISCEAB - DECEA",
+          "commitments": 8529995.4,
+          "availability": 8529995.4,
+          "deferred": 0
+        },
+        {
+          "code": "1051000140",
+          "description": "REC.PROP.UO EXCL.DESP.CAP.-F.AERONAUTICO",
+          "commitments": 172022.81,
+          "availability": 175422.65,
+          "deferred": 3399.84
+        },
+        {
+          "code": "1444000000",
+          "description": "DEM.APL.REC.TIT.TN,EX.RF.DIV.PUB.",
+          "commitments": 0,
+          "availability": 60.87,
+          "deferred": 60.87
+        },
+        {
+          "code": "3000000000",
+          "description": "RECURSOS LIVRES DA UNIAO",
+          "commitments": 1258410.9,
+          "availability": 1258410.9,
+          "deferred": 0
+        },
+        {
+          "code": "3050000140",
+          "description": "REC.PROP.LIV.UO-F.AERONAUTICO",
+          "commitments": 24404584.58,
+          "availability": 24405059.82,
+          "deferred": 475.24
+        },
+        {
+          "code": "3050A0000G",
+          "description": "IMH-INDENIZACAO MEDICO-HOSPITALAR",
+          "commitments": 0,
+          "availability": 693.22,
+          "deferred": 693.22
+        },
+        {
+          "code": "1081000254",
+          "description": "CONVENIOS-MIN.DEFESA",
+          "commitments": 9314.04,
+          "availability": 9314.04,
+          "deferred": 0
+        },
+        {
+          "code": "1050000416",
+          "description": "NAO SE APLICA",
+          "commitments": 35565.05,
+          "availability": 35565.05,
+          "deferred": 0
+        },
+        {
+          "code": "1002A003W2",
+          "description": "TED 56/2024 - 969159",
+          "commitments": 20486.52,
+          "availability": 20486.52,
+          "deferred": 0
+        },
+        {
+          "code": "3129000000",
+          "description": "REC. ABANDONADOS PATRIMONIOS ACUM. PIS PASEP",
+          "commitments": 498135.03,
+          "availability": 498135.04,
+          "deferred": 0.01
+        },
+        {
+          "code": "1052000140",
+          "description": "REC.LIVRES UO-F.AERONAUTICO",
+          "commitments": 38597813.76,
+          "availability": 38597626.12,
+          "deferred": -187.64
+        }
+      ],
+      "totals": {
+        "commitments": 114941277.33,
+        "availability": 120923063.13,
+        "deferred": 5981785.8
+      },
+      "sourceFile": "Acompanhamento Diferido CABW.xlsx",
+      "sheet": "120090CABW, 220, Saldo - Moeda",
+      "extractedOn": "27/10/2026"
+    },
+    "2026-05": {
+      "month": "2026-05",
+      "rows": [
+        {
+          "code": "1000000000",
+          "description": "RECURSOS LIVRES DA UNIAO",
+          "commitments": 19343165.42,
+          "availability": 19524188.86,
+          "deferred": 181023.44
+        },
+        {
+          "code": "1005000140",
+          "description": "ASSIST.MED.-HOSP.MIL.F.ARMADAS-F.AERONAUTICO",
+          "commitments": 138371.14,
+          "availability": 1413346.47,
+          "deferred": 1274975.33
+        },
+        {
+          "code": "1032000000",
+          "description": "FUNDAF - RFB",
+          "commitments": 13401.81,
+          "availability": 13401.81,
+          "deferred": 0
+        },
+        {
+          "code": "1050000140",
+          "description": "REC.PROP.LIV.UO-F.AERONAUTICO",
+          "commitments": 20738721.81,
+          "availability": 25576399.69,
+          "deferred": 4837677.88
+        },
+        {
+          "code": "1050000142",
+          "description": "REC.PROP.LIV.UO-F.EXERCITO",
+          "commitments": 0,
+          "availability": 0,
+          "deferred": 0
+        },
+        {
+          "code": "1050000144",
+          "description": "REC.PROP.LIV.UO-F.NAVAL",
+          "commitments": 0,
+          "availability": 0,
+          "deferred": 0
+        },
+        {
+          "code": "1050A00008",
+          "description": "SISCEAB - DECEA",
+          "commitments": 6963941.36,
+          "availability": 7195950.61,
+          "deferred": 232009.25
+        },
+        {
+          "code": "1051000140",
+          "description": "REC.PROP.UO EXCL.DESP.CAP.-F.AERONAUTICO",
+          "commitments": 172022.81,
+          "availability": 175422.65,
+          "deferred": 3399.84
+        },
+        {
+          "code": "1444000000",
+          "description": "DEM.APL.REC.TIT.TN,EX.RF.DIV.PUB.",
+          "commitments": 0,
+          "availability": 60.87,
+          "deferred": 60.87
+        },
+        {
+          "code": "3000000000",
+          "description": "RECURSOS LIVRES DA UNIAO",
+          "commitments": 1258410.9,
+          "availability": 1258410.9,
+          "deferred": 0
+        },
+        {
+          "code": "3050000140",
+          "description": "REC.PROP.LIV.UO-F.AERONAUTICO",
+          "commitments": 24803132.58,
+          "availability": 24803414.18,
+          "deferred": 281.6
+        },
+        {
+          "code": "3050A0000G",
+          "description": "IMH-INDENIZACAO MEDICO-HOSPITALAR",
+          "commitments": 0,
+          "availability": 693.22,
+          "deferred": 693.22
+        },
+        {
+          "code": "1081000254",
+          "description": "CONVENIOS-MIN.DEFESA",
+          "commitments": 9314.04,
+          "availability": 9314.04,
+          "deferred": 0
+        },
+        {
+          "code": "1050000416",
+          "description": "NAO SE APLICA",
+          "commitments": 35565.05,
+          "availability": 35565.05,
+          "deferred": 0
+        },
+        {
+          "code": "1002A003W2",
+          "description": "TED 56/2024 - 969159",
+          "commitments": 8989.9,
+          "availability": 8989.9,
+          "deferred": 0
+        },
+        {
+          "code": "3129000000",
+          "description": "REC. ABANDONADOS PATRIMONIOS ACUM. PIS PASEP",
+          "commitments": 498135.03,
+          "availability": 498135.04,
+          "deferred": 0.01
+        },
+        {
+          "code": "1052000140",
+          "description": "REC.LIVRES UO-F.AERONAUTICO",
+          "commitments": 46722653.26,
+          "availability": 46722465.63,
+          "deferred": -187.63
+        }
+      ],
+      "totals": {
+        "commitments": 120705825.11,
+        "availability": 127235758.92,
+        "deferred": 6529933.81
+      },
+      "sourceFile": "Acompanhamento Diferido CABW.xlsx",
+      "sheet": "120090CABW, 220, Saldo - Moeda",
+      "extractedOn": "27/10/2026"
+    },
+    "2026-06": {
+      "month": "2026-06",
+      "rows": [
+        {
+          "code": "1000000000",
+          "description": "RECURSOS LIVRES DA UNIAO",
+          "commitments": 15430292.6,
+          "availability": 15520206.35,
+          "deferred": 89913.75
+        },
+        {
+          "code": "1005000140",
+          "description": "ASSIST.MED.-HOSP.MIL.F.ARMADAS-F.AERONAUTICO",
+          "commitments": 155450.64,
+          "availability": 1223439.74,
+          "deferred": 1067989.1
+        },
+        {
+          "code": "1032000000",
+          "description": "FUNDAF - RFB",
+          "commitments": 13401.81,
+          "availability": 13401.81,
+          "deferred": 0
+        },
+        {
+          "code": "1050000140",
+          "description": "REC.PROP.LIV.UO-F.AERONAUTICO",
+          "commitments": 19533000.15,
+          "availability": 23751242.43,
+          "deferred": 4218242.28
+        },
+        {
+          "code": "1050000142",
+          "description": "REC.PROP.LIV.UO-F.EXERCITO",
+          "commitments": 0,
+          "availability": 0,
+          "deferred": 0
+        },
+        {
+          "code": "1050000144",
+          "description": "REC.PROP.LIV.UO-F.NAVAL",
+          "commitments": 0,
+          "availability": 0,
+          "deferred": 0
+        },
+        {
+          "code": "1050A00008",
+          "description": "SISCEAB - DECEA",
+          "commitments": 4553729.08,
+          "availability": 4714681.09,
+          "deferred": 160952.01
+        },
+        {
+          "code": "1051000140",
+          "description": "REC.PROP.UO EXCL.DESP.CAP.-F.AERONAUTICO",
+          "commitments": 30963.56,
+          "availability": 34363.41,
+          "deferred": 3399.85
+        },
+        {
+          "code": "1444000000",
+          "description": "DEM.APL.REC.TIT.TN,EX.RF.DIV.PUB.",
+          "commitments": 0,
+          "availability": 60.87,
+          "deferred": 60.87
+        },
+        {
+          "code": "3000000000",
+          "description": "RECURSOS LIVRES DA UNIAO",
+          "commitments": 1254549.7,
+          "availability": 1254549.7,
+          "deferred": 0
+        },
+        {
+          "code": "3050000140",
+          "description": "REC.PROP.LIV.UO-F.AERONAUTICO",
+          "commitments": 24987529.07,
+          "availability": 24987810.68,
+          "deferred": 281.61
+        },
+        {
+          "code": "3050A0000G",
+          "description": "IMH-INDENIZACAO MEDICO-HOSPITALAR",
+          "commitments": 0,
+          "availability": 693.22,
+          "deferred": 693.22
+        },
+        {
+          "code": "1081000254",
+          "description": "CONVENIOS-MIN.DEFESA",
+          "commitments": 9314.04,
+          "availability": 9314.04,
+          "deferred": 0
+        },
+        {
+          "code": "1050000416",
+          "description": "NAO SE APLICA",
+          "commitments": 38377.78,
+          "availability": 38377.78,
+          "deferred": 0
+        },
+        {
+          "code": "1002A003W2",
+          "description": "TED 56/2024 - 969159",
+          "commitments": 0.2,
+          "availability": 0.2,
+          "deferred": 0
+        },
+        {
+          "code": "3129000000",
+          "description": "REC. ABANDONADOS PATRIMONIOS ACUM. PIS PASEP",
+          "commitments": 498135.03,
+          "availability": 498135.04,
+          "deferred": 0.01
+        },
+        {
+          "code": "1052000140",
+          "description": "REC.LIVRES UO-F.AERONAUTICO",
+          "commitments": 70149908.5,
+          "availability": 70149720.87,
+          "deferred": -187.63
+        }
+      ],
+      "totals": {
+        "commitments": 136654652.16,
+        "availability": 142195997.23,
+        "deferred": 5541345.07
+      },
+      "sourceFile": "Acompanhamento Diferido CABW.xlsx",
+      "sheet": "120090CABW, 220, Saldo - Moeda",
+      "extractedOn": "27/10/2026"
+    },
+    "2026-07": {
+      "month": "2026-07",
+      "rows": [
+        {
+          "code": "1000000000",
+          "description": "RECURSOS LIVRES DA UNIAO",
+          "commitments": 16082776.03,
+          "availability": 16140377.94,
+          "deferred": 57601.91
+        },
+        {
+          "code": "1005000140",
+          "description": "ASSIST.MED.-HOSP.MIL.F.ARMADAS-F.AERONAUTICO",
+          "commitments": 751333.84,
+          "availability": 1298963.69,
+          "deferred": 547629.85
+        },
+        {
+          "code": "1032000000",
+          "description": "FUNDAF - RFB",
+          "commitments": 13401.81,
+          "availability": 13401.81,
+          "deferred": 0
+        },
+        {
+          "code": "1050000140",
+          "description": "REC.PROP.LIV.UO-F.AERONAUTICO",
+          "commitments": 23759407.45,
+          "availability": 28202213.86,
+          "deferred": 4442806.41
+        },
+        {
+          "code": "1050000142",
+          "description": "REC.PROP.LIV.UO-F.EXERCITO",
+          "commitments": 0,
+          "availability": 0,
+          "deferred": 0
+        },
+        {
+          "code": "1050000144",
+          "description": "REC.PROP.LIV.UO-F.NAVAL",
+          "commitments": 0,
+          "availability": 0,
+          "deferred": 0
+        },
+        {
+          "code": "1050A00008",
+          "description": "SISCEAB - DECEA",
+          "commitments": 4553729.08,
+          "availability": 4765775.18,
+          "deferred": 212046.1
+        },
+        {
+          "code": "1051000140",
+          "description": "REC.PROP.UO EXCL.DESP.CAP.-F.AERONAUTICO",
+          "commitments": 48926.52,
+          "availability": 52326.37,
+          "deferred": 3399.85
+        },
+        {
+          "code": "1444000000",
+          "description": "DEM.APL.REC.TIT.TN,EX.RF.DIV.PUB.",
+          "commitments": 0,
+          "availability": 60.87,
+          "deferred": 60.87
+        },
+        {
+          "code": "3000000000",
+          "description": "RECURSOS LIVRES DA UNIAO",
+          "commitments": 1211949.7,
+          "availability": 1211949.7,
+          "deferred": 0
+        },
+        {
+          "code": "3050000140",
+          "description": "REC.PROP.LIV.UO-F.AERONAUTICO",
+          "commitments": 29140367.33,
+          "availability": 29140648.96,
+          "deferred": 281.63
+        },
+        {
+          "code": "3050A0000G",
+          "description": "IMH-INDENIZACAO MEDICO-HOSPITALAR",
+          "commitments": 0,
+          "availability": 693.22,
+          "deferred": 693.22
+        },
+        {
+          "code": "1081000254",
+          "description": "CONVENIOS-MIN.DEFESA",
+          "commitments": 9314.04,
+          "availability": 9314.04,
+          "deferred": 0
+        },
+        {
+          "code": "1050000416",
+          "description": "NAO SE APLICA",
+          "commitments": 38377.78,
+          "availability": 38377.78,
+          "deferred": 0
+        },
+        {
+          "code": "1002A003W2",
+          "description": "TED 56/2024 - 969159",
+          "commitments": 0.2,
+          "availability": 0.2,
+          "deferred": 0
+        },
+        {
+          "code": "3129000000",
+          "description": "REC. ABANDONADOS PATRIMONIOS ACUM. PIS PASEP",
+          "commitments": 498135.03,
+          "availability": 498135.04,
+          "deferred": 0.01
+        },
+        {
+          "code": "1052000140",
+          "description": "REC.LIVRES UO-F.AERONAUTICO",
+          "commitments": 70979900.59,
+          "availability": 70979713,
+          "deferred": -187.59
+        }
+      ],
+      "totals": {
+        "commitments": 147087619.4,
+        "availability": 152351951.66,
+        "deferred": 5264332.26
+      },
+      "sourceFile": "Acompanhamento Diferido CABW.xlsx",
+      "sheet": "120090CABW, 220, Saldo - Moeda",
+      "extractedOn": "27/10/2026"
+    },
+    "2026-08": {
+      "month": "2026-08",
+      "rows": [
+        {
+          "code": "1000000000",
+          "description": "RECURSOS LIVRES DA UNIAO",
+          "commitments": 14120456.01,
+          "availability": 14195364.74,
+          "deferred": 74908.73
+        },
+        {
+          "code": "1005000140",
+          "description": "ASSIST.MED.-HOSP.MIL.F.ARMADAS-F.AERONAUTICO",
+          "commitments": 600554.71,
+          "availability": 1229679.46,
+          "deferred": 629124.75
+        },
+        {
+          "code": "1032000000",
+          "description": "FUNDAF - RFB",
+          "commitments": 13401.81,
+          "availability": 13401.81,
+          "deferred": 0
+        },
+        {
+          "code": "1050000140",
+          "description": "REC.PROP.LIV.UO-F.AERONAUTICO",
+          "commitments": 26322805.23,
+          "availability": 30316957.03,
+          "deferred": 3994151.8
+        },
+        {
+          "code": "1050000142",
+          "description": "REC.PROP.LIV.UO-F.EXERCITO",
+          "commitments": 0,
+          "availability": 0,
+          "deferred": 0
+        },
+        {
+          "code": "1050000144",
+          "description": "REC.PROP.LIV.UO-F.NAVAL",
+          "commitments": 0,
+          "availability": 0,
+          "deferred": 0
+        },
+        {
+          "code": "1050A00008",
+          "description": "SISCEAB - DECEA",
+          "commitments": 3402926.13,
+          "availability": 3627442.23,
+          "deferred": 224516.1
+        },
+        {
+          "code": "1051000140",
+          "description": "REC.PROP.UO EXCL.DESP.CAP.-F.AERONAUTICO",
+          "commitments": 196265.24,
+          "availability": 199665.09,
+          "deferred": 3399.85
+        },
+        {
+          "code": "1444000000",
+          "description": "DEM.APL.REC.TIT.TN,EX.RF.DIV.PUB.",
+          "commitments": 0,
+          "availability": 60.87,
+          "deferred": 60.87
+        },
+        {
+          "code": "3000000000",
+          "description": "RECURSOS LIVRES DA UNIAO",
+          "commitments": 968875.39,
+          "availability": 968875.39,
+          "deferred": 0
+        },
+        {
+          "code": "3050000140",
+          "description": "REC.PROP.LIV.UO-F.AERONAUTICO",
+          "commitments": 29290484.97,
+          "availability": 29290766.61,
+          "deferred": 281.64
+        },
+        {
+          "code": "3050A0000G",
+          "description": "IMH-INDENIZACAO MEDICO-HOSPITALAR",
+          "commitments": 0,
+          "availability": 693.22,
+          "deferred": 693.22
+        },
+        {
+          "code": "1081000254",
+          "description": "CONVENIOS-MIN.DEFESA",
+          "commitments": 9314.04,
+          "availability": 9314.04,
+          "deferred": 0
+        },
+        {
+          "code": "1050000416",
+          "description": "NAO SE APLICA",
+          "commitments": 35782.78,
+          "availability": 35782.78,
+          "deferred": 0
+        },
+        {
+          "code": "1002A003W2",
+          "description": "TED 56/2024 - 969159",
+          "commitments": 0.2,
+          "availability": 0.2,
+          "deferred": 0
+        },
+        {
+          "code": "3129000000",
+          "description": "REC. ABANDONADOS PATRIMONIOS ACUM. PIS PASEP",
+          "commitments": 498135.03,
+          "availability": 498135.04,
+          "deferred": 0.01
+        },
+        {
+          "code": "1052000140",
+          "description": "REC.LIVRES UO-F.AERONAUTICO",
+          "commitments": 61354292.22,
+          "availability": 61354104.64,
+          "deferred": -187.58
+        }
+      ],
+      "totals": {
+        "commitments": 136813293.76,
+        "availability": 141740243.15,
+        "deferred": 4926949.39
+      },
+      "sourceFile": "Acompanhamento Diferido CABW.xlsx",
+      "sheet": "120090CABW, 220, Saldo - Moeda",
+      "extractedOn": "27/10/2026"
+    },
+    "2026-09": {
+      "month": "2026-09",
+      "rows": [
+        {
+          "code": "1000000000",
+          "description": "RECURSOS LIVRES DA UNIAO",
+          "commitments": 12542823.43,
+          "availability": 12617749.72,
+          "deferred": 74926.29
+        },
+        {
+          "code": "1005000140",
+          "description": "ASSIST.MED.-HOSP.MIL.F.ARMADAS-F.AERONAUTICO",
+          "commitments": 452094.15,
+          "availability": 1161783.48,
+          "deferred": 709689.33
+        },
+        {
+          "code": "1032000000",
+          "description": "FUNDAF - RFB",
+          "commitments": 13401.81,
+          "availability": 13401.81,
+          "deferred": 0
+        },
+        {
+          "code": "1050000140",
+          "description": "REC.PROP.LIV.UO-F.AERONAUTICO",
+          "commitments": 20413045.81,
+          "availability": 24860995.62,
+          "deferred": 4447949.81
+        },
+        {
+          "code": "1050000142",
+          "description": "REC.PROP.LIV.UO-F.EXERCITO",
+          "commitments": 0,
+          "availability": 0,
+          "deferred": 0
+        },
+        {
+          "code": "1050000144",
+          "description": "REC.PROP.LIV.UO-F.NAVAL",
+          "commitments": 0,
+          "availability": 0,
+          "deferred": 0
+        },
+        {
+          "code": "1050A00008",
+          "description": "SISCEAB - DECEA",
+          "commitments": 2515832.88,
+          "availability": 2740348.98,
+          "deferred": 224516.1
+        },
+        {
+          "code": "1051000140",
+          "description": "REC.PROP.UO EXCL.DESP.CAP.-F.AERONAUTICO",
+          "commitments": 296265.24,
+          "availability": 299665.09,
+          "deferred": 3399.85
+        },
+        {
+          "code": "1444000000",
+          "description": "DEM.APL.REC.TIT.TN,EX.RF.DIV.PUB.",
+          "commitments": 0,
+          "availability": 60.87,
+          "deferred": 60.87
+        },
+        {
+          "code": "3000000000",
+          "description": "RECURSOS LIVRES DA UNIAO",
+          "commitments": 947575.39,
+          "availability": 947575.39,
+          "deferred": 0
+        },
+        {
+          "code": "3050000140",
+          "description": "REC.PROP.LIV.UO-F.AERONAUTICO",
+          "commitments": 29487555.39,
+          "availability": 29458170.13,
+          "deferred": -29385.26
+        },
+        {
+          "code": "3050A0000G",
+          "description": "IMH-INDENIZACAO MEDICO-HOSPITALAR",
+          "commitments": 0,
+          "availability": 693.22,
+          "deferred": 693.22
+        },
+        {
+          "code": "1081000254",
+          "description": "CONVENIOS-MIN.DEFESA",
+          "commitments": 9314.04,
+          "availability": 9314.04,
+          "deferred": 0
+        },
+        {
+          "code": "1050000416",
+          "description": "NAO SE APLICA",
+          "commitments": 35782.78,
+          "availability": 35782.78,
+          "deferred": 0
+        },
+        {
+          "code": "1002A003W2",
+          "description": "TED 56/2024 - 969159",
+          "commitments": 0.2,
+          "availability": 0.2,
+          "deferred": 0
+        },
+        {
+          "code": "3129000000",
+          "description": "REC. ABANDONADOS PATRIMONIOS ACUM. PIS PASEP",
+          "commitments": 321140,
+          "availability": 321140.01,
+          "deferred": 0.01
+        },
+        {
+          "code": "1052000140",
+          "description": "REC.LIVRES UO-F.AERONAUTICO",
+          "commitments": 49738708.59,
+          "availability": 49739620.97,
+          "deferred": 912.38
+        }
+      ],
+      "totals": {
+        "commitments": 116773539.71,
+        "availability": 122206302.31,
+        "deferred": 5432762.6
+      },
+      "sourceFile": "Acompanhamento Diferido CABW.xlsx",
+      "sheet": "120090CABW, 220, Saldo - Moeda",
+      "extractedOn": "27/10/2026"
+    },
+    "2026-10": {
+      "month": "2026-10",
+      "rows": [
+        {
+          "code": "1000000000",
+          "description": "RECURSOS LIVRES DA UNIAO",
+          "commitments": 15894199.57,
+          "availability": 15969186.81,
+          "deferred": 74987.24
+        },
+        {
+          "code": "1005000140",
+          "description": "ASSIST.MED.-HOSP.MIL.F.ARMADAS-F.AERONAUTICO",
+          "commitments": 452094.15,
+          "availability": 1238640.9,
+          "deferred": 786546.75
+        },
+        {
+          "code": "1032000000",
+          "description": "FUNDAF - RFB",
+          "commitments": 13356,
+          "availability": 13356,
+          "deferred": 0
+        },
+        {
+          "code": "1050000140",
+          "description": "REC.PROP.LIV.UO-F.AERONAUTICO",
+          "commitments": 25687927.99,
+          "availability": 30249051.23,
+          "deferred": 4561123.24
+        },
+        {
+          "code": "1050000142",
+          "description": "REC.PROP.LIV.UO-F.EXERCITO",
+          "commitments": 0,
+          "availability": 0,
+          "deferred": 0
+        },
+        {
+          "code": "1050000144",
+          "description": "REC.PROP.LIV.UO-F.NAVAL",
+          "commitments": 3015.81,
+          "availability": 3015.81,
+          "deferred": 0
+        },
+        {
+          "code": "1050A00008",
+          "description": "SISCEAB - DECEA",
+          "commitments": 1662570.6,
+          "availability": 1887086.7,
+          "deferred": 224516.1
+        },
+        {
+          "code": "1051000140",
+          "description": "REC.PROP.UO EXCL.DESP.CAP.-F.AERONAUTICO",
+          "commitments": 718887.41,
+          "availability": 718887.43,
+          "deferred": 0.02
+        },
+        {
+          "code": "1444000000",
+          "description": "DEM.APL.REC.TIT.TN,EX.RF.DIV.PUB.",
+          "commitments": 0,
+          "availability": 0,
+          "deferred": 0
+        },
+        {
+          "code": "3000000000",
+          "description": "RECURSOS LIVRES DA UNIAO",
+          "commitments": 947575.39,
+          "availability": 947575.39,
+          "deferred": 0
+        },
+        {
+          "code": "3050000140",
+          "description": "REC.PROP.LIV.UO-F.AERONAUTICO",
+          "commitments": 42265213.08,
+          "availability": 42287967.79,
+          "deferred": 22754.71
+        },
+        {
+          "code": "3050A0000G",
+          "description": "IMH-INDENIZACAO MEDICO-HOSPITALAR",
+          "commitments": 0,
+          "availability": 0,
+          "deferred": 0
+        },
+        {
+          "code": "1081000254",
+          "description": "CONVENIOS-MIN.DEFESA",
+          "commitments": 9314.04,
+          "availability": 9314.04,
+          "deferred": 0
+        },
+        {
+          "code": "1050000416",
+          "description": "NAO SE APLICA",
+          "commitments": 35782.78,
+          "availability": 35782.78,
+          "deferred": 0
+        },
+        {
+          "code": "1002A003W2",
+          "description": "TED 56/2024 - 969159",
+          "commitments": 183719.23,
+          "availability": 183719.23,
+          "deferred": 0
+        },
+        {
+          "code": "3129000000",
+          "description": "REC. ABANDONADOS PATRIMONIOS ACUM. PIS PASEP",
+          "commitments": 321140,
+          "availability": 321140.01,
+          "deferred": 0.01
+        },
+        {
+          "code": "1052000140",
+          "description": "REC.LIVRES UO-F.AERONAUTICO",
+          "commitments": 42382023.04,
+          "availability": 42381796.91,
+          "deferred": -226.13
+        }
+      ],
+      "totals": {
+        "commitments": 130576819.09,
+        "availability": 136246521.03,
+        "deferred": 5669701.94
+      },
+      "sourceFile": "Acompanhamento Diferido CABW.xlsx",
+      "sheet": "120090CABW, 220, Saldo - Moeda",
+      "extractedOn": "27/10/2026"
+    }
+  }
+}

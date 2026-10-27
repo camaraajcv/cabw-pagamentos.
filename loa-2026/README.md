@@ -25,3 +25,15 @@ O botão Conferir planilha abre uma prévia local que dura apenas a sessão; nã
 ## Código
 
 Fontes React em app/ e lib/, entry.tsx e update-cli.ts; portal.js é o bundle de produção. style.css mantém o CSS original compilado. As imagens foram preservadas em WebP. Não há dependência da autenticação nem do armazenamento do Sites nesta cópia.
+
+## Controle de diferido
+
+O controle usa lib/deferred-data.json, com posições mensais por fonte, em USD. O histórico inicial recebido vai de janeiro a outubro/2026. A seleção da prestação permanece agosto e setembro; cada referência mostra somente o histórico até aquele mês. Não somar posições mensais. O diferido desta base é disponibilidade financeira menos compromissos; não corresponde à rubrica de cancelamentos de PO do SISCAB nem ao resultado consolidado do DCF.
+
+Para a próxima carga, aceitar somente o mês enviado (ou os meses presentes no arquivo):
+
+```sh
+node atualizar-diferido.cjs fonte.xlsx lib/deferred-data.json nova-base-diferido.json
+```
+
+O importador usa xlsx, valida os cabeçalhos, os valores por fonte, a equação e os totais até o centavo. Substitui apenas as competências incluídas no novo arquivo e mantém exatamente as demais; não carrega valores de um mês em outro. Validar os totais, substituir lib/deferred-data.json e recompilar portal.js com React JSX automático. Atualizar a versão de portal.js no index.html e publicar os arquivos juntos. Não modificar dados.json de pagamentos nem as demais prestações nessa carga.

@@ -5,6 +5,7 @@ export const latestReportMonth=reportMonths[0];
 export const accountSections=[
  {id:'summary',label:'Resumo do mês'},
  {id:'balances',label:'Disponibilidades e DCF'},
+ {id:'deferred',label:'Controle de diferido'},
  {id:'movements',label:'Movimentos bancários'},
  {id:'investments',label:'Aplicações e rendimentos'},
  {id:'reconciliation',label:'Conciliação e trânsito'},

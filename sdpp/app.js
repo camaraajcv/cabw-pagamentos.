@@ -1,0 +1,61 @@
+'use strict';
+const $=s=>document.querySelector(s);
+const icons={home:'<path d="m3 10 9-7 9 7v10H3z"/><path d="M9 20v-7h6v7"/>',file:'<path d="M14 3H5v18h14V8z"/><path d="M14 3v5h5M8 12h8M8 16h6"/>',layers:'<path d="m12 3 10 5-10 5L2 8zM2 12l10 5 10-5M2 16l10 5 10-5"/>',book:'<path d="M12 5c-3-2-7-2-10-1v15c3-1 7-1 10 1 3-2 7-2 10-1V4c-3-1-7-1-10 1v15"/>',shield:'<path d="m12 2 8 3v6c0 5-5 9-8 11-3-2-8-6-8-11V5z"/><path d="m8 11 3 3 5-6"/>'};
+document.querySelectorAll('[data-icon]').forEach(el=>el.innerHTML=`<svg viewBox="0 0 24 24" aria-hidden="true">${icons[el.dataset.icon]}</svg>`);
+const now=new Date(),today=[now.getFullYear(),String(now.getMonth()+1).padStart(2,'0'),String(now.getDate()).padStart(2,'0')].join('-'),year=String(now.getFullYear()),month=String(now.getMonth()+1).padStart(2,'0');
+const legal=[['104','104 · Modalidade não se aplica'],['001','001 · Concorrência'],['002','002 · Tomada de preços'],['003','003 · Convite'],['004','004 · Concurso'],['005','005 · Leilão'],['006','006 · Pregão'],['007','007 · Diálogo competitivo'],['008','008 · Dispensa de licitação'],['009','009 · Inexigibilidade']];
+// Cada campo mantém uma chave independente da apresentação.
+function fields(container,prefix,specs){
+ for(const [name,label,value='',type='text',extra] of specs){
+  const div=document.createElement('div');div.className='field';
+  const lab=document.createElement('label');lab.htmlFor=`${prefix}-${name}`;lab.textContent=label;
+  const input=document.createElement(type==='select'?'select':'input');input.name=name;input.id=lab.htmlFor;
+  if(type==='select'){for(const [v,t] of extra){const opt=document.createElement('option');opt.value=v;opt.textContent=t;input.append(opt);}}else{input.type=type;input.autocomplete='off';if(['cpf','ug','payUg','empeUg','benefUg','headerUg','siorg'].includes(name))input.inputMode='numeric';}
+  input.value=value;div.append(lab,input);$(container).append(div);
+ }
+}
+fields('#ne-identification','ne',[['cpf','CPF do responsável'],['ug','UG executora','120052'],['eventDate','Data do empenho',today,'date'],['process','NUP / processo']]);
+fields('#ne-descriptions','ne',[['description','Descrição geral do empenho'],['itemDescription','Descrição dos itens']]);
+fields('#ne-settings','ne',[['type','Tipo de empenho','1','select',[['1','1 · Ordinário'],['3','3 · Estimativo'],['5','5 · Global']]],['legal','Modalidade / amparo legal','104','select',legal]]);
+fields('#ne-passivo','ne',[['account','Conta padrão do passivo','211110101'],['ptresText','PTRES com passivo (separados por vírgula)','168870, 249586, 137835']]);
+fields('#dh-basic-fields','dh',[['ug','UG emitente','120052'],['year','Ano do documento',year],['dhType','Tipo de documento hábil','FL'],['emissionDate','Data de emissão',today,'date'],['dueDate','Data de vencimento',today,'date'],['attestDate','Data do ateste',today,'date'],['payUg','UG pagadora','120052'],['creditor','Credor / devedor (UG)','120052'],['payDate','Data do pagamento',today,'date'],['description','Descrição do pagamento'],['process','NUP / processo'],['docNumber','Documento de origem'],['docIssuer','Identificação do emitente','120052']]);
+fields('#dh-pco-settings','dh',[['empeUg','UG dos empenhos','120052']]);
+fields('#dh-cc-fields','dh',[['cc','Centro de custos padrão','221A00'],['month','Mês de referência (MM)',month],['ccYear','Ano de referência',year],['benefUg','UG beneficiária','120052'],['siorg','Código SIORG','2332']]);
+fields('#dh-payment-fields','dh',[['ob','Tipo de ordem bancária','OBF'],['favAccount','Conta do favorecido','FOPAG'],['payBank','Banco pagador','002'],['payAccount','Conta pagadora','UNICA']]);
+fields('#dh-header-fields','dh',[['layout','Leiaute do arquivo','DH001'],['headerUg','UG responsável','120052'],['generationDate','Data de geração',today,'date'],['sequence','Sequencial de geração','1'],['headerYear','Ano de referência do arquivo',year],['cpf','CPF do responsável']]);
+const titles={inicio:'Visão geral',empenhos:'Geração de empenhos',liquidacao:'Liquidação da folha',orientacoes:'Orientações'};
+function route(){const name=location.hash.slice(1);const page=titles[name]?name:name.startsWith('guia-')?'orientacoes':'inicio';document.querySelectorAll('.page').forEach(s=>s.hidden=s.id!==`page-${page}`);document.querySelectorAll('nav a[data-page]').forEach(a=>{a.classList.toggle('active',a.dataset.page===page);if(a.dataset.page===page)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});$('#breadcrumb-current').textContent=titles[page];document.title=`${titles[page]} · Portal SDPP`;}
+window.addEventListener('hashchange',()=>{route();const target=document.getElementById(location.hash.slice(1));if(location.hash.startsWith('#guia-')&&target)target.scrollIntoView({behavior:'smooth'});else window.scrollTo({top:0});});route();
+$('.skip').addEventListener('click',e=>{e.preventDefault();$('#conteudo').focus();$('#conteudo').scrollIntoView();});
+let currentStep=0;
+function step(n,focus=false){currentStep=Math.max(0,Math.min(5,n));document.querySelectorAll('.dh-step').forEach((s,i)=>s.hidden=i!==currentStep);document.querySelectorAll('[data-step]').forEach((b,i)=>{b.setAttribute('aria-selected',String(i===currentStep));b.tabIndex=i===currentStep?0:-1;});$('#step-prev').disabled=currentStep===0;$('#step-next').hidden=currentStep===5;$('#step-label').textContent=`Etapa ${currentStep+1} de 6`;if(focus)$(`[data-step="${currentStep}"]`).focus();}
+document.querySelectorAll('[data-step]').forEach(b=>{b.addEventListener('click',()=>step(Number(b.dataset.step)));b.addEventListener('keydown',e=>{if(['ArrowLeft','ArrowRight','Home','End'].includes(e.key)){e.preventDefault();step(e.key==='Home'?0:e.key==='End'?5:currentStep+(e.key==='ArrowRight'?1:-1),true);}});});
+$('#step-prev').addEventListener('click',()=>step(currentStep-1,true));$('#step-next').addEventListener('click',()=>step(currentStep+1,true));step(0);
+const activeResults={ne:null,dh:null};const objectUrls={};
+function clearResult(kind,message=false){if(objectUrls[kind]){URL.revokeObjectURL(objectUrls[kind]);delete objectUrls[kind];}if(activeResults[kind]){activeResults[kind]=null;const el=$(`#${kind}-result`);el.replaceChildren();if(message){const note=document.createElement('div');note.className='notice';note.textContent='Os dados foram alterados. Gere novamente para atualizar o XML.';el.append(note);}}}
+function el(tag,cls,text){const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n;}
+function metric(label,value){const n=el('div','metric');n.append(el('small','',label),el('strong','',value));return n;}
+function result(kind,r){
+ clearResult(kind);activeResults[kind]=r;const host=$(`#${kind}-result`);host.replaceChildren();
+ host.append(el('div','result-success','✓ XML gerado. Confira os valores e as classificações antes de importar no SIAFI.'));
+ const metrics=el('div','metrics');metrics.append(metric('Lançamentos informados',String(r.metrics.items)),metric(kind==='ne'?'Empenhos no arquivo':'Documentos / FLs',String(r.metrics.details)),metric(kind==='ne'?'Valor total':'Valor líquido da folha',SDPP.br(r.metrics.total)));
+ if(kind==='dh')metrics.append(metric('PCO positivo',SDPP.br(r.metrics.positive)),metric('Anulações',SDPP.br(r.metrics.negative)),metric('Pagamentos',SDPP.br(r.metrics.payments)),metric('Outros lançamentos',SDPP.br(r.metrics.others)),metric('Apropriação aos centros',SDPP.br(r.metrics.cc)));
+ host.append(metrics);
+ for(const warning of r.warnings)host.append(el('div','notice',warning));
+ const actions=el('div','result-actions');const download=el('a','primary',`Baixar ${r.filename} ↓`);const blob=new Blob([r.xml],{type:'application/xml;charset=utf-8'});objectUrls[kind]=URL.createObjectURL(blob);download.href=objectUrls[kind];download.download=r.filename;actions.append(download,el('span','field-help','Arquivo gerado neste dispositivo.'));host.append(actions);
+ const panel=el('section','panel');panel.append(el('h2','','Conferência dos lançamentos'));const wrap=el('div','table-scroll'),table=el('table'),thead=el('thead'),tr=el('tr');const keys=kind==='ne'?['ndd','ptres','account','value']:['empe','ndd','sit','account','cc','value'];const labels=kind==='ne'?['NDD','PTRES','Conta do passivo','Valor']:['Empenho','NDD / SE','Situação','Classificação B','Centro de custos','Valor'];labels.forEach(l=>tr.append(el('th','',l)));thead.append(tr);table.append(thead);const tbody=el('tbody');for(const row of r.rows){const t=el('tr');keys.forEach(k=>t.append(el('td','',String(row[k]))));tbody.append(t);}table.append(tbody);wrap.append(table);panel.append(wrap);
+ const details=el('details'),summary=el('summary','','Visualizar XML gerado'),pre=el('pre','',r.xml.replace(/></g,'>\n<'));details.append(summary,pre);panel.append(details);host.append(panel);host.scrollIntoView({behavior:'smooth',block:'start'});
+}
+function readForm(kind){const data=Object.fromEntries(new FormData($(`#${kind}-form`)));for(const k in data)data[k]=data[k].trim();if(kind==='ne')data.ptres=data.ptresText.split(/[,;\s]+/).filter(Boolean);return data;}
+for(const kind of ['ne','dh']){
+ const form=$(`#${kind}-form`);form.addEventListener('input',()=>clearResult(kind,true));form.addEventListener('change',()=>clearResult(kind,true));
+ form.addEventListener('submit',e=>{e.preventDefault();try{const output=SDPP[kind](readForm(kind));const parsed=new DOMParser().parseFromString(output.xml,'application/xml');if(parsed.getElementsByTagName('parsererror').length)throw new Error('Não foi possível validar a estrutura do XML. Confira os dados informados.');result(kind,output);}catch(err){clearResult(kind);const host=$(`#${kind}-result`);host.replaceChildren(el('div','result-error',`Não foi possível gerar o XML. ${err.message}`));host.scrollIntoView({behavior:'smooth',block:'start'});}});
+}
+function setValues(kind,values){for(const [name,value] of Object.entries(values)){const field=$(`#${kind}-form`).elements.namedItem(name);if(field)field.value=value;}}
+document.querySelectorAll('[data-demo]').forEach(b=>b.addEventListener('click',()=>{
+ const kind=b.dataset.demo;
+ if((kind==='ne'?$('#ne-data').value:$('#dh-pco').value)&&!window.confirm('Substituir os dados atuais deste módulo por um exemplo fictício?'))return;
+ clearResult(kind);$(`#${kind}-result`).replaceChildren();
+ if(kind==='ne')setValues(kind,{cpf:'12345678901',ug:'120052',eventDate:today,process:'EXEMPLO/2026',description:'EXEMPLO FICTÍCIO — FOLHA DE PAGAMENTO',itemDescription:'Exemplo para teste',type:'1',legal:'104',account:'211110101',ptresText:'168870, 249586, 137835',data:'1 168870 31909294 1000000000 120052 TESTE 1.000,00\n1 168870 33909259 1000000000 120052 TESTE 500,00\n1 168870 33909208 1000000000 120052 TESTE 250,00\n1 168870 33909293 1000000000 120052 TESTE 250,00'});
+ else{setValues(kind,{ug:'120052',year,dhType:'FL',emissionDate:today,dueDate:today,attestDate:today,payDate:today,payUg:'120052',creditor:'120052',description:'EXEMPLO FICTÍCIO — FOLHA DE PAGAMENTO',process:'EXEMPLO/2026',docNumber:'FOPAG.TESTE',docIssuer:'120052',empeUg:'120052',cc:'221A00',month,ccYear:year,benefUg:'120052',siorg:'2332',ob:'OBF',favAccount:'FOPAG',payBank:'002',payAccount:'UNICA',layout:'DH001',headerUg:'120052',generationDate:today,sequence:'1',headerYear:year,cpf:'12345678901',pco:'2026NE000001 33900802 DFL041 113110105 1.000,00\n2026NE000002 31909294 DFL034 113110105 500,00\n2026NE000003 33909208 DFL038 113110105 250,00\n2026NE000004 33909233 DFL041 113110105 -50,00',others:'',payments:'00.000.000/0001-91 001 1607 TESTE 1.700,00'});step(0);}
+}));

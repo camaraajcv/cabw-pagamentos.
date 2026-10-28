@@ -180,7 +180,7 @@ function dh(input){
  for(const key of ['ug','payUg','empeUg','benefUg','headerUg'])code(input[key],6,'UG');
  if(!/^(0?[1-9]|1[0-2])$/.test(input.month))fail('Mês de referência deve estar entre 01 e 12.');
  if(!/^\d{4}$/.test(input.year)||!/^\d{4}$/.test(input.ccYear)||!/^\d{4}$/.test(input.headerYear))fail('Informe os anos com quatro dígitos.');
- if(!/^\d+$/.test(input.sequence))fail('Sequencial de geração inválido.');
+ if(!/^[1-9]\d{0,3}$/.test(input.sequence))fail('O sequencial de geração deve estar entre 1 e 9999, sem zero à esquerda.');
  const lines=parsePco(input.pco),positive=lines.filter(x=>x.amount>=0n),negative=lines.filter(x=>x.amount<0n),others=parseOthers(input.others),payments=parsePayments(input.payments,input);
  if(input.dhType.toUpperCase()==='FL'&&others.length){
   const sits=new Set(others.map(o=>o.sit));const missing=['PRV001','PRV002','PRV003'].filter(s=>!sits.has(s));
@@ -195,10 +195,33 @@ function dh(input){
  const details=batches.map(batch=>rebuild(batch,input));allocate(payments,details);
  const detailsSummary=batches.map((batch,i)=>({document:i+1,items:batch.length,dfl:batch.filter(e=>e.item.sit.startsWith('DFL')).length,afl:batch.filter(e=>e.item.sit.startsWith('AFL')).length,accountingLines:batch.reduce((n,e)=>n+cost(e),0),value:br(details[i].net)}));
  const header={codigoLayout:input.layout,dataGeracao:dmy(input.generationDate),sequencialGeracao:BigInt(input.sequence).toString(),anoReferencia:input.headerYear,ugResponsavel:input.headerUg,cpfResponsavel:digits(input.cpf)};
- const xml=`<?xml version="1.0" encoding="utf-8"?><sb:arquivo xmlns:sb="${SB}" xmlns:dh="${DH}"><sb:header>${Object.entries(header).map(([k,v])=>tag('sb:'+k,v)).join('')}</sb:header><sb:detalhes>${details.map(d=>dhDetail(d,input)).join('')}</sb:detalhes><sb:trailler>${tag('sb:quantidadeDetalhe',details.length)}</sb:trailler></sb:arquivo>`;
+ const initialSequence=Number(input.sequence);
+ if(initialSequence+details.length-1>9999)fail('A quantidade de arquivos ultrapassaria o sequencial 9999. Informe um sequencial inicial que comporte todos os XMLs.');
+ const files=details.map((detail,i)=>{
+  const sequence=String(initialSequence+i),fileHeader={...header,sequencialGeracao:sequence};
+  const filename=details.length===1?'DH001_FOPAG.xml':`DH001_FOPAG_${sequence}.xml`;
+  const xml=`<?xml version="1.0" encoding="utf-8"?><sb:arquivo xmlns:sb="${SB}" xmlns:dh="${DH}"><sb:header>${Object.entries(fileHeader).map(([k,v])=>tag('sb:'+k,v)).join('')}</sb:header><sb:detalhes>${dhDetail(detail,input)}</sb:detalhes><sb:trailler>${tag('sb:quantidadeDetalhe',1)}</sb:trailler></sb:arquivo>`;
+  Object.assign(detailsSummary[i],{sequence,filename});
+  return {xml,filename,sequence,accountingLines:detailsSummary[i].accountingLines};
+ });
  const warnings=lines.some(l=>!l.ndd)?['Há itens PCO com apenas o subelemento. Nesses itens, será usado o centro padrão; informe a NDD completa para aplicar a regra 992300.']:[];
- return {xml,filename:'DH001_FOPAG.xml',metrics:{items:flat.length,details:details.length,total:net,positive:totalPos,negative:totalNeg,others:sum(others),payments:totalPay,cc:totalPos+sum(others)-totalNeg,accountingLines:detailsSummary.reduce((n,d)=>n+d.accountingLines,0)},detailsSummary,warnings,rows:lines.map(l=>({empe:l.empe,ndd:l.ndd||l.sub,sit:l.sit,account:l.b||'—',cc:ccFor(l.ndd,input.cc),value:br(l.amount)}))};
+ return {xml:files[0].xml,filename:files[0].filename,files,metrics:{items:flat.length,details:details.length,total:net,positive:totalPos,negative:totalNeg,others:sum(others),payments:totalPay,cc:totalPos+sum(others)-totalNeg,accountingLines:detailsSummary.reduce((n,d)=>n+d.accountingLines,0)},detailsSummary,warnings,rows:lines.map(l=>({empe:l.empe,ndd:l.ndd||l.sub,sit:l.sit,account:l.b||'—',cc:ccFor(l.ndd,input.cc),value:br(l.amount)}))};
 }
-const api={ne,dh,money,fmt,br,parsePco,parseOthers,ccFor};
+function zip(files){
+ const encoder=new TextEncoder(),localParts=[],centralParts=[];let offset=0;
+ const crcTable=Array.from({length:256},(_,n)=>{let c=n;for(let j=0;j<8;j++)c=c&1?0xedb88320^(c>>>1):c>>>1;return c>>>0;});
+ const crc=data=>{let c=0xffffffff;for(const b of data)c=crcTable[(c^b)&255]^(c>>>8);return (c^0xffffffff)>>>0;};
+ const header=(length,signature)=>{const bytes=new Uint8Array(length),view=new DataView(bytes.buffer);view.setUint32(0,signature,true);return {bytes,view};};
+ for(const f of files){
+  const name=encoder.encode(f.filename),data=encoder.encode(f.xml),checksum=crc(data);
+  const l=header(30,0x04034b50);l.view.setUint16(4,20,true);l.view.setUint16(6,0x0800,true);l.view.setUint16(12,33,true);l.view.setUint32(14,checksum,true);l.view.setUint32(18,data.length,true);l.view.setUint32(22,data.length,true);l.view.setUint16(26,name.length,true);
+  localParts.push(l.bytes,name,data);
+  const c=header(46,0x02014b50);c.view.setUint16(4,20,true);c.view.setUint16(6,20,true);c.view.setUint16(8,0x0800,true);c.view.setUint16(14,33,true);c.view.setUint32(16,checksum,true);c.view.setUint32(20,data.length,true);c.view.setUint32(24,data.length,true);c.view.setUint16(28,name.length,true);c.view.setUint32(42,offset,true);centralParts.push(c.bytes,name);
+  offset+=30+name.length+data.length;
+ }
+ const centralSize=centralParts.reduce((n,p)=>n+p.length,0),end=header(22,0x06054b50);end.view.setUint16(8,files.length,true);end.view.setUint16(10,files.length,true);end.view.setUint32(12,centralSize,true);end.view.setUint32(16,offset,true);
+ const result=new Uint8Array(offset+centralSize+22);let position=0;for(const p of [...localParts,...centralParts,end.bytes]){result.set(p,position);position+=p.length;}return result;
+}
+const api={ne,dh,money,fmt,br,parsePco,parseOthers,ccFor,zip};
 if(typeof module!=='undefined'&&module.exports)module.exports=api;else root.SDPP=api;
 })(typeof globalThis!=='undefined'?globalThis:this);

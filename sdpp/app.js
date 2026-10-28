@@ -48,8 +48,8 @@ function result(kind,r){
  if(kind==='dh'){
   const summary=el('section','panel');summary.append(el('h2','','Divisão por arquivo XML'));
   const wrap=el('div','table-scroll'),table=el('table'),thead=el('thead'),head=el('tr');
-  ['Arquivo','Sequencial','Itens DFL','Itens AFL','Linhas contábeis / 100','Valor líquido'].forEach(label=>head.append(el('th','',label)));thead.append(head);table.append(thead);
-  const body=el('tbody');for(const d of r.detailsSummary){const row=el('tr');[d.document,d.sequence,d.dfl,d.afl,d.accountingLines+' / 100',d.value].forEach(v=>row.append(el('td','',String(v))));body.append(row);}table.append(body);wrap.append(table);summary.append(wrap,el('p','field-help','Contagem por item: DFL = 2 linhas; AFL = 4 linhas. As quantidades de DFL e AFL podem ser diferentes. Outras situações usam os pesos informados.'));host.append(summary);
+  ['Arquivo','Sequencial','Itens DFL','Itens AFL','Outros lançamentos','Linhas contábeis / 100','Valor líquido'].forEach(label=>head.append(el('th','',label)));thead.append(head);table.append(thead);
+  const body=el('tbody');for(const d of r.detailsSummary){const row=el('tr');[d.document,d.sequence,d.dfl,d.afl,d.others,d.accountingLines+' / 100',d.value].forEach(v=>row.append(el('td','',String(v))));body.append(row);}table.append(body);wrap.append(table);summary.append(wrap,el('p','field-help','Contagem por item: DFL = 2 linhas; AFL = 4 linhas. Outros lançamentos = 1 linha cada, somente no primeiro XML. As quantidades de DFL e AFL podem ser diferentes.'));host.append(summary);
  }
  for(const warning of r.warnings)host.append(el('div','notice',warning));
  objectUrls[kind]=[];

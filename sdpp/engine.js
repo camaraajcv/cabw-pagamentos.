@@ -116,6 +116,7 @@ function accountingCounter(config){
   overrides.set(sit,Number(match[2]));
  }
  return entry=>{
+  if(entry.type==='OUTROS')return 1;
   const sit=entry.item.sit;
   if(sit.startsWith('DFL'))return 2;
   if(sit.startsWith('AFL'))return 4;
@@ -127,12 +128,18 @@ function accountingBatches(flat,cost){
  const size=entries=>entries.reduce((n,e)=>n+cost(e),0);
  const value=entries=>entries.reduce((n,e)=>n+(e.type==='DA'?-abs(e.item.amount):e.type==='PCO'?e.item.amount:0n),0n);
  if(size(flat)<=100)return [flat];
- if(flat.some(e=>e.type==='OUTROS'))fail('O lote ultrapassa 100 linhas contábeis e contém Outros Lançamentos. Separe a folha em lotes completos, com suas respectivas provisões e pagamentos; o portal não rateia Outros Lançamentos automaticamente.');
+ const others=flat.filter(e=>e.type==='OUTROS');
  // Mantém as anulações junto aos itens do mesmo empenho e subelemento.
  const groups=new Map();
- for(const e of flat){const key=JSON.stringify([e.item.empe,e.item.sub]);if(!groups.has(key))groups.set(key,[]);groups.get(key).push(e);}
- const batches=[];let current=[];
+ for(const e of flat.filter(e=>e.type!=='OUTROS')){const key=JSON.stringify([e.item.empe,e.item.sub]);if(!groups.has(key))groups.set(key,[]);groups.get(key).push(e);}
+ const batches=[];let current=[...others];
  const units=[...groups.values()].flatMap(entries=>entries.some(e=>e.type==='DA')?[entries]:entries.map(e=>[e]));
+ // Reserva os Outros Lançamentos integralmente no primeiro XML.
+ if(others.length){
+  const seed=units.findIndex(entries=>value(entries)>0n&&size(entries)+size(others)<=100);
+  if(seed<0)fail('Não é possível acomodar todos os Outros Lançamentos e um grupo DFL/AFL com líquido positivo no primeiro XML dentro das 100 linhas. Revise o lote; Outros Lançamentos não são divididos nem repetidos.');
+  current.push(...units.splice(seed,1)[0]);
+ }
  for(const entries of units){
   if(size(entries)>100)fail(`O empenho ${entries[0].item.empe}, subelemento ${entries[0].item.sub}, excede sozinho 100 linhas contábeis. Divida esse grupo com suas anulações correspondentes.`);
   if(value(entries)<0n)fail(`As anulações do empenho ${entries[0].item.empe}, subelemento ${entries[0].item.sub}, excedem seus itens positivos neste lote. Revise a vinculação antes de dividir.`);
@@ -195,7 +202,7 @@ function dh(input){
  const cost=accountingCounter(input.accountingWeights);
  const batches=accountingBatches(flat,cost);
  const details=batches.map(batch=>rebuild(batch,input));allocate(payments,details);
- const detailsSummary=batches.map((batch,i)=>({document:i+1,items:batch.length,dfl:batch.filter(e=>e.item.sit.startsWith('DFL')).length,afl:batch.filter(e=>e.item.sit.startsWith('AFL')).length,accountingLines:batch.reduce((n,e)=>n+cost(e),0),value:br(details[i].net)}));
+ const detailsSummary=batches.map((batch,i)=>({document:i+1,items:batch.length,dfl:batch.filter(e=>e.type!=='OUTROS'&&e.item.sit.startsWith('DFL')).length,afl:batch.filter(e=>e.type!=='OUTROS'&&e.item.sit.startsWith('AFL')).length,others:batch.filter(e=>e.type==='OUTROS').length,accountingLines:batch.reduce((n,e)=>n+cost(e),0),value:br(details[i].net)}));
  const header={codigoLayout:input.layout,dataGeracao:dmy(input.generationDate),sequencialGeracao:BigInt(input.sequence).toString(),anoReferencia:input.headerYear,ugResponsavel:input.headerUg,cpfResponsavel:digits(input.cpf)};
  const initialSequence=Number(input.sequence);
  if(initialSequence+details.length-1>9999)fail('A quantidade de arquivos ultrapassaria o sequencial 9999. Informe um sequencial inicial que comporte todos os XMLs.');

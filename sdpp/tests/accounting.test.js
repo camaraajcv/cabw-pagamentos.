@@ -4,6 +4,11 @@ const e=require('../engine.js');
 const base={ug:'120052',year:'2026',dhType:'FL',emissionDate:'2026-10-28',dueDate:'2026-10-28',attestDate:'2026-10-28',payDate:'2026-10-28',payUg:'120052',creditor:'120052',description:'TESTE',process:'TESTE/2026',docNumber:'FOPAG.TESTE',docIssuer:'120052',empeUg:'120052',cc:'221A00',month:'10',ccYear:'2026',benefUg:'120052',siorg:'2332',ob:'OBF',favAccount:'FOPAG',payBank:'002',payAccount:'UNICA',layout:'DH001',headerUg:'120052',generationDate:'2026-10-28',sequence:'1',headerYear:'2026',cpf:'12345678901',others:''};
 function run(pco,amount,extra={}){return e.dh({...base,pco,payments:`00000000000191 001 1607 TESTE ${amount}`,...extra});}
 const pco=n=>Array.from({length:n},()=>`2026NE000001 01 DFL001 311110100 100,00`).join('\n');
+let annul=run('2026NE000001 43 DFL031 113110101 1.000,00\n2026NE000001 43 AFL031 113110101 200,00','800,00');
+assert.equal(annul.metrics.positive,100000n);assert.equal(annul.metrics.negative,20000n);assert.equal(annul.metrics.total,80000n);assert.equal(annul.metrics.accountingLines,6);assert.equal(annul.rows[1].value,'-200,00');
+assert.ok(annul.xml.includes('<despesaAnular><numSeqItem>1</numSeqItem><codSit>AFL031</codSit>'));assert.ok(annul.xml.includes('<vlr>200.00</vlr>'));assert.ok(!annul.xml.includes('<vlr>-200.00</vlr>'));
+let signs=run('2026NE000001 43 DFL031 113110101 -1.000,00\n2026NE000001 43 AFL031 113110101 -200,00','800,00');assert.equal(signs.xml,annul.xml);
+let manyAnnul=run('2026NE000001 43 DFL031 113110101 1.000,00\n2026NE000001 43 AFL031 113110101 100,00\n2026NE000001 43 AFL031 113110101 200,00\n2026NE000001 43 AFL031 113110101 50,00','650,00');assert.equal(manyAnnul.metrics.accountingLines,14);assert.equal(manyAnnul.metrics.total,65000n);
 let r=run(pco(50),'5.000,00');assert.equal(r.metrics.details,1);assert.equal(r.metrics.accountingLines,100);
 r=run(pco(51),'5.100,00');assert.deepEqual(r.detailsSummary.map(d=>d.accountingLines),[100,2]);
 assert.deepEqual(r.files.map(f=>f.sequence),['1','2']);assert.equal(r.files.length,2);assert.ok(r.files.every(f=>(f.xml.match(/<sb:detalhe>/g)||[]).length===1&&f.xml.includes('<sb:quantidadeDetalhe>1</sb:quantidadeDetalhe>')));

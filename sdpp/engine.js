@@ -71,7 +71,9 @@ function parsePco(text){
  const lines=table(text,[5,6],'PCO').map(({parts:p,line})=>{
   const [empe,sub0,sit0,a]=p;const supplied=p.length===6?p[4]:'';const v=p.at(-1);const sub=digits(sub0);const sit=sit0.toUpperCase();
   if(![1,2,8].includes(sub.length))fail(`PCO, linha ${line}: informe subelemento de 2 dígitos ou NDD de 8 dígitos.`);
-  return {empe,sub:sub.slice(-2).padStart(2,'0'),sit,a:digits(a),b:({'DFL034':'218910100','DFL038':'211310100'})[sit]||digits(supplied),ndd:sub.length===8?sub:'',amount:money(v)};
+  const enteredAmount=money(v);
+  const amount=sit.startsWith('AFL')?-abs(enteredAmount):sit.startsWith('DFL')?abs(enteredAmount):enteredAmount;
+  return {empe,sub:sub.slice(-2).padStart(2,'0'),sit,a:digits(a),b:({'DFL034':'218910100','DFL038':'211310100'})[sit]||digits(supplied),ndd:sub.length===8?sub:'',amount};
  });
  if(!lines.length)fail('Informe ao menos um lançamento PCO.');return lines;
 }
@@ -181,7 +183,7 @@ function dh(input){
  if(!/^(0?[1-9]|1[0-2])$/.test(input.month))fail('Mês de referência deve estar entre 01 e 12.');
  if(!/^\d{4}$/.test(input.year)||!/^\d{4}$/.test(input.ccYear)||!/^\d{4}$/.test(input.headerYear))fail('Informe os anos com quatro dígitos.');
  if(!/^[1-9]\d{0,3}$/.test(input.sequence))fail('O sequencial de geração deve estar entre 1 e 9999, sem zero à esquerda.');
- const lines=parsePco(input.pco),positive=lines.filter(x=>x.amount>=0n),negative=lines.filter(x=>x.amount<0n),others=parseOthers(input.others),payments=parsePayments(input.payments,input);
+ const lines=parsePco(input.pco),positive=lines.filter(x=>!x.sit.startsWith('AFL')&&x.amount>=0n),negative=lines.filter(x=>x.sit.startsWith('AFL')||x.amount<0n),others=parseOthers(input.others),payments=parsePayments(input.payments,input);
  if(input.dhType.toUpperCase()==='FL'&&others.length){
   const sits=new Set(others.map(o=>o.sit));const missing=['PRV001','PRV002','PRV003'].filter(s=>!sits.has(s));
   if(missing.length)fail('Outros lançamentos: faltam as situações obrigatórias '+missing.join(', ')+'.');

@@ -103,6 +103,50 @@ function allocate(payments,details){
   if(left!==0n)fail(`Não foi possível ratear os pagamentos. Faltam ${br(left)}.`);
  }
 }
+function accountingCounter(config){
+ const overrides=new Map();
+ for(const part of String(config||'').split(/[,;\n]+/).map(s=>s.trim()).filter(Boolean)){
+  const match=/^([A-Za-z]{3}\d{3})\s*=\s*(\d+)$/.exec(part);
+  if(!match||Number(match[2])<1||Number(match[2])>100)fail('Linhas de outras situações: use SITUAÇÃO=quantidade, com quantidade de 1 a 100.');
+  const sit=match[1].toUpperCase();
+  if(sit.startsWith('DFL')||sit.startsWith('AFL'))fail('DFL e AFL já têm regra fixa: 2 e 4 linhas por item, respectivamente.');
+  if(overrides.has(sit))fail(`Situação repetida na configuração de linhas: ${sit}.`);
+  overrides.set(sit,Number(match[2]));
+ }
+ return entry=>{
+  const sit=entry.item.sit;
+  if(sit.startsWith('DFL'))return 2;
+  if(sit.startsWith('AFL'))return 4;
+  if(overrides.has(sit))return overrides.get(sit);
+  fail(`Não há quantidade de linhas contábeis configurada para ${sit}. Informe ${sit}=quantidade no campo de outras situações, conforme a regra do SIAFI.`);
+ };
+}
+function accountingBatches(flat,cost){
+ const size=entries=>entries.reduce((n,e)=>n+cost(e),0);
+ const value=entries=>entries.reduce((n,e)=>n+(e.type==='DA'?-abs(e.item.amount):e.type==='PCO'?e.item.amount:0n),0n);
+ if(size(flat)<=100)return [flat];
+ if(flat.some(e=>e.type==='OUTROS'))fail('O lote ultrapassa 100 linhas contábeis e contém Outros Lançamentos. Separe a folha em lotes completos, com suas respectivas provisões e pagamentos; o portal não rateia Outros Lançamentos automaticamente.');
+ // Mantém as anulações junto aos itens do mesmo empenho e subelemento.
+ const groups=new Map();
+ for(const e of flat){const key=JSON.stringify([e.item.empe,e.item.sub]);if(!groups.has(key))groups.set(key,[]);groups.get(key).push(e);}
+ const batches=[];let current=[];
+ const units=[...groups.values()].flatMap(entries=>entries.some(e=>e.type==='DA')?[entries]:entries.map(e=>[e]));
+ for(const entries of units){
+  if(size(entries)>100)fail(`O empenho ${entries[0].item.empe}, subelemento ${entries[0].item.sub}, excede sozinho 100 linhas contábeis. Divida esse grupo com suas anulações correspondentes.`);
+  if(value(entries)<0n)fail(`As anulações do empenho ${entries[0].item.empe}, subelemento ${entries[0].item.sub}, excedem seus itens positivos neste lote. Revise a vinculação antes de dividir.`);
+  if(current.length&&size(current)+size(entries)>100){batches.push(current);current=[];}
+  current.push(...entries);
+ }
+ if(current.length)batches.push(current);
+ // Um grupo totalmente anulado não pode produzir uma FL sem valor próprio.
+ for(let i=batches.length-1;i>=0;i--){
+  if(value(batches[i])!==0n)continue;
+  const target=batches.findIndex((b,j)=>j!==i&&value(b)>0n&&size(b)+size(batches[i])<=100);
+  if(target<0)fail('Um grupo totalmente anulado ficaria isolado em uma FL de valor zero. Reorganize esse grupo junto a um lote positivo, respeitando as 100 linhas contábeis.');
+  batches[target].push(...batches[i]);batches.splice(i,1);
+ }
+ return batches;
+}
 function dhItem(item){return tags({numSeqItem:item.seq,numEmpe:item.empe,codSubItemEmpe:item.sub,vlr:fmt(item.amount),numClassA:item.a},['numSeqItem','numEmpe','codSubItemEmpe','vlr','numClassA'])+(item.b?tag('numClassB',item.b):'');}
 function dhDetail(d,input){
  let xml=tags({codUgEmit:input.ug,anoDH:input.year,codTipoDH:input.dhType},['codUgEmit','anoDH','codTipoDH']);
@@ -146,11 +190,14 @@ function dh(input){
  const totalPos=sum(positive),totalNeg=negative.reduce((a,i)=>a+abs(i.amount),0n),net=totalPos-totalNeg,totalPay=sum(payments);
  if(totalPay!==net)fail(`Pagamentos (${br(totalPay)}) diferem do líquido (${br(net)}). Diferença: ${br(totalPay-net)}.`);
  const flat=[...positive.map(item=>({type:'PCO',item})),...negative.map(item=>({type:'DA',item})),...others.map(item=>({type:'OUTROS',item}))];
- const details=[];for(let i=0;i<flat.length;i+=100)details.push(rebuild(flat.slice(i,i+100),input));allocate(payments,details);
+ const cost=accountingCounter(input.accountingWeights);
+ const batches=accountingBatches(flat,cost);
+ const details=batches.map(batch=>rebuild(batch,input));allocate(payments,details);
+ const detailsSummary=batches.map((batch,i)=>({document:i+1,items:batch.length,dfl:batch.filter(e=>e.item.sit.startsWith('DFL')).length,afl:batch.filter(e=>e.item.sit.startsWith('AFL')).length,accountingLines:batch.reduce((n,e)=>n+cost(e),0),value:br(details[i].net)}));
  const header={codigoLayout:input.layout,dataGeracao:dmy(input.generationDate),sequencialGeracao:BigInt(input.sequence).toString(),anoReferencia:input.headerYear,ugResponsavel:input.headerUg,cpfResponsavel:digits(input.cpf)};
  const xml=`<?xml version="1.0" encoding="utf-8"?><sb:arquivo xmlns:sb="${SB}" xmlns:dh="${DH}"><sb:header>${Object.entries(header).map(([k,v])=>tag('sb:'+k,v)).join('')}</sb:header><sb:detalhes>${details.map(d=>dhDetail(d,input)).join('')}</sb:detalhes><sb:trailler>${tag('sb:quantidadeDetalhe',details.length)}</sb:trailler></sb:arquivo>`;
  const warnings=lines.some(l=>!l.ndd)?['Há itens PCO com apenas o subelemento. Nesses itens, será usado o centro padrão; informe a NDD completa para aplicar a regra 992300.']:[];
- return {xml,filename:'DH001_FOPAG.xml',metrics:{items:flat.length,details:details.length,total:net,positive:totalPos,negative:totalNeg,others:sum(others),payments:totalPay,cc:totalPos+sum(others)-totalNeg},warnings,rows:lines.map(l=>({empe:l.empe,ndd:l.ndd||l.sub,sit:l.sit,account:l.b||'—',cc:ccFor(l.ndd,input.cc),value:br(l.amount)}))};
+ return {xml,filename:'DH001_FOPAG.xml',metrics:{items:flat.length,details:details.length,total:net,positive:totalPos,negative:totalNeg,others:sum(others),payments:totalPay,cc:totalPos+sum(others)-totalNeg,accountingLines:detailsSummary.reduce((n,d)=>n+d.accountingLines,0)},detailsSummary,warnings,rows:lines.map(l=>({empe:l.empe,ndd:l.ndd||l.sub,sit:l.sit,account:l.b||'—',cc:ccFor(l.ndd,input.cc),value:br(l.amount)}))};
 }
 const api={ne,dh,money,fmt,br,parsePco,parseOthers,ccFor};
 if(typeof module!=='undefined'&&module.exports)module.exports=api;else root.SDPP=api;

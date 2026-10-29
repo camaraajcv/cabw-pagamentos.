@@ -86,7 +86,7 @@ def convert():
         "tipo_linhas":dict(types),"total_por_tipo":new_totals,"total_anterior_por_tipo":old_totals,"meses_preservados":len(set(r[0] for r in preserved)),
         "atualizado_em":datetime.now(ZoneInfo("America/New_York")).isoformat()}
     if any(r[12] == 0 for r in rows): raise ValueError("Registro de pagamento zerado")
-    if any((r[13]=="exercicio") != (re.search(r"(20\\d{2})NE",r[1]).group(1)==month[-4:]) for r in rows): raise ValueError("Inconsistencia exercicio x RP")
+    if any((r[13]=="exercicio") != (re.search(r"(20\d{2})NE",r[1]).group(1)==month[-4:]) for r in rows): raise ValueError("Inconsistencia exercicio x RP")
     if len(rows)<len(old)*0.3 and old:
         raise ValueError("Reducao anormal de registros no mes: "+json.dumps(report))
     updated={"months":months,"rows":preserved+rows}

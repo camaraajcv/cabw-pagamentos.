@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#092f4e">
+  <meta name="description" content="DIRAD / SDPP / PP1 — Conferência das consignações de pessoal civil e geração de arquivos XML para o SIAFI, diretamente no navegador.">
+  <title>Consignações civis · Portal SDPP</title>
+  <link rel="icon" href="../assets/dirad.png">
+  <style>
+    :root{font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#15354d;background:#f4f8fc;font-synthesis:none}
+    *{box-sizing:border-box}body{margin:0}button,input,select,textarea{font:inherit}button{cursor:pointer}a{color:inherit}
+    .shell{display:grid;grid-template-columns:252px minmax(0,1fr);min-height:100vh}
+    .sidebar{background:#0b304f;color:#e1edf6;padding:26px 17px;display:flex;flex-direction:column;gap:22px}
+    .brand{display:flex;gap:13px;align-items:center;text-decoration:none;padding:4px 7px 20px;border-bottom:1px solid #34526a}
+    .brand img{width:51px;height:62px;object-fit:contain;background:white;border-radius:6px;padding:3px}
+    .brand strong{display:block;color:white;font-size:23px;letter-spacing:.03em}.brand small{display:block;font-size:9px;letter-spacing:.09em;line-height:1.6;color:#b3cddd}
+    .nav-label{font-size:10px;color:#83abc5;letter-spacing:.14em;font-weight:800;padding-left:11px}
+    .nav{display:grid;gap:5px}.nav a{display:flex;align-items:center;gap:11px;text-decoration:none;padding:13px 12px;border-radius:10px;font-size:13px;color:#d6e7f3;line-height:1.4}
+    .nav a:hover{background:#1a4669}.nav a[aria-current="page"]{background:#215b85;color:#fff;border-left:3px solid #edc56e;padding-left:9px;font-weight:750}
+    .nav-symbol{display:inline-flex;width:22px;align-items:center;justify-content:center;font-size:17px}
+    .sidebar-foot{margin-top:auto;border-top:1px solid #34526a;padding:18px 12px 0;font-size:11px;line-height:1.7;color:#a1bed1}
+    .content{min-width:0}.topbar{min-height:70px;border-bottom:1px solid #deebf3;background:#fff;display:flex;justify-content:space-between;gap:15px;align-items:center;padding:18px clamp(18px,4vw,48px)}
+    .crumb{font-size:12px;font-weight:600;color:#6a8194}.crumb strong{color:#1b4e70}.local{font-size:11px;color:#2a7356;background:#e8f5ee;border:1px solid #bee1ce;border-radius:40px;padding:7px 11px;font-weight:750}
+    main{max-width:1340px;padding:28px clamp(18px,4vw,48px) 55px;margin:auto}
+    .hero{background:linear-gradient(112deg,#082d4c,#10537e);color:white;border-radius:20px;padding:29px 33px;display:flex;align-items:center;justify-content:space-between;gap:16px;border-bottom:4px solid #eac266;box-shadow:0 12px 30px #0e42651d}
+    .eyebrow{font-size:10px;text-transform:uppercase;letter-spacing:.17em;font-weight:800;color:#bbdef3}.hero h1{font-size:clamp(26px,3vw,38px);letter-spacing:-.025em;color:white;margin:10px 0}.hero p{margin:0;color:#daeaf5;line-height:1.6;font-size:14px;max-width:620px}
+    .hero img{width:92px;height:110px;object-fit:contain;background:white;border-radius:11px;padding:7px}.hero-meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:17px}.hero-meta span{border:1px solid #6283a0;border-radius:20px;padding:5px 10px;font-size:10px;font-weight:700}
+    .subhead{margin:30px 0 13px}.subhead small{display:block;color:#42769b;font-size:10px;letter-spacing:.16em;font-weight:850}.subhead h2{font-size:21px;letter-spacing:-.025em;margin:5px 0 6px}.subhead p{font-size:13px;color:#70849a;line-height:1.6;margin:0}
+    .panel{background:#fff;border:1px solid #e0eaf3;border-radius:15px;padding:24px;box-shadow:0 5px 18px #0b44640a}
+    .upload-label{display:flex;gap:18px;align-items:center;padding:22px;border:1px dashed #8eacc4;background:#f8fbfe;border-radius:12px;cursor:pointer}
+    .upload-label strong{display:block;font-size:15px;color:#174561}.upload-label small{display:block;color:#607d91;font-size:12px;margin-top:7px;line-height:1.5}
+    .upload-icon{display:flex;width:54px;height:54px;flex:none;border-radius:15px;background:#e8f2fa;align-items:center;justify-content:center;font-size:25px;color:#1c6894}
+    input[type=file]{margin-top:12px;max-width:100%;font-size:12px;color:#355875}
+    .notice{border-left:3px solid #dcb562;background:#f0f6fb;border-radius:0 9px 9px 0;padding:12px 16px;color:#38617b;font-size:12px;line-height:1.6;margin-top:14px}
+    .status{margin:15px 0 0;padding:14px 16px;border-radius:10px;background:#eaf4fc;color:#175575;line-height:1.55;font-size:13px}
+    .status[data-type=error]{background:#fff0f0;color:#a22233;border:1px solid #f7c6cc}.status[data-type=ok]{background:#e9f6ec;color:#236044;border:1px solid #bedfca}
+    .metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}
+    .metric{background:white;border:1px solid #e1eaf2;border-top:3px solid #1d628e;border-radius:14px;padding:18px;box-shadow:0 5px 15px #0d3f6308}
+    .metric span{display:block;color:#637c90;font-size:12px;font-weight:650}.metric strong{display:block;font-size:clamp(16px,2vw,24px);font-variant-numeric:tabular-nums;margin-top:12px;color:#123e60;overflow-wrap:anywhere}.metric.gold{border-top-color:#ddb863}
+    .row-stats{display:flex;gap:12px;flex-wrap:wrap;margin:14px 0;font-size:12px}.row-stats span{border:1px solid #e2eaf1;background:#f9fbfd;border-radius:8px;padding:9px 12px}
+    .tabs{display:flex;gap:7px;border-bottom:1px solid #dce7ef;margin-bottom:12px}.tabs button{border:0;background:transparent;padding:12px 14px;color:#587b93;font-weight:700;font-size:12px;border-bottom:3px solid transparent}.tabs button[aria-selected=true]{color:#0d5280;border-bottom-color:#1b6c9b}
+    .table-actions{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:13px 0}.table-actions input{max-width:260px;width:100%}
+    .table-wrap{overflow:auto;max-height:440px;border:1px solid #e2e9f1;border-radius:10px}
+    table{border-collapse:collapse;width:100%;font-size:12px;white-space:nowrap}
+    th,td{border-bottom:1px solid #e8eef4;padding:11px 12px;text-align:left}th{position:sticky;top:0;background:#eaf2f8;color:#26516f;font-size:11px;z-index:1}tbody tr:nth-child(2n){background:#f8fbfe}
+    td.money{text-align:right;font-variant-numeric:tabular-nums}th.money{text-align:right}
+    .fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:17px}
+    .field{display:flex;flex-direction:column;gap:7px}.field label{font-size:12px;color:#345976;font-weight:700}.field small{font-size:10px;color:#7a8b99}
+    .field input,.field select,.table-actions input{background:white;border:1px solid #cddce8;border-radius:9px;padding:11px 12px;color:#173a55;min-width:0;outline-offset:1px}
+    .field input:focus,.table-actions input:focus{outline:2px solid #86b9dc;border-color:#397aa6}
+    .form-sub{font-size:14px;color:#225577;margin:7px 0 18px;padding:0 0 9px;border-bottom:1px solid #e7edf4}.form-sub:not(:first-child){margin-top:25px}
+    .actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px;align-items:center}
+    button.primary,.download{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;gap:8px;border:1px solid #0e507c;border-radius:10px;background:#0e507c;color:#fff;font-size:13px;font-weight:750;padding:13px 18px;min-height:45px}
+    button.primary:hover,.download:hover{background:#083c61}
+    button.secondary{border:1px solid #bad0e2;border-radius:9px;background:white;color:#1d6089;font-weight:650;padding:11px 13px}
+    .download.secondary{background:#fff;color:#174d73;border-color:#afcbdc}.download.secondary:hover{background:#e8f3fa}
+    button:disabled{cursor:not-allowed;opacity:.5}
+    .total-export{border-radius:12px;background:#f1f7fb;border:1px solid #d8e6f0;padding:17px;margin-bottom:17px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+    .total-export span{font-size:12px;color:#58758a}.total-export strong{font-size:21px;color:#0f4b73}
+    .foot{color:#8092a2;font-size:11px;padding:30px 0 10px;text-align:center}
+    [hidden]{display:none!important}
+    @media(max-width:1100px){.shell{grid-template-columns:210px minmax(0,1fr)}.fields{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:760px){.shell{display:block}.sidebar{padding:12px 16px;gap:8px}.brand{padding-bottom:10px}.brand img{width:35px;height:42px}.brand strong{font-size:18px}.nav{display:flex;overflow:auto}.nav a{white-space:nowrap;padding:10px;font-size:11px}.nav a[aria-current=page]{padding-left:7px}.sidebar-foot,.nav-label{display:none}.topbar{padding:14px 18px}.local{font-size:10px}.hero{padding:21px 18px}.hero img{width:62px;height:74px}.metrics{grid-template-columns:1fr}.fields{grid-template-columns:1fr}.panel{padding:16px}.upload-label{padding:15px}.hero p{font-size:12px}}
+  </style>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script defer src="engine.js?v=20261029-1"></script>
+  <script defer src="app.js?v=20261029-1"></script>
+</head>
+<body>
+  <a href="#principal" style="position:absolute;left:-9999px" onfocus="this.style.left='10px'" onblur="this.style.left='-9999px'">Pular para o conteúdo</a>
+  <div class="shell">
+    <aside class="sidebar" aria-label="Navegação SDPP">
+      <a href="../#inicio" class="brand"><img src="../assets/dirad.png" alt="Brasão DIRAD"><span><strong>SDPP</strong><small>DIRETORIA DE ADMINISTRAÇÃO<br>PORTAL DE APLICAÇÕES</small></span></a>
+      <div class="nav-label">MÓDULOS DO PORTAL</div>
+      <nav class="nav">
+        <a href="../#inicio"><span class="nav-symbol">⌂</span>Visão geral</a>
+        <a href="../#empenhos"><span class="nav-symbol">▤</span>Geração de empenhos</a>
+        <a href="../#liquidacao"><span class="nav-symbol">▣</span>Liquidação da folha</a>
+        <a href="./" aria-current="page"><span class="nav-symbol">◈</span>Consignações civis</a>
+        <a href="../#orientacoes"><span class="nav-symbol">ⓘ</span>Orientações</a>
+      </nav>
+      <div class="sidebar-foot">SUBDIRETORIA DE PAGAMENTO<br>DE PESSOAL · PP1<br><br>Processamento do PDF e XML realizado localmente, sem envio do arquivo a um servidor.</div>
+    </aside>
+    <div class="content">
+      <div class="topbar"><div class="crumb">DIRAD / SDPP / <strong>Consignações civis</strong></div><span class="local">◉ Processamento local</span></div>
+      <main id="principal" tabindex="-1">
+        <header class="hero"><div><div class="eyebrow">SDPP / PP1 · DIVISÃO DE DESCONTOS</div><h1>Consignações de pessoal civil</h1><p>Importe o relatório de descontos externos civis do SIAPE, confira os valores e gere os arquivos XML de FL e deduções para o SIAFI.</p><div class="hero-meta"><span>GRCOCGRECO</span><span>DH001 · FL</span><span>DH002 · Deduções</span></div></div><img src="../assets/dirad.png" alt="DIRAD"></header>
+        <section aria-labelledby="upload-head">
+          <div class="subhead"><small>ETAPA 01 / IMPORTAÇÃO</small><h2 id="upload-head">Importar relatório SIAPE</h2><p>Selecione o PDF original de consignações gerado na transação GRCOCGRECO.</p></div>
+          <div class="panel">
+            <label class="upload-label" for="pdf-file"><span class="upload-icon" aria-hidden="true">⇧</span><span><strong>Escolha o arquivo PDF do SIAPE</strong><small>Relatórios de consignações de pessoal civil, incluindo páginas em formatos diferentes.</small><input id="pdf-file" type="file" accept=".pdf,application/pdf"></span></label>
+            <div class="notice">O PDF é lido somente no navegador. A exportação de XML será bloqueada se os lançamentos não fecharem exatamente com o valor líquido informado pelo SIAPE.</div>
+            <div id="status" class="status" role="status" aria-live="polite" hidden></div>
+          </div>
+        </section>
+        <section id="resultado" hidden>
+          <div class="subhead"><small>ETAPA 02 / CONFERÊNCIA</small><h2>Resumo financeiro</h2><p>Os valores são conciliados centavo a centavo antes da geração dos XMLs.</p></div>
+          <div class="metrics">
+            <div class="metric"><span>Valor líquido do SIAPE</span><strong id="metric-siape">—</strong></div>
+            <div class="metric"><span>Soma dos lançamentos</span><strong id="metric-soma">—</strong></div>
+            <div class="metric gold"><span>Diferença apurada</span><strong id="metric-diferenca">—</strong></div>
+          </div>
+          <div class="row-stats"><span id="stat-ref"></span><span id="stat-qtd"></span><span id="stat-exclusoes"></span><span id="stat-paginas"></span></div>
+          <div class="status" data-type="ok">✓ Totais conciliados com o SIAPE. Os arquivos XML podem ser preparados após a conferência dos dados bancários e das exclusões.</div>
+          <div class="subhead"><small>ETAPA 03 / VERIFICAÇÃO</small><h2>Detalhamento e rubricas excluídas</h2><p>Confira os favorecidos, valores, rubricas e domicílios bancários que serão usados na exportação.</p></div>
+          <div class="panel">
+            <div class="tabs" role="tablist" aria-label="Lançamentos SIAPE">
+              <button id="tab-todos" type="button" aria-selected="true" role="tab" aria-controls="painel-tabela">Todos os lançamentos</button>
+              <button id="tab-excluidos" type="button" aria-selected="false" role="tab" aria-controls="painel-tabela">Rubricas excluídas</button>
+            </div>
+            <div class="table-actions"><input id="busca" type="search" placeholder="Buscar CNPJ, empresa ou rubrica" aria-label="Buscar registros"><span id="resultado-busca" style="color:#698399;font-size:11px"></span></div>
+            <div class="table-wrap" id="painel-tabela"><table><thead><tr><th>CNPJ</th><th>Empresa</th><th>Rubrica</th><th>Serv.</th><th class="money">Valor bruto</th><th class="money">SERPRO</th><th class="money">Valor líquido</th><th>Banco</th><th>Agência</th><th>Conta</th></tr></thead><tbody id="tabela-body"></tbody></table></div>
+          </div>
+          <div class="subhead"><small>ETAPA 04 / PREPARAÇÃO</small><h2>Documentos para o SIAFI</h2><p>O valor base corresponde às rubricas que permanecem após as exclusões previstas na regra do PP1.</p></div>
+          <div class="panel">
+            <div class="total-export"><span>Valor líquido após exclusões · <span id="qtd-export"></span> registros</span><strong id="metric-export">—</strong></div>
+            <form id="xml-form" novalidate autocomplete="off">
+              <h3 class="form-sub">Identificação da FL e do empenho</h3>
+              <div class="fields">
+                <div class="field"><label for="ne">Número da NE (12 caracteres)</label><input id="ne" name="ne" maxlength="12" required placeholder="2026NE000001"></div>
+                <div class="field"><label for="sb">Subelemento da NE</label><input id="sb" name="sb" maxlength="2" required placeholder="01"></div>
+                <div class="field"><label for="fl">Número da FL</label><input id="fl" name="fl" maxlength="6" required placeholder="000001"></div>
+                <div class="field"><label for="year">Ano de referência</label><input id="year" name="year" maxlength="4" inputmode="numeric" required></div>
+                <div class="field"><label for="cpf">CPF do responsável (11 dígitos)</label><input id="cpf" name="cpf" maxlength="11" inputmode="numeric" required></div>
+                <div class="field"><label for="process">Processo / NUP</label><input id="process" name="process" required></div>
+              </div>
+              <h3 class="form-sub">Datas, observação e controle do arquivo</h3>
+              <div class="fields">
+                <div class="field"><label for="dueDate">Data de vencimento / ateste</label><input id="dueDate" name="dueDate" type="date" required></div>
+                <div class="field"><label for="payDate">Previsão de pagamento</label><input id="payDate" name="payDate" type="date" required></div>
+                <div class="field"><label for="observation">Texto de observação</label><input id="observation" name="observation" value="DESC.EXT.CV" required></div>
+                <div class="field"><label for="sequenceFl">Sequencial de geração · FL</label><input id="sequenceFl" name="sequenceFl" maxlength="4" inputmode="numeric" placeholder="0001" required></div>
+                <div class="field"><label for="sequenceDed">Sequencial de geração · Deduções</label><input id="sequenceDed" name="sequenceDed" maxlength="4" inputmode="numeric" placeholder="0002" required></div>
+                <div class="field"><label for="mesCC">Mês de referência · Centro de custos</label><input id="mesCC" name="mesCC" maxlength="2" inputmode="numeric" required></div>
+                <div class="field"><label for="anoCC">Ano de referência · Centro de custos</label><input id="anoCC" name="anoCC" maxlength="4" inputmode="numeric" required></div>
+              </div>
+              <div class="actions"><button type="submit" class="primary">Conferir e gerar os dois XMLs →</button><span style="font-size:12px;color:#74889a">A geração não registra operação no SIAFI.</span></div>
+              <div id="form-status" role="alert" class="status" hidden></div>
+            </form>
+          </div>
+        </section>
+        <section id="downloads" hidden>
+          <div class="subhead"><small>ETAPA 05 / EXPORTAÇÃO</small><h2>Arquivos XML gerados</h2><p>Revise os dois arquivos antes de importar no SIAFI. Alterações nos campos invalidam os downloads anteriores.</p></div>
+          <div class="panel"><div class="status" data-type="ok" id="download-status">Arquivos disponíveis.</div><div class="actions"><a class="download" id="download-fl" download="SIAPE_FL.xml">↓ Baixar XML da FL (DH001)</a><a class="download secondary" id="download-ded" download="SIAPE_DEDUCOES.xml">↓ Baixar XML das deduções (DH002)</a></div></div>
+        </section>
+        <footer class="foot">DIRAD · SDPP / PP1 · Consignações de Pessoal Civil · Ferramenta auxiliar de conferência; não substitui a validação no SIAFI.</footer>
+      </main>
+    </div>
+  </div>
+</body>
+</html>

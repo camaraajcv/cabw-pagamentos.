@@ -116,4 +116,42 @@ assert.equal(summarizeRubrics(repeated.rows).find(r=>r.code==="34113").count,2);
 assert.equal(repeated.excluidas.length,2);
 assert.equal(repeated.totalExport+repeated.totalExcluido,repeated.total);
 
+
+// O PDF de setembro contém relatório ZO com total consolidado e PR com subtotal.
+// O subtotal PR já está contido no ZO, portanto jamais deve ser somado novamente.
+const multiReportPages=[
+  ["L.A54170.ZO - CONSULTA CONSIGNACAO MENSAL",
+   "VALOR LIQUIDO...........: 1.242,94",
+   ...sample[0].slice(2,10)],
+  ["L.A54170.PR - CONSULTA CONSIGNACAO MENSAL",
+   "VALOR LIQUIDO...........: 50,00",
+   ...sample[0].slice(10)]
+];
+const mixed=parsePdfLines(multiReportPages);
+assert.equal(mixed.total,124294);
+assert.equal(mixed.soma,124294);
+assert.equal(mixed.rows.length,3);
+assert.equal(mixed.auxiliaryTotals.length,1);
+assert.equal(mixed.auxiliaryTotals[0].type,"PR");
+assert.equal(mixed.auxiliaryTotals[0].value,5000);
+assert.equal(mixed.totalExport,119294);
+assert.equal(generateXml(mixed,fields).quantidade,2);
+assert.throws(
+  ()=>parsePdfLines([multiReportPages[0],
+    multiReportPages[1].map(line=>line.replace("LIQUIDO...........: 50,00","LIQUIDO...........: 50,01"))]),
+  /Subtotal do demonstrativo PR não confere/
+);
+assert.throws(
+  ()=>parsePdfLines([
+    [...multiReportPages[0], "VALOR LIQUIDO...........: 1.242,95"],
+    multiReportPages[1]]),
+  /Totais gerais divergentes/
+);
+assert.throws(
+  ()=>parsePdfLines([multiReportPages[0],
+    ["L.A54170.PR - CONSULTA CONSIGNACAO MENSAL",
+     "VALOR LIQUIDO...........: 50,00"]]),
+  /Subtotal do demonstrativo PR não confere|Conferência bloqueada/
+);
+
 console.log("OK: leitura SIAPE, totais, exclusões, bancos, XML DH001/DH002 e validações.");

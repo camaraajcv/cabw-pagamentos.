@@ -61,7 +61,7 @@ function parsePdfLines(pages) {
       const [,,empresa,qtdServ,bruto]=h;
       const [ ,rubrica,tipo,qtdLinha,valorLinha]=r;
       const [ ,bco,agenciaOrig,conta,,liquido]=bank;
-      if(!/^\d{6}$/.test(agenciaOrig))throw new Error(`Página ${pi+1}: agência bancária fora do padrão (${agenciaOrig}).`);
+      if(!/^\d{5}[\dX]$/.test(agenciaOrig))throw new Error(`Página ${pi+1}: agência bancária fora do padrão (${agenciaOrig}).`);
       const row={cnpj:h[1].replace(/\D/g,""),cnpjFmt:h[1],empresa:empresa.trim(),qtdServ:Number(qtdServ.replace(/\./g,"")),
         bruto:moneyCents(bruto),rubrica,tipo:tipo.trim(),qtdLinha:Number(qtdLinha.replace(/\./g,"")),valorLinha:moneyCents(valorLinha),
         serpro:moneyCents(ser[1]),bco,ag:agenciaOrig.slice(1,5),agenciaOrig,conta,liquido:moneyCents(liquido),pagina:pi+1};

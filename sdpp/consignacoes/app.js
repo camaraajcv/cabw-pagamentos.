@@ -206,7 +206,13 @@
       refreshRubricSummary();
       renderRubricList();
       chooseTab("todos");
-      status($("status"),"Relatório "+file.name+" importado e conciliado com sucesso.", "ok");
+      const complementos=report.auxiliaryTotals
+        .filter(item=>item.type!=="NÃO IDENTIFICADO")
+        .map(item=>"demonstrativo "+item.type+": "+engine.brl(item.value));
+      const extra=complementos.length
+        ? " Totais complementares já incluídos no valor geral ("+complementos.join("; ")+")."
+        : "";
+      status($("status"),"Relatório "+file.name+" importado e conciliado com sucesso."+extra, "ok");
       $("form-status").hidden=true;
       $("resultado").scrollIntoView({behavior:"smooth",block:"start"});
     }catch(error){

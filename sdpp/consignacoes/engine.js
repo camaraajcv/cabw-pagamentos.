@@ -35,6 +35,46 @@ function linesFromItems(items) {
   });
 }
 
+
+const DEFAULT_EXCLUDED_RUBRICS=Object.freeze(["34685","34447","30846","34742","32623"]);
+
+/** Consolida cada rubrica que aparece no PDF, incluindo seus lançamentos e valores. */
+function summarizeRubrics(rows) {
+  const groups=new Map();
+  for(const r of rows) {
+    let group=groups.get(r.rubrica);
+    if(!group) {
+      group={code:r.rubrica,description:r.tipo||"",count:0,total:0};
+      groups.set(r.rubrica,group);
+    }
+    group.count+=1;
+    group.total+=r.liquido;
+  }
+  return [...groups.values()].sort((a,b)=>a.code.localeCompare(b.code));
+}
+
+/** Recalcula exclusivamente as rubricas a enviar, mantendo imutável a conferência SIAPE. */
+function applyRubricExclusions(report, excludedCodes=DEFAULT_EXCLUDED_RUBRICS) {
+  if(!report || !Array.isArray(report.rows) || report.total!==report.soma)
+    throw new Error("O relatório SIAPE ainda não foi conciliado.");
+  const source=excludedCodes instanceof Set?[...excludedCodes]:excludedCodes;
+  if(!Array.isArray(source) || source.some(code=>typeof code!=="string"||!/^\d{5}$/.test(code)))
+    throw new Error("A seleção de rubricas possui códigos inválidos.");
+  const present=new Set(report.rows.map(r=>r.rubrica));
+  for(const code of source) {
+    if(!present.has(code) && !DEFAULT_EXCLUDED_RUBRICS.includes(code))
+      throw new Error("A rubrica "+code+" não pertence ao relatório importado.");
+  }
+  const excluded=new Set(source);
+  const excluidas=report.rows.filter(r=>excluded.has(r.rubrica));
+  const exportaveis=report.rows.filter(r=>!excluded.has(r.rubrica));
+  const totalExport=exportaveis.reduce((sum,r)=>sum+r.liquido,0);
+  const totalExcluido=excluidas.reduce((sum,r)=>sum+r.liquido,0);
+  if(!Number.isSafeInteger(totalExport) || totalExport+totalExcluido!==report.total)
+    throw new Error("Falha na conferência das rubricas: valores não conciliados.");
+  return {...report,excludedCodes:[...excluded],excluidas,exportaveis,totalExport,totalExcluido};
+}
+
 function parsePdfLines(pages) {
   const reCnpj=/^\s*(\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2})\s+(.+?)\s+([\d.]+)\s+([\d.]+,\d{2})\s*$/;
   const reRub=/^\s*(\d{5})\s+(.+?)\s+([\d.]+)\s+([\d.]+,\d{2})\s*$/;
@@ -73,15 +113,13 @@ function parsePdfLines(pages) {
   if(!rows.length)throw new Error("Nenhuma consignação foi encontrada no relatório PDF.");
   const soma=rows.reduce((s,r)=>s+r.liquido,0);
   if(!Number.isSafeInteger(soma)||total!==soma) throw new Error(`Conferência bloqueada: total SIAPE ${brl(total)}, registros ${brl(soma)}. Diferença ${brl(soma-total)}.`);
-  const excluidasRubricas=["34685","34447","30846","34742","32623"];
-  const excluidas=rows.filter(r=>excluidasRubricas.includes(r.rubrica));
-  const exportaveis=rows.filter(r=>!excluidasRubricas.includes(r.rubrica));
-  const totalExport=exportaveis.reduce((s,r)=>s+r.liquido,0);
-  return {rows,total,soma,excluidas,exportaveis,totalExport,reference,paymentMonth,pages:pages.length};
+  return applyRubricExclusions({rows,total,soma,reference,paymentMonth,pages:pages.length});
 }
 
 function generateXml(report, fields) {
   if(!report||!report.rows||report.total!==report.soma)throw new Error("O relatório não foi conciliado com o SIAPE.");
+  // Recalcula os XMLs a partir da seleção vigente, sem confiar em totais antigos.
+  report=applyRubricExclusions(report,report.excludedCodes??DEFAULT_EXCLUDED_RUBRICS);
   const f={...fields};
   if(!/^\d{4}NE\d{6}$/.test(f.ne||""))throw new Error("Número da NE: informe 12 caracteres, por exemplo 2026NE000001.");
   if(!/^\d{1,2}$/.test(f.sb||""))throw new Error("Subelemento: informe 1 ou 2 dígitos.");
@@ -136,4 +174,4 @@ ${header("DH002",f.sequenceDed)}<sb:detalhes>${details}</sb:detalhes>
 <sb:trailler><sb:quantidadeDetalhe>${report.exportaveis.length}</sb:quantidadeDetalhe></sb:trailler></sb:arquivo>`;
   return {fl:first,deducao:second,quantidade:report.exportaveis.length,totalCents:report.totalExport};
 }
-window.SIAPECIVIL={moneyCents,brl,decimal,escapeXml,linesFromItems,parsePdfLines,generateXml};
+window.SIAPECIVIL={moneyCents,brl,decimal,escapeXml,linesFromItems,parsePdfLines,generateXml,DEFAULT_EXCLUDED_RUBRICS,summarizeRubrics,applyRubricExclusions};

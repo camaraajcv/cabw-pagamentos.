@@ -1,0 +1,86 @@
+name: CABW - Pagamentos automaticos
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '10 12 * * 1-5'
+    - cron: '10 13 * * 1-5'
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: cabw-pagamentos-atualizacao
+  cancel-in-progress: false
+
+jobs:
+  atualizar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Conferir horario de Washington
+        id: horario
+        env:
+          EVENTO: ${{ github.event_name }}
+        run: |
+          if [ "$EVENTO" = "workflow_dispatch" ] || [ "$(TZ=America/New_York date +%H)" = "08" ]; then
+            echo "executar=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "executar=false" >> "$GITHUB_OUTPUT"
+          fi
+      - uses: actions/checkout@v4
+        if: steps.horario.outputs.executar == 'true'
+      - uses: actions/setup-python@v5
+        if: steps.horario.outputs.executar == 'true'
+        with:
+          python-version: '3.12'
+      - name: Dependencias de acesso
+        if: steps.horario.outputs.executar == 'true'
+        run: pip install google-auth requests
+      - name: Obter CSV privado
+        if: steps.horario.outputs.executar == 'true'
+        env:
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+        run: python scripts/drive_to_pagamentos.py
+      - name: Validar, atualizar e publicar no Git
+        if: steps.horario.outputs.executar == 'true'
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          for tentativa in 1 2 3; do
+            git fetch origin main
+            git reset --hard origin/main
+            python scripts/converter_pagamentos.py
+            python scripts/publicar_pagamentos.py
+            if git diff --quiet -- index.html; then
+              echo "Sem alteracoes no painel."
+              break
+            fi
+            git add index.html
+            git commit -m 'CABW: atualizar painel de pagamentos pelo Drive'
+            if git push origin HEAD:main; then
+              echo "Painel atualizado no GitHub"
+              break
+            fi
+            if [ "$tentativa" -eq 3 ]; then
+              echo "::error::Repositorio alterado durante as tres tentativas"
+              exit 1
+            fi
+          done
+      - name: Preparar site sem dados privados
+        if: steps.horario.outputs.executar == 'true'
+        run: |
+          mkdir -p site-publicado
+          cp index.html site-publicado/index.html
+          cp -R loa-2026 site-publicado/loa-2026
+          cp -R sdpp site-publicado/sdpp
+          rm -f site-publicado/loa-2026/fonte.csv site-publicado/loa-2026/dados-novos.json
+      - name: Carregar site no GitHub Pages
+        if: steps.horario.outputs.executar == 'true'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site-publicado
+      - name: Publicar no GitHub Pages
+        if: steps.horario.outputs.executar == 'true'
+        uses: actions/deploy-pages@v4

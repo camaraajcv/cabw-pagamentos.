@@ -36,6 +36,104 @@
     if(cssClass)td.className=cssClass;
     tr.append(td);
   }
+
+  function rubricGroups() {
+    return report?engine.summarizeRubrics(report.rows):[];
+  }
+  function hasManualRubricChanges() {
+    if(!report)return false;
+    const selected=new Set(report.excludedCodes);
+    const defaults=new Set(engine.DEFAULT_EXCLUDED_RUBRICS);
+    return rubricGroups().some(g=>selected.has(g.code)!==defaults.has(g.code));
+  }
+  function refreshRubricSummary() {
+    if(!report)return;
+    const changes=hasManualRubricChanges();
+    const selected=new Set(report.excludedCodes);
+    const selectedRubrics=rubricGroups().filter(g=>selected.has(g.code));
+    const baseSet=new Set(engine.DEFAULT_EXCLUDED_RUBRICS);
+    const diff=rubricGroups().filter(g=>selected.has(g.code)!==baseSet.has(g.code)).length;
+    $("metric-excluded").textContent=engine.brl(report.totalExcluido);
+    $("metric-export-2").textContent=engine.brl(report.totalExport);
+    $("metric-export").textContent=engine.brl(report.totalExport);
+    $("qtd-export").textContent=report.exportaveis.length;
+    $("stat-exclusoes").textContent=report.excluidas.length+" lançamentos excluídos";
+    $("rubric-mode").textContent=changes?"Personalizado ("+diff+" alteração"+(diff===1?"":"ões")+")":"Exclusões padrão";
+    $("rubric-custom-note").hidden=!changes;
+    $("custom-confirm").hidden=!changes;
+    if(!changes)$("confirm-rubrics").checked=false;
+  }
+  function renderRubricList() {
+    if(!report)return;
+    const search=$("busca-rubrica").value.trim().toLocaleLowerCase("pt-BR");
+    const defaultSet=new Set(engine.DEFAULT_EXCLUDED_RUBRICS);
+    const selected=new Set(report.excludedCodes);
+    const groups=rubricGroups().sort((a,b)=>{
+      const ad=Number(defaultSet.has(a.code)),bd=Number(defaultSet.has(b.code));
+      return bd-ad || a.code.localeCompare(b.code);
+    });
+    const visible=groups.filter(g=>!search || (g.code+" "+g.description).toLocaleLowerCase("pt-BR").includes(search));
+    $("rubric-results").textContent=visible.length+" de "+groups.length+" rubricas";
+    const fragment=document.createDocumentFragment();
+    for(const group of visible) {
+      const label=document.createElement("label");
+      label.className="rubric-row";
+      label.dataset.selected=String(selected.has(group.code));
+      const check=document.createElement("input");
+      check.type="checkbox";
+      check.dataset.rubrica=group.code;
+      check.checked=selected.has(group.code);
+      check.setAttribute("aria-label","Excluir rubrica "+group.code+" dos XMLs");
+      const details=document.createElement("span");
+      details.className="rubric-details";
+      const code=document.createElement("span");
+      code.className="rubric-code";
+      code.textContent=group.code+(defaultSet.has(group.code)?" · Exclusão padrão":"");
+      const description=document.createElement("span");
+      description.className="rubric-description";
+      description.textContent=group.description||"Rubrica sem descrição";
+      details.append(code,description);
+      const money=document.createElement("span");
+      money.className="rubric-value";
+      money.textContent=engine.brl(group.total);
+      const count=document.createElement("small");
+      count.textContent=group.count+" lançamento"+(group.count===1?"":"s");
+      money.append(count);
+      label.append(check,details,money);
+      fragment.append(label);
+    }
+    $("rubric-list").replaceChildren(fragment);
+  }
+  function changeExclusions(excludedCodes) {
+    if(!report)return;
+    report=engine.applyRubricExclusions(report,excludedCodes);
+    invalidateDownloads();
+    $("confirm-rubrics").checked=false;
+    $("form-status").hidden=true;
+    refreshRubricSummary();
+    renderTable();
+  }
+  $("rubric-list").addEventListener("change",event=>{
+    const el=event.target;
+    if(!report || !el.matches("input[type=checkbox][data-rubrica]"))return;
+    const selected=new Set(report.excludedCodes);
+    if(el.checked) selected.add(el.dataset.rubrica);
+    else selected.delete(el.dataset.rubrica);
+    try {
+      changeExclusions(selected);
+      el.closest(".rubric-row").dataset.selected=String(el.checked);
+    } catch(error) {
+      el.checked=!el.checked;
+      status($("form-status"),"Não foi possível alterar as rubricas: "+error.message,"error");
+    }
+  });
+  $("busca-rubrica").addEventListener("input",renderRubricList);
+  $("reset-rubricas").addEventListener("click",()=>{
+    if(!report)return;
+    changeExclusions(engine.DEFAULT_EXCLUDED_RUBRICS);
+    renderRubricList();
+  });
+
   function renderTable() {
     if(!report)return;
     const records=tab==="todos"?report.rows:report.excluidas;
@@ -99,10 +197,14 @@
       $("qtd-export").textContent=report.exportaveis.length;
       $("stat-ref").textContent="Competência: "+(report.reference||"não identificada");
       $("stat-qtd").textContent=report.rows.length+" lançamentos identificados";
-      $("stat-exclusoes").textContent=report.excluidas.length+" rubricas excluídas";
+      $("stat-exclusoes").textContent=report.excluidas.length+" lançamentos excluídos";
       $("stat-paginas").textContent=report.pages+" páginas verificadas";
       $("resultado").hidden=false;
       $("busca").value="";
+      $("busca-rubrica").value="";
+      $("confirm-rubrics").checked=false;
+      refreshRubricSummary();
+      renderRubricList();
       chooseTab("todos");
       status($("status"),"Relatório "+file.name+" importado e conciliado com sucesso.", "ok");
       $("form-status").hidden=true;
@@ -122,6 +224,10 @@
     event.preventDefault();
     invalidateDownloads();
     if(!report){status($("form-status"),"Importe e concilie um PDF antes de gerar os arquivos.","error");return;}
+    if(hasManualRubricChanges()&&!$("confirm-rubrics").checked){
+      status($("form-status"),"Confirme a revisão das rubricas personalizadas e do valor a exportar antes de gerar os XMLs.","error");
+      return;
+    }
     if(!form.reportValidity())return;
     try{
       const data=Object.fromEntries(new FormData(form).entries());

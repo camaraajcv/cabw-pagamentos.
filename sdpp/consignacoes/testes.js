@@ -139,7 +139,7 @@ assert.equal(generateXml(mixed,fields).quantidade,2);
 assert.throws(
   ()=>parsePdfLines([multiReportPages[0],
     multiReportPages[1].map(line=>line.replace("LIQUIDO...........: 50,00","LIQUIDO...........: 50,01"))]),
-  /Subtotal do demonstrativo PR não confere/
+  /Subtotal do demonstrativo PR.*não confere/
 );
 assert.throws(
   ()=>parsePdfLines([

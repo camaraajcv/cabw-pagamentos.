@@ -61,9 +61,9 @@ def convert():
             data=[month,get(0),get(2),get(3),get(4),get(5),get(6),get(7),get(11),get(12),get(15),get(16),amount,kind]
             if any(not str(data[i]).strip() for i in (0,1,2,3,4,6,8,10)):
                 raise ValueError("Dimensao obrigatoria vazia na linha "+str(len(rows)+4))
-            if not re.fullmatch(r"\\d{6}",data[8]):
+            if not re.fullmatch(r"\d{6}",data[8]):
                 raise ValueError("Natureza da despesa nao corresponde a codigo de 6 digitos")
-            if re.fullmatch(r"\\d{8}",data[10]):
+            if re.fullmatch(r"\d{8}",data[10]):
                 raise ValueError("PI aparenta ser subitem de natureza: revisar mapeamento")
             rows.append(data)
     if not rows: raise ValueError("Nenhum pagamento encontrado")

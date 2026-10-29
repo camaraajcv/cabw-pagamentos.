@@ -151,7 +151,7 @@ assert.throws(
   ()=>parsePdfLines([multiReportPages[0],
     ["L.A54170.PR - CONSULTA CONSIGNACAO MENSAL",
      "VALOR LIQUIDO...........: 50,00"]]),
-  /Subtotal do demonstrativo PR não confere|Conferência bloqueada/
+  /Subtotal do demonstrativo PR.*não confere|Conferência bloqueada/
 );
 
 console.log("OK: leitura SIAPE, totais, exclusões, bancos, XML DH001/DH002 e validações.");

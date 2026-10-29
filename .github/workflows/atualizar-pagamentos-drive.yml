@@ -31,6 +31,8 @@ jobs:
           fi
       - uses: actions/checkout@v4
         if: steps.horario.outputs.executar == 'true'
+        with:
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         if: steps.horario.outputs.executar == 'true'
         with:

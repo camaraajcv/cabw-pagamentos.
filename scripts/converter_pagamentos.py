@@ -43,21 +43,23 @@ def convert():
     month = period_candidates[-1]
     paid_idx = next((i for line in matrix[:4] for i,cell in enumerate(line) if "DESPESAS PAGAS" in cell.upper()),None)
     if paid_idx is None: raise ValueError("Coluna de pagamentos nao localizada")
+    rp_idx = next((i for line in matrix[:4] for i,cell in enumerate(line) if "RESTOS A PAGAR PAGOS" in cell.upper()), None)
+    if rp_idx is None: raise ValueError("Coluna de RP pago nao localizada")
     rows=[]
     for line in matrix[3:]:
-        if len(line)<=paid_idx or not line[0].strip(): continue
+        if len(line)<=max(paid_idx,rp_idx) or not line[0].strip(): continue
         if not re.search(r"\d{4}NE\d+", line[0], re.I): continue
-        amount=value_number(line[paid_idx])
-        if not amount: continue
         get=lambda i: line[i].strip() if len(line)>i else ""
         commitment=get(0)
         budget_year=re.search(r"(20\d{2})NE",commitment,re.I)
         if not budget_year: continue
-        kind="exercicio" if budget_year.group(1)==month[-4:] else "rap"
-        data=[month,get(0),get(2),get(3),get(4),get(5),get(6),get(7),get(9),get(10),get(12),get(13),amount,kind]
-        if any(not str(data[i]).strip() for i in (0,1,2,3,4,6,8,10)):
-            raise ValueError("Dimensao obrigatoria vazia na linha "+str(len(rows)+4))
-        rows.append(data)
+        for col, kind in ((paid_idx,"exercicio"),(rp_idx,"rap")):
+            amount=value_number(line[col])
+            if not amount: continue
+            data=[month,get(0),get(2),get(3),get(4),get(5),get(6),get(7),get(9),get(10),get(12),get(13),amount,kind]
+            if any(not str(data[i]).strip() for i in (0,1,2,3,4,6,8,10)):
+                raise ValueError("Dimensao obrigatoria vazia na linha "+str(len(rows)+4))
+            rows.append(data)
     if not rows: raise ValueError("Nenhum pagamento encontrado")
     months=previous["months"]
     if month not in months:
@@ -68,10 +70,14 @@ def convert():
     # Conferencia auditavel, inclusive total no mes e por tipo.
     types=Counter()
     for r in rows:types[r[13]]+=1
+    new_totals={kind:round(sum(r[12] for r in rows if r[13]==kind),2) for kind in ("rap","exercicio")}
+    old_totals={kind:round(sum(r[12] for r in old if r[13]==kind),2) for kind in ("rap","exercicio")}
+    if old and any(types[kind]==0 for kind in ("rap","exercicio")):
+        raise ValueError("Fonte incompleta: RP ou exercicio ausente")
     report={"competencia":month,"linhas_novas":len(rows),"linhas_antigas":len(old),
         "total_novo":round(sum(r[12] for r in rows),2),
         "total_antigo":round(sum(r[12] for r in old),2),
-        "tipo_linhas":dict(types),"meses_preservados":len(set(r[0] for r in preserved)),
+        "tipo_linhas":dict(types),"total_por_tipo":new_totals,"total_anterior_por_tipo":old_totals,"meses_preservados":len(set(r[0] for r in preserved)),
         "atualizado_em":datetime.now(ZoneInfo("America/New_York")).isoformat()}
     if len(rows)<len(old)*0.3 and old:
         raise ValueError("Reducao anormal de registros no mes: "+json.dumps(report))

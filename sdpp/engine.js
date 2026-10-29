@@ -116,7 +116,7 @@ function accountingCounter(config){
   overrides.set(sit,Number(match[2]));
  }
  return entry=>{
-  if(entry.type==='OUTROS')return 1;
+  if(entry.type==='OUTROS')return 0;
   const sit=entry.item.sit;
   if(sit.startsWith('DFL'))return 3;
   if(sit.startsWith('AFL'))return 6;
@@ -146,10 +146,10 @@ function accountingBatches(flat,cost){
  for(const e of flat.filter(e=>e.type!=='OUTROS')){const key=JSON.stringify([e.item.empe,e.item.sub]);if(!groups.has(key))groups.set(key,[]);groups.get(key).push(e);}
  const batches=[];let current=[...others];
  const units=[...groups.values()].flatMap(entries=>entries.some(e=>e.type==='DA')?[entries]:entries.map(e=>[e]));
- // Reserva os Outros Lançamentos integralmente no primeiro XML.
+ // Mantém os Outros Lançamentos no primeiro XML, sem contabilizá-los no limite.
  if(others.length){
   const seed=units.findIndex(entries=>value(entries)>0n&&size(entries)+size(others)<=100);
-  if(seed<0)fail('Não é possível acomodar todos os Outros Lançamentos e um grupo DFL/AFL com líquido positivo no primeiro XML dentro das 100 linhas. Revise o lote; Outros Lançamentos não são divididos nem repetidos.');
+  if(seed<0)fail('Não há um grupo DFL/AFL com líquido positivo que caiba no primeiro XML dentro das 100 linhas. Revise os empenhos e suas anulações. Outros Lançamentos não entram nessa contagem e ficam somente no primeiro XML.');
   current.push(...units.splice(seed,1)[0]);
  }
  for(const entries of units){

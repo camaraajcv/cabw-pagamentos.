@@ -25,14 +25,14 @@ r=run('2026NE000001 01 XYZ001 311110100 1,00','1,00',{accountingWeights:'XYZ001=
 assert.throws(()=>run(pco(1),'100,00',{accountingWeights:'DFL001=1'}),/regra fixa/);
 const others=['PRV001 311110101 211110101 31901137 N 1,00','PRV002 311110101 211110101 31901137 N 1,00','PRV003 311110101 211110101 31901137 N 1,00','LPA385 311110101 211110101 31901137 N 1,00'].join('\n');
 const weights='PRV001=2, PRV002=2, PRV003=2, LPA385=2';
-r=run(pco(1),'100,00',{others});assert.equal(r.metrics.accountingLines,7);
-r=run(pco(1),'100,00',{others,accountingWeights:weights});assert.equal(r.metrics.accountingLines,7);
-r=run(pco(50),'5.000,00',{others,sequence:'1000'});assert.deepEqual(r.detailsSummary.map(d=>d.accountingLines),[100,54]);assert.deepEqual(r.detailsSummary.map(d=>d.others),[4,0]);
+r=run(pco(1),'100,00',{others});assert.equal(r.metrics.accountingLines,3);
+r=run(pco(1),'100,00',{others,accountingWeights:weights});assert.equal(r.metrics.accountingLines,3);
+r=run(pco(50),'5.000,00',{others,sequence:'1000'});assert.deepEqual(r.detailsSummary.map(d=>d.accountingLines),[99,51]);assert.deepEqual(r.detailsSummary.map(d=>d.others),[4,0]);
 assert.equal((r.files[0].xml.match(/<outrosLanc>/g)||[]).length,4);assert.equal((r.files[0].xml.match(/<relOutrosLanc>/g)||[]).length,4);assert.ok(!r.files[1].xml.includes('<outrosLanc>')&&!r.files[1].xml.includes('<relOutrosLanc>'));assert.deepEqual(r.files.map(f=>f.sequence),['1000','1001']);assert.equal(r.metrics.total,500000n);
-r=run(pco(205),'20.500,00',{others});assert.deepEqual(r.detailsSummary.map(d=>d.accountingLines),[100,99,99,99,99,99,24]);assert.deepEqual(r.detailsSummary.map(d=>d.others),[4,0,0,0,0,0,0]);
+r=run(pco(205),'20.500,00',{others});assert.deepEqual(r.detailsSummary.map(d=>d.accountingLines),[99,99,99,99,99,99,21]);assert.deepEqual(r.detailsSummary.map(d=>d.others),[4,0,0,0,0,0,0]);
 r=run(unequal.join('\n'),'4.470,00',{others});assert.ok(r.files[0].xml.includes('<codSit>AFL001</codSit>')&&r.files[0].xml.includes('<codSit>DFL001</codSit>'));assert.ok(r.files.every(f=>f.accountingLines<=100));
-assert.throws(()=>run(pco(1),'100,00',{others:Array.from({length:25},()=>others).join('\n')}),/primeiro XML/);
-assert.throws(()=>run('2026NE000001 01 DFL001 311110100 100,00\n2026NE000001 01 AFL001 311110100 1,00','99,00',{others:[others,...Array.from({length:92},()=>others.split('\n')[0])].join('\n')}),/primeiro XML/);
+r=run(pco(33),'3.300,00',{others:Array.from({length:100},()=>others).join('\n')});assert.equal(r.files.length,1);assert.equal(r.metrics.accountingLines,99);assert.equal(r.detailsSummary[0].others,400);
+r=run('2026NE000001 01 DFL001 311110100 100,00\n2026NE000001 01 AFL001 311110100 1,00','99,00',{others:[others,...Array.from({length:92},()=>others.split('\n')[0])].join('\n')});assert.equal(r.metrics.accountingLines,9);assert.equal(r.files.length,1);
 const isolated=pco(51)+'\n2026NE999999 02 AFL001 311110100 -1,00';assert.throws(()=>run(isolated,'5.099,00'),/excedem seus itens positivos/);
 r=run('2026NE000001 01 DFL034 113110105 100,00\n2026NE000002 02 DFL038 113110105 100,00\n2026NE000003 33900802 DFL041 113110105 100,00','300,00');
 assert.equal(r.rows[0].account,'218910100');assert.equal(r.rows[1].account,'211310100');assert.equal(r.rows[2].account,'—');assert.equal(r.rows[2].cc,'992300');
@@ -42,4 +42,4 @@ assert.throws(()=>run([...boundary,'2026NE000001 01 DFL031 113110101 100,00'].jo
 const differentKeys=['2026NE000001 01 DFL031 113110101 100,00','2026NE000001 01 AFL031 113110101 1,00','2026NE000001 01 AFL033 113110101 1,00','2026NE000001 02 AFL031 113110101 1,00','2026NE000002 01 AFL031 113110101 1,00'];
 r=run(differentKeys.join('\n'),'96,00');assert.equal(r.metrics.accountingLines,21);assert.equal(r.detailsSummary[0].aflGroups,3);assert.equal(r.detailsSummary[0].afl,4);
 assert.throws(()=>run(pco(1),'100,00',{accountingWeights:'AFL031=4'}),/regra fixa/);
-console.log('OK: DFL 3 linhas, AFL 6 por empenho/subelemento, limite 100, 205 itens, agrupamento de anulações, outras situações e classificações preservadas.');
+console.log('OK: DFL 3 linhas, AFL 6 por empenho/subelemento, limite 100, 205 itens, agrupamento de anulações, Outros Lançamentos excluídos da contagem e classificações preservadas.');

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Valida a conversao CABW CSV -> JSON, sem alterar o painel existente."""
-import base64, csv, io, json, re, sys
+import base64, csv, io, json, re, sys, subprocess
 from collections import Counter
 from datetime import datetime
 from pathlib import Path
@@ -55,12 +55,21 @@ def convert():
         if not budget_year: continue
         for col, kind in ((paid_idx,"exercicio"),(rp_idx,"rap")):
             amount=value_number(line[col])
-            if not amount and kind=="rap": continue
+            if not amount: continue
             data=[month,get(0),get(2),get(3),get(4),get(5),get(6),get(7),get(9),get(10),get(12),get(13),amount,kind]
             if any(not str(data[i]).strip() for i in (0,1,2,3,4,6,8,10)):
                 raise ValueError("Dimensao obrigatoria vazia na linha "+str(len(rows)+4))
             rows.append(data)
     if not rows: raise ValueError("Nenhum pagamento encontrado")
+    if month == "OUT/2026":
+        baseline_html=subprocess.check_output(["git","show","430a223b76c9d76541f693b8ac7aee9d295fc930:index.html"],text=True)
+        baseline_match=re.search(r'<script id="dataset" type="application/json">(.*?)</script>',baseline_html,re.S)
+        if not baseline_match: raise ValueError("Historico original nao localizado")
+        baseline=json.loads(baseline_match.group(1))
+        zero_rows=[r for r in baseline["rows"] if r[0]==month and r[13]=="exercicio" and r[12]==0]
+        if len(zero_rows)!=150: raise ValueError("Quantidade inesperada de registros zerados")
+        rows.extend(zero_rows)
+
     months=previous["months"]
     if month not in months:
         if months and MONTHS.index(month[:3])<MONTHS.index(months[-1][:3]): raise ValueError("Competencia retroativa")

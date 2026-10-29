@@ -55,7 +55,7 @@ def convert():
         if not budget_year: continue
         for col, kind in ((paid_idx,"exercicio"),(rp_idx,"rap")):
             amount=value_number(line[col])
-            if not amount: continue
+            if not amount and kind=="rap": continue
             data=[month,get(0),get(2),get(3),get(4),get(5),get(6),get(7),get(9),get(10),get(12),get(13),amount,kind]
             if any(not str(data[i]).strip() for i in (0,1,2,3,4,6,8,10)):
                 raise ValueError("Dimensao obrigatoria vazia na linha "+str(len(rows)+4))
@@ -79,6 +79,8 @@ def convert():
         "total_antigo":round(sum(r[12] for r in old),2),
         "tipo_linhas":dict(types),"total_por_tipo":new_totals,"total_anterior_por_tipo":old_totals,"meses_preservados":len(set(r[0] for r in preserved)),
         "atualizado_em":datetime.now(ZoneInfo("America/New_York")).isoformat()}
+    if old and sum(r[13]=="exercicio" for r in rows) < sum(r[13]=="exercicio" for r in old)*0.75:
+        raise ValueError("Queda anormal da quantidade de linhas do exercicio")
     if len(rows)<len(old)*0.3 and old:
         raise ValueError("Reducao anormal de registros no mes: "+json.dumps(report))
     updated={"months":months,"rows":preserved+rows}

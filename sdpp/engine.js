@@ -111,7 +111,7 @@ function accountingCounter(config){
   const match=/^([A-Za-z]{3}\d{3})\s*=\s*(\d+)$/.exec(part);
   if(!match||Number(match[2])<1||Number(match[2])>100)fail('Linhas de outras situações: use SITUAÇÃO=quantidade, com quantidade de 1 a 100.');
   const sit=match[1].toUpperCase();
-  if(sit.startsWith('DFL')||sit.startsWith('AFL'))fail('DFL e AFL já têm regra fixa: 2 e 4 linhas por item, respectivamente.');
+  if(sit.startsWith('DFL')||sit.startsWith('AFL'))fail('DFL e AFL já têm regra fixa: 2 e 6 linhas por item, respectivamente.');
   if(overrides.has(sit))fail(`Situação repetida na configuração de linhas: ${sit}.`);
   overrides.set(sit,Number(match[2]));
  }
@@ -119,7 +119,7 @@ function accountingCounter(config){
   if(entry.type==='OUTROS')return 1;
   const sit=entry.item.sit;
   if(sit.startsWith('DFL'))return 2;
-  if(sit.startsWith('AFL'))return 4;
+  if(sit.startsWith('AFL'))return 6;
   if(overrides.has(sit))return overrides.get(sit);
   fail(`Não há quantidade de linhas contábeis configurada para ${sit}. Informe ${sit}=quantidade no campo de outras situações, conforme a regra do SIAFI.`);
  };

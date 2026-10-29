@@ -80,12 +80,27 @@ function parsePdfLines(pages) {
   const reRub=/^\s*(\d{5})\s+(.+?)\s+([\d.]+)\s+([\d.]+,\d{2})\s*$/;
   const reBank=/^\s*(\d{3})\/([A-Z0-9]+)\/([A-Z0-9]+)\s*(.*?)\s+([\d.]+,\d{2})\s*$/;
   const reStart=/^\s*\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}(?=\s)/;
-  let total=null,reference="",paymentMonth="",rows=[];
+  let total=null,reference="",paymentMonth="",rows=[],reportType=null;
+  const auxiliaryTotals=[];
   for(let pi=0;pi<pages.length;pi++) {
     const lines=pages[pi].map(l=>String(l).normalize("NFC")).filter(l=>l.trim());
+    // O arquivo pode reunir demonstrativos ZO (total consolidado) e PR
+    // (subtotal complementar). O subtotal PR já integra o total ZO.
+    // Algumas páginas de continuação não repetem o identificador do relatório.
+    const sourceHeader=lines.find(line=>/L\.[A-Z0-9]+\.[A-Z0-9]+\s*-\s*CONSULTA CONSIGNACAO/i.test(line));
+    const sourceMatch=sourceHeader?.match(/L\.[A-Z0-9]+\.([A-Z0-9]+)\s*-\s*CONSULTA CONSIGNACAO/i);
+    if(sourceMatch) reportType=sourceMatch[1].toUpperCase();
     for (const line of lines) {
       const m=line.match(/VALOR\s+L[IÍ]QUIDO[.\s]*:\s*([\d.]+,\d{2})/i);
-      if(m) {const n=moneyCents(m[1]); if(total===null)total=n;else if(total!==n)throw new Error("Totais gerais divergentes nas páginas do PDF.");}
+      if(m) {
+        const n=moneyCents(m[1]);
+        if(reportType==="ZO") {
+          if(total!==null&&total!==n)throw new Error("Totais gerais divergentes entre demonstrativos ZO do SIAPE.");
+          total=n;
+        } else {
+          auxiliaryTotals.push({type:reportType||"NÃO IDENTIFICADO",value:n,page:pi+1});
+        }
+      }
       const r=line.match(/M[EÊ]S\/ANO\s+SOLIC\.\s*:\s*([A-Z]{3}\d{4})/i);
       if(r&&!reference)reference=r[1];
       const q=line.match(/M[EÊ]S\s+PAGAMENTO\s*:\s*([A-Z]{3}\d{4})/i);
@@ -104,16 +119,32 @@ function parsePdfLines(pages) {
       if(!/^\d{5}[\dX]$/.test(agenciaOrig))throw new Error(`Página ${pi+1}: agência bancária fora do padrão (${agenciaOrig}).`);
       const row={cnpj:h[1].replace(/\D/g,""),cnpjFmt:h[1],empresa:empresa.trim(),qtdServ:Number(qtdServ.replace(/\./g,"")),
         bruto:moneyCents(bruto),rubrica,tipo:tipo.trim(),qtdLinha:Number(qtdLinha.replace(/\./g,"")),valorLinha:moneyCents(valorLinha),
-        serpro:moneyCents(ser[1]),bco,ag:agenciaOrig.slice(1,5),agenciaOrig,conta,liquido:moneyCents(liquido),pagina:pi+1};
+        serpro:moneyCents(ser[1]),bco,ag:agenciaOrig.slice(1,5),agenciaOrig,conta,liquido:moneyCents(liquido),pagina:pi+1,reportType:reportType||"NÃO IDENTIFICADO"};
       if(row.bruto-row.serpro!==row.liquido) throw new Error(`Página ${pi+1}, CNPJ ${row.cnpjFmt}: valor líquido não confere com bruto menos SERPRO.`);
       rows.push(row);
     }
   }
-  if(total===null)throw new Error("O total geral VALOR LIQUIDO não foi encontrado no relatório SIAPE.");
+  if(total===null) {
+    // Permite relatório único que não seja ZO (inclusive arquivos sem cabeçalho).
+    if(auxiliaryTotals.length===1) total=auxiliaryTotals[0].value;
+    else throw new Error("Não foi possível identificar um único total geral do SIAPE.");
+  }
+  // Relatórios PR (e outros complementares identificados) devem fechar com
+  // os registros que lhes pertencem; nunca somar o subtotal ao total ZO.
+  if(auxiliaryTotals.length>0 && auxiliaryTotals.some(t=>t.type!=="NÃO IDENTIFICADO")) {
+    const totalsBySource=new Map();
+    for(const r of rows) totalsBySource.set(r.reportType,(totalsBySource.get(r.reportType)||0)+r.liquido);
+    for(const subtotal of auxiliaryTotals) {
+      if(subtotal.type==="NÃO IDENTIFICADO")continue;
+      const sourceTotal=totalsBySource.get(subtotal.type);
+      if(sourceTotal!==subtotal.value)
+        throw new Error(`Subtotal do demonstrativo ${subtotal.type} na página ${subtotal.page} não confere: SIAPE ${brl(subtotal.value)}; lançamentos ${brl(sourceTotal||0)}.`);
+    }
+  }
   if(!rows.length)throw new Error("Nenhuma consignação foi encontrada no relatório PDF.");
   const soma=rows.reduce((s,r)=>s+r.liquido,0);
   if(!Number.isSafeInteger(soma)||total!==soma) throw new Error(`Conferência bloqueada: total SIAPE ${brl(total)}, registros ${brl(soma)}. Diferença ${brl(soma-total)}.`);
-  return applyRubricExclusions({rows,total,soma,reference,paymentMonth,pages:pages.length});
+  return applyRubricExclusions({rows,total,soma,reference,paymentMonth,pages:pages.length,auxiliaryTotals});
 }
 
 function generateXml(report, fields) {

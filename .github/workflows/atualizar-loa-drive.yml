@@ -68,11 +68,19 @@ jobs:
           git commit -m 'CABW: atualizar LOA 2026 pelo Drive'
           git push
 
+      - name: Montar publicacao sem planilhas privadas
+        if: steps.horario.outputs.executar == 'true'
+        run: |
+          mkdir -p site-publicado
+          cp index.html site-publicado/index.html
+          cp -R loa-2026 site-publicado/loa-2026
+          cp -R sdpp site-publicado/sdpp
+          rm -f site-publicado/loa-2026/fonte.csv site-publicado/loa-2026/dados-novos.json
       - name: Preparar publicacao no GitHub Pages
         if: steps.horario.outputs.executar == 'true'
         uses: actions/upload-pages-artifact@v3
         with:
-          path: '.'
+          path: 'site-publicado'
       - name: Publicar site no GitHub Pages
         if: steps.horario.outputs.executar == 'true'
         uses: actions/deploy-pages@v4

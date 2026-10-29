@@ -58,15 +58,33 @@ jobs:
       - name: Publicar apenas se houver mudancas
         if: steps.horario.outputs.executar == 'true'
         run: |
-          if git diff --quiet -- loa-2026/dados.json; then
-            echo "Nao houve alteracoes na fonte."
-            exit 0
-          fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add loa-2026/dados.json
-          git commit -m 'CABW: atualizar LOA 2026 pelo Drive'
-          git push
+          # Recarregar a versao mais recente do repositorio e refazer a
+          # transformacao a partir dela para preservar mudancas concorrentes.
+          # Nao forcar o push e nao modificar outros arquivos.
+          for tentativa in 1 2 3; do
+            echo "Publicacao - tentativa $tentativa"
+            git fetch origin main
+            git reset --hard origin/main
+            rm -f loa-2026/dados-novos.json
+            node loa-2026/atualizar-loa.cjs loa-2026/fonte.csv loa-2026/dados.json loa-2026/dados-novos.json
+            if [ ! -f loa-2026/dados-novos.json ]; then
+              echo "Base ja atualizada; nada a publicar."
+              exit 0
+            fi
+            python -m json.tool loa-2026/dados-novos.json > /dev/null
+            mv loa-2026/dados-novos.json loa-2026/dados.json
+            git add loa-2026/dados.json
+            git commit -m 'CABW: atualizar LOA 2026 pelo Drive'
+            if git push origin HEAD:main; then
+              echo "JSON atualizado no GitHub."
+              exit 0
+            fi
+            echo "Repositorio alterado durante a publicacao; tentando novamente."
+          done
+          echo "::error::Nao foi possivel publicar apos tres tentativas."
+          exit 1
 
       - name: Montar publicacao sem planilhas privadas
         if: steps.horario.outputs.executar == 'true'

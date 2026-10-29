@@ -37,11 +37,11 @@ def convert():
     if any(len(r)!=14 for r in previous["rows"]): raise ValueError("Estrutura de linhas inesperada")
     matrix = list(csv.reader(io.StringIO(source_text(SOURCE.read_bytes()))))
     if len(matrix)<4: raise ValueError("CSV incompleto")
-    top = matrix[0]
-    period_candidates = [str(v).upper() for v in top if re.fullmatch(r"(?:JAN|FEV|MAR|ABR|MAI|JUN|JUL|AGO|SET|OUT|NOV|DEZ)/20\d{2}",str(v).strip().upper())]
+    top = [cell for line in matrix[:4] for cell in line]
+    period_candidates = [str(v).strip().upper() for v in top if re.fullmatch(r"(?:JAN|FEV|MAR|ABR|MAI|JUN|JUL|AGO|SET|OUT|NOV|DEZ)/20\d{2}",str(v).strip().upper())]
     if not period_candidates: raise ValueError("Competencia nao localizada no cabecalho")
     month = period_candidates[-1]
-    paid_idx = next((i for i,cell in enumerate(matrix[1]) if "DESPESAS PAGAS" in cell.upper()),None)
+    paid_idx = next((i for line in matrix[:4] for i,cell in enumerate(line) if "DESPESAS PAGAS" in cell.upper()),None)
     if paid_idx is None: raise ValueError("Coluna de pagamentos nao localizada")
     rows=[]
     for line in matrix[3:]:
@@ -54,7 +54,7 @@ def convert():
         budget_year=re.search(r"(20\d{2})NE",commitment,re.I)
         if not budget_year: continue
         kind="exercicio" if budget_year.group(1)==month[-4:] else "rap"
-        data=[month,get(0),get(2),get(3),get(4),get(5),get(6),get(7),get(9),get(10),get(13),get(14),amount,kind]
+        data=[month,get(0),get(2),get(3),get(4),get(5),get(6),get(7),get(9),get(10),get(12),get(13),amount,kind]
         if any(not str(data[i]).strip() for i in (0,1,2,3,4,6,8,10)):
             raise ValueError("Dimensao obrigatoria vazia na linha "+str(len(rows)+4))
         rows.append(data)

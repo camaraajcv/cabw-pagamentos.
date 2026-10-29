@@ -58,7 +58,7 @@ def convert():
                 continue
             amount=value_number(line[col])
             if not amount: continue
-            data=[month,get(0),get(2),get(3),get(4),get(5),get(6),get(7),get(11),get(12),get(15),get(16),amount,kind]
+            data=[month,get(0),get(2),get(3),get(4),get(5),get(6),get(7),get(10),get(11),get(14),get(15),amount,kind]
             if any(not str(data[i]).strip() for i in (0,1,2,3,4,6,8,10)):
                 raise ValueError("Dimensao obrigatoria vazia na linha "+str(len(rows)+4))
             if not re.fullmatch(r"\d{6}",data[8]):

@@ -111,21 +111,33 @@ function accountingCounter(config){
   const match=/^([A-Za-z]{3}\d{3})\s*=\s*(\d+)$/.exec(part);
   if(!match||Number(match[2])<1||Number(match[2])>100)fail('Linhas de outras situações: use SITUAÇÃO=quantidade, com quantidade de 1 a 100.');
   const sit=match[1].toUpperCase();
-  if(sit.startsWith('DFL')||sit.startsWith('AFL'))fail('DFL e AFL já têm regra fixa: 2 e 6 linhas por item, respectivamente.');
+  if(sit.startsWith('DFL')||sit.startsWith('AFL'))fail('DFL e AFL já têm regra fixa: 3 linhas por item DFL e 6 por combinação de empenho e subelemento das AFL.');
   if(overrides.has(sit))fail(`Situação repetida na configuração de linhas: ${sit}.`);
   overrides.set(sit,Number(match[2]));
  }
  return entry=>{
   if(entry.type==='OUTROS')return 1;
   const sit=entry.item.sit;
-  if(sit.startsWith('DFL'))return 2;
+  if(sit.startsWith('DFL'))return 3;
   if(sit.startsWith('AFL'))return 6;
   if(overrides.has(sit))return overrides.get(sit);
   fail(`Não há quantidade de linhas contábeis configurada para ${sit}. Informe ${sit}=quantidade no campo de outras situações, conforme a regra do SIAFI.`);
  };
 }
+function accountingSize(entries,cost){
+ const aflKeys=new Set();let total=0;
+ for(const entry of entries){
+  if(entry.type!=='OUTROS'&&entry.item.sit.startsWith('AFL')){
+   const key=JSON.stringify([entry.item.empe,entry.item.sub]);
+   if(aflKeys.has(key))continue;
+   aflKeys.add(key);
+  }
+  total+=cost(entry);
+ }
+ return total;
+}
 function accountingBatches(flat,cost){
- const size=entries=>entries.reduce((n,e)=>n+cost(e),0);
+ const size=entries=>accountingSize(entries,cost);
  const value=entries=>entries.reduce((n,e)=>n+(e.type==='DA'?-abs(e.item.amount):e.type==='PCO'?e.item.amount:0n),0n);
  if(size(flat)<=100)return [flat];
  const others=flat.filter(e=>e.type==='OUTROS');
@@ -202,7 +214,7 @@ function dh(input){
  const cost=accountingCounter(input.accountingWeights);
  const batches=accountingBatches(flat,cost);
  const details=batches.map(batch=>rebuild(batch,input));allocate(payments,details);
- const detailsSummary=batches.map((batch,i)=>({document:i+1,items:batch.length,dfl:batch.filter(e=>e.type!=='OUTROS'&&e.item.sit.startsWith('DFL')).length,afl:batch.filter(e=>e.type!=='OUTROS'&&e.item.sit.startsWith('AFL')).length,others:batch.filter(e=>e.type==='OUTROS').length,accountingLines:batch.reduce((n,e)=>n+cost(e),0),value:br(details[i].net)}));
+ const detailsSummary=batches.map((batch,i)=>({document:i+1,items:batch.length,dfl:batch.filter(e=>e.type!=='OUTROS'&&e.item.sit.startsWith('DFL')).length,afl:batch.filter(e=>e.type!=='OUTROS'&&e.item.sit.startsWith('AFL')).length,others:batch.filter(e=>e.type==='OUTROS').length,aflGroups:new Set(batch.filter(e=>e.type!=='OUTROS'&&e.item.sit.startsWith('AFL')).map(e=>JSON.stringify([e.item.empe,e.item.sub]))).size,accountingLines:accountingSize(batch,cost),value:br(details[i].net)}));
  const header={codigoLayout:input.layout,dataGeracao:dmy(input.generationDate),sequencialGeracao:BigInt(input.sequence).toString(),anoReferencia:input.headerYear,ugResponsavel:input.headerUg,cpfResponsavel:digits(input.cpf)};
  const initialSequence=Number(input.sequence);
  if(initialSequence+details.length-1>9999)fail('A quantidade de arquivos ultrapassaria o sequencial 9999. Informe um sequencial inicial que comporte todos os XMLs.');

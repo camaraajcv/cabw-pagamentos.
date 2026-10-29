@@ -76,4 +76,44 @@ assert.throws(()=>parsePdfLines([[
   "001/0X2622/000000000012X CIDADE        40,47"
 ]]),/agência bancária fora do padrão/);
 
+
+// Seleção flexível: 32623 excluída por padrão, mas pode ser reincluída.
+// 34116 pode ser excluída pelo operador, alterando ambos os XMLs.
+const {applyRubricExclusions,summarizeRubrics,DEFAULT_EXCLUDED_RUBRICS}=window.SIAPECIVIL;
+assert.ok(DEFAULT_EXCLUDED_RUBRICS.includes("32623"));
+const summaries=summarizeRubrics(pdf.rows);
+assert.equal(summaries.length,3);
+assert.equal(summaries.find(r=>r.code==="32623").total,5000);
+const allIncluded=applyRubricExclusions(pdf,[]);
+assert.equal(allIncluded.totalExport,124294);
+assert.equal(allIncluded.excluidas.length,0);
+assert.equal(allIncluded.exportaveis.length,3);
+const reincXml=generateXml(allIncluded,fields);
+assert.ok(reincXml.deducao.includes("<txtInscrA>03658432000182</txtInscrA>"));
+assert.ok(reincXml.fl.includes("<vlr>1242.94</vlr>"));
+assert.equal(reincXml.quantidade,3);
+const custom=applyRubricExclusions(pdf,["32623","34116"]);
+assert.equal(custom.totalExcluido,104647);
+assert.equal(custom.totalExport,19647);
+assert.equal(custom.excluidas.length,2);
+assert.equal(custom.exportaveis.length,1);
+assert.equal(custom.totalExport+custom.totalExcluido,pdf.total);
+const customXml=generateXml(custom,fields);
+assert.ok(customXml.fl.includes("<vlr>196.47</vlr>"));
+assert.equal(customXml.quantidade,1);
+assert.ok(!customXml.deducao.includes("<txtInscrA>00000000000191</txtInscrA>"));
+assert.ok(customXml.deducao.includes("<agencia>0231</agencia>"));
+const restored=applyRubricExclusions(custom);
+assert.equal(restored.totalExport,pdf.totalExport);
+assert.equal(restored.exportaveis.length,pdf.exportaveis.length);
+assert.equal(pdf.totalExport,119294); // Modelo original permanece inalterado.
+assert.throws(()=>applyRubricExclusions(pdf,["99999"]),/não pertence/);
+assert.throws(()=>applyRubricExclusions(pdf,["ABC"]),/inválidos/);
+assert.throws(()=>generateXml(applyRubricExclusions(pdf,["32623","34113","34116"]),fields),/Não há valor positivo/);
+// Inclusões e exclusões preservam o agrupamento por código de rubrica.
+const repeated=applyRubricExclusions({...pdf,rows:[...pdf.rows,{...pdf.rows[1]}],total:pdf.total+19647,soma:pdf.soma+19647},["34113"]);
+assert.equal(summarizeRubrics(repeated.rows).find(r=>r.code==="34113").count,2);
+assert.equal(repeated.excluidas.length,2);
+assert.equal(repeated.totalExport+repeated.totalExcluido,repeated.total);
+
 console.log("OK: leitura SIAPE, totais, exclusões, bancos, XML DH001/DH002 e validações.");

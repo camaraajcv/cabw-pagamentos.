@@ -55,4 +55,25 @@ const lines=linesFromItems([
 ]);
 assert.equal(lines.length,2);
 assert.ok(lines[0].startsWith("27.214."));
+// O SIAPE permite dígito verificador X na última posição da agência.
+for (const agencia of ["03262X", "00183X", "05853X", "03659X"]) {
+  const novoPdf=parsePdfLines([[
+    "VALOR LIQUIDO...........:   40,47",
+    "12.345.678/0001-90    CONSIGNATARIA TESTE   1     44,00",
+    "34140       CONTRIB ASSOCIATIVA - TESTE    1     3,53",
+    "                                 3,53",
+    "001/"+agencia+"/000000000012X CIDADE        40,47"
+  ]]);
+  assert.equal(novoPdf.total,4047);
+  assert.equal(novoPdf.rows[0].agenciaOrig,agencia);
+  assert.equal(novoPdf.rows[0].ag,agencia.slice(1,5));
+}
+assert.throws(()=>parsePdfLines([[
+  "VALOR LIQUIDO...........:   40,47",
+  "12.345.678/0001-90    CONSIGNATARIA TESTE   1     44,00",
+  "34140       CONTRIB ASSOCIATIVA - TESTE    1     3,53",
+  "                                 3,53",
+  "001/0X2622/000000000012X CIDADE        40,47"
+]]),/agência bancária fora do padrão/);
+
 console.log("OK: leitura SIAPE, totais, exclusões, bancos, XML DH001/DH002 e validações.");

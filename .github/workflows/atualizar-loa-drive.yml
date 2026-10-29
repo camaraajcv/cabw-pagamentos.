@@ -8,6 +8,8 @@ on:
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
 
 concurrency:
   group: cabw-loa-atualizacao
@@ -65,3 +67,12 @@ jobs:
           git add loa-2026/dados.json
           git commit -m 'CABW: atualizar LOA 2026 pelo Drive'
           git push
+
+      - name: Preparar publicacao no GitHub Pages
+        if: steps.horario.outputs.executar == 'true'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+      - name: Publicar site no GitHub Pages
+        if: steps.horario.outputs.executar == 'true'
+        uses: actions/deploy-pages@v4

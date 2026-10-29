@@ -1,0 +1,67 @@
+name: CABW - LOA 2026 automatica
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 12 * * 1-5'
+    - cron: '0 13 * * 1-5'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: cabw-loa-atualizacao
+  cancel-in-progress: false
+
+jobs:
+  atualizar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Conferir horario local
+        id: horario
+        env:
+          EVENTO: ${{ github.event_name }}
+        run: |
+          if [ "$EVENTO" = "workflow_dispatch" ] || [ "$(TZ=America/New_York date +%H)" = "08" ]; then
+            echo "executar=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "executar=false" >> "$GITHUB_OUTPUT"
+          fi
+      - uses: actions/checkout@v4
+        if: steps.horario.outputs.executar == 'true'
+      - uses: actions/setup-python@v5
+        if: steps.horario.outputs.executar == 'true'
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        if: steps.horario.outputs.executar == 'true'
+        with:
+          node-version: '22'
+      - name: Instalar dependencias
+        if: steps.horario.outputs.executar == 'true'
+        run: pip install google-auth requests
+      - name: Obter CSV do Drive
+        if: steps.horario.outputs.executar == 'true'
+        env:
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+        run: python scripts/drive_to_loa.py
+      - name: Converter CSV e validar JSON
+        if: steps.horario.outputs.executar == 'true'
+        run: |
+          node loa-2026/atualizar-loa.cjs loa-2026/fonte.csv loa-2026/dados.json loa-2026/dados-novos.json
+          if [ -f loa-2026/dados-novos.json ]; then
+            python -m json.tool loa-2026/dados-novos.json > /dev/null
+            mv loa-2026/dados-novos.json loa-2026/dados.json
+          fi
+      - name: Publicar apenas se houver mudancas
+        if: steps.horario.outputs.executar == 'true'
+        run: |
+          if git diff --quiet -- loa-2026/dados.json; then
+            echo "Nao houve alteracoes na fonte."
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add loa-2026/dados.json
+          git commit -m 'CABW: atualizar LOA 2026 pelo Drive'
+          git push

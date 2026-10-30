@@ -55,12 +55,15 @@ def main():
             if k not in target_keys:
                 raise ValueError("Pagamento sem agrupamento LOA: "+kind+" / "+str(k))
             sums[k]+=cents(r[12])
-        if len(target_keys)!=len(targets):
-            raise ValueError("Chave duplicada no painel LOA para "+kind)
+        grouped=defaultdict(list)
         for r in targets:
-            r["paid"]=round(sums[key_loa(r)]/100,2)
-            if kind=="exercicio":
-                r["settled"]=r["paid"]
+            grouped[key_loa(r)].append(r)
+        for k, matching in grouped.items():
+            primary=next((r for r in matching if cents(r["paid"])!=0),matching[0])
+            for r in matching:
+                r["paid"]=round(sums[k]/100,2) if r is primary else 0
+                if kind=="exercicio":
+                    r["settled"]=r["paid"]
         loatotal=total(targets)
         paymenttotal=sum(cents(r[12]) for r in payment_rows)
         if loatotal!=paymenttotal:

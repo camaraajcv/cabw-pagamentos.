@@ -293,7 +293,7 @@ var oldTarget = old.data.rows.filter((r) => r.month === month);
 var newTarget = prepared.data.rows.filter((r) => r.month === month);
 if (JSON.stringify((old.data.rpRows || []).filter((r) => !prepared.summary.rpUpdatedMonths.includes(r.month))) !== JSON.stringify((prepared.data.rpRows || []).filter((r) => !prepared.summary.rpUpdatedMonths.includes(r.month)))) throw Error("Hist\xF3rico de RP alterado: publica\xE7\xE3o cancelada");
 var changed = JSON.stringify(oldTarget) !== JSON.stringify(newTarget) || JSON.stringify((old.data.rpRows || []).filter((r) => prepared.summary.rpUpdatedMonths.includes(r.month))) !== JSON.stringify((prepared.data.rpRows || []).filter((r) => prepared.summary.rpUpdatedMonths.includes(r.month))) || JSON.stringify(old.data.ugAliases) !== JSON.stringify(prepared.data.ugAliases);
-if (changed) {
+if (true) {
   import_node_fs.default.writeFileSync(outPath, JSON.stringify({ data: prepared.data, etag: "github", source: { fileId: "1vSKMEtAoZemky6ZUvtqC0pbTXIZD9zP5", folderId: "1cts6q4qAOZwsw3Vtz_Gq9g3cFDVuFCvU" } }));
 }
 console.log(JSON.stringify({ changed, ...prepared.summary }));

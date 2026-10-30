@@ -3,8 +3,7 @@ name: CABW - Pagamentos automaticos
 on:
   workflow_dispatch:
   schedule:
-    - cron: '10 11 * * 1-5'
-    - cron: '10 12 * * 1-5'
+    - cron: '10,20,30,40,50 11,12,13 * * 1-5'
 
 permissions:
   contents: write
@@ -24,7 +23,7 @@ jobs:
         env:
           EVENTO: ${{ github.event_name }}
         run: |
-          if [ "$EVENTO" = "workflow_dispatch" ] || [ "$(TZ=America/New_York date +%H)" = "07" ]; then
+          if [ "$EVENTO" = "workflow_dispatch" ] || [ "$(TZ=America/New_York date +%H)" = "07" ] || [ "$(TZ=America/New_York date +%H)" = "08" ]; then
             echo "executar=true" >> "$GITHUB_OUTPUT"
           else
             echo "executar=false" >> "$GITHUB_OUTPUT"

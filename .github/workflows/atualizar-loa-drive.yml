@@ -71,7 +71,7 @@ jobs:
             python -m json.tool loa-2026/dados-novos.json > /dev/null
             if cmp -s loa-2026/dados.json loa-2026/dados-novos.json; then
               echo "LOA e pagamentos ja conciliados; sem mudancas."
-              break
+              exit 0
             fi
             mv loa-2026/dados-novos.json loa-2026/dados.json
             git add loa-2026/dados.json

@@ -1,104 +1,17 @@
-name: CABW - LOA 2026 automatica
+name: CABW - LOA 2026 manual (contingencia)
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '0,15,30,45 11,12,13,14,15 * * 1-5'
 
 permissions:
-  contents: write
-  pages: write
-  id-token: write
-
-concurrency:
-  group: cabw-loa-atualizacao
-  cancel-in-progress: false
+  contents: read
 
 jobs:
-  atualizar:
+  aviso:
     runs-on: ubuntu-latest
     steps:
-      - name: Conferir horario local
-        id: horario
-        env:
-          EVENTO: ${{ github.event_name }}
+      - name: Informar rotina vigente
         run: |
-          if [ "$EVENTO" = "workflow_dispatch" ] || [ "$(TZ=America/New_York date +%H)" = "07" ] || [ "$(TZ=America/New_York date +%H)" = "08" ] || [ "$(TZ=America/New_York date +%H)" = "09" ] || [ "$(TZ=America/New_York date +%H)" = "10" ]; then
-            echo "executar=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "executar=false" >> "$GITHUB_OUTPUT"
-          fi
-      - uses: actions/checkout@v4
-        if: steps.horario.outputs.executar == 'true'
-      - uses: actions/setup-python@v5
-        if: steps.horario.outputs.executar == 'true'
-        with:
-          python-version: '3.12'
-      - uses: actions/setup-node@v4
-        if: steps.horario.outputs.executar == 'true'
-        with:
-          node-version: '22'
-      - name: Instalar dependencias
-        if: steps.horario.outputs.executar == 'true'
-        run: pip install google-auth requests
-      - name: Obter CSV do Drive
-        if: steps.horario.outputs.executar == 'true'
-        env:
-          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
-        run: |
-          python scripts/drive_to_loa.py
-          python scripts/drive_to_pagamentos.py
-      - name: Publicar apenas se houver mudancas
-        if: steps.horario.outputs.executar == 'true'
-        run: |
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          # Recarregar a versao mais recente do repositorio e refazer a
-          # transformacao a partir dela para preservar mudancas concorrentes.
-          # Nao forcar o push e nao modificar outros arquivos.
-          for tentativa in 1 2 3; do
-            echo "Publicacao - tentativa $tentativa"
-            git fetch origin main
-            git reset --hard origin/main
-            rm -f loa-2026/dados-novos.json
-            node loa-2026/atualizar-loa.cjs loa-2026/fonte.csv loa-2026/dados.json loa-2026/dados-novos.json
-            if [ ! -f loa-2026/dados-novos.json ]; then
-              echo "::error::Conversor LOA nao produziu arquivo"
-              exit 1
-            fi
-            python scripts/converter_pagamentos.py
-            python scripts/conciliar_valores_loa.py
-            python -m json.tool loa-2026/dados-novos.json > /dev/null
-            if cmp -s loa-2026/dados.json loa-2026/dados-novos.json; then
-              echo "LOA e pagamentos ja conciliados; sem mudancas."
-              exit 0
-            fi
-            mv loa-2026/dados-novos.json loa-2026/dados.json
-            git add loa-2026/dados.json
-            git commit -m 'CABW: atualizar LOA 2026 pelo Drive'
-            if git push origin HEAD:main; then
-              echo "JSON atualizado no GitHub."
-              exit 0
-            fi
-            echo "Repositorio alterado durante a publicacao; tentando novamente."
-          done
-          echo "::error::Nao foi possivel publicar apos tres tentativas."
-          exit 1
-
-      - name: Montar publicacao sem planilhas privadas
-        if: steps.horario.outputs.executar == 'true'
-        run: |
-          mkdir -p site-publicado
-          cp index.html site-publicado/index.html
-          cp fornecedores.js site-publicado/fornecedores.js
-          cp -R loa-2026 site-publicado/loa-2026
-          cp -R sdpp site-publicado/sdpp
-          rm -f site-publicado/loa-2026/fonte.csv site-publicado/loa-2026/dados-novos.json
-      - name: Preparar publicacao no GitHub Pages
-        if: steps.horario.outputs.executar == 'true'
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: 'site-publicado'
-      - name: Publicar site no GitHub Pages
-        if: steps.horario.outputs.executar == 'true'
-        uses: actions/deploy-pages@v4
+          echo "A atualizacao automatica da LOA foi consolidada em:"
+          echo "CABW - Atualizacao automatica completa"
+          echo "Este workflow permanece apenas como referencia/contingencia."

@@ -70,12 +70,8 @@ def main():
             raise ValueError("Total nao conciliado: "+kind)
         audit[kind]={"linhas":len(payment_rows),"grupos":len(targets),"total":round(loatotal/100,2)}
     previous=current["data"]
-    comparison=json.loads(json.dumps(data))
-    comparison["updatedAt"]=previous.get("updatedAt")
-    if comparison==previous:
-        data["updatedAt"]=previous.get("updatedAt")
-    else:
-        data["updatedAt"]=datetime.now(timezone.utc).isoformat().replace("+00:00","Z")
+    # Carimbo da carga efetuada, independente da variacao dos valores.
+    data["updatedAt"]=datetime.now(timezone.utc).isoformat().replace("+00:00","Z")
     # Nao modificar registros de meses anteriores. A LOA usa posicoes mensais.
     for field in ("rows","rpRows"):
         original=[r for r in previous[field] if r["month"]!=month]

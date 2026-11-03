@@ -1,6 +1,9 @@
 name: CABW - Pagamentos automaticos
 
 on:
+  push:
+    paths:
+      - 'fornecedores.js'
   workflow_dispatch:
   schedule:
     - cron: '10,25,40,55 11,12,13,14,15 * * 1-5'
@@ -23,7 +26,7 @@ jobs:
         env:
           EVENTO: ${{ github.event_name }}
         run: |
-          if [ "$EVENTO" = "workflow_dispatch" ] || [ "$(TZ=America/New_York date +%H)" = "07" ] || [ "$(TZ=America/New_York date +%H)" = "08" ] || [ "$(TZ=America/New_York date +%H)" = "09" ] || [ "$(TZ=America/New_York date +%H)" = "10" ]; then
+          if [ "$EVENTO" = "workflow_dispatch" ] || [ "$EVENTO" = "push" ] || [ "$(TZ=America/New_York date +%H)" = "07" ] || [ "$(TZ=America/New_York date +%H)" = "08" ] || [ "$(TZ=America/New_York date +%H)" = "09" ] || [ "$(TZ=America/New_York date +%H)" = "10" ]; then
             echo "executar=true" >> "$GITHUB_OUTPUT"
           else
             echo "executar=false" >> "$GITHUB_OUTPUT"
@@ -74,6 +77,7 @@ jobs:
         run: |
           mkdir -p site-publicado
           cp index.html site-publicado/index.html
+          cp fornecedores.js site-publicado/fornecedores.js
           cp -R loa-2026 site-publicado/loa-2026
           cp -R sdpp site-publicado/sdpp
           rm -f site-publicado/loa-2026/fonte.csv site-publicado/loa-2026/dados-novos.json

@@ -1,3 +1,4 @@
+/* Consulta por favorecido - CABW | modulo carregado apos o painel principal. */
 (function(){
 "use strict";
 var node=document.getElementById("dataset"),base=document.querySelector(".counts"),month=document.getElementById("month");

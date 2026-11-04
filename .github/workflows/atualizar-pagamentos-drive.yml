@@ -3,9 +3,9 @@ name: CABW - Atualizacao automatica completa
 on:
   workflow_dispatch:
   schedule:
-    # Janela ampla em UTC; o passo de horario limita a execucao a 07h-10h em Washington,
-    # inclusive nas mudancas entre horario padrao e horario de verao.
-    - cron: '0,15,30,45 11,12,13,14,15 * * 1-5'
+    # Executa em horario local de Washington e evita minutos de maior carga do GitHub.
+    - cron: '7,22,37,52 7-10 * * 1-5'
+      timezone: 'America/New_York'
 
 permissions:
   contents: write
@@ -20,17 +20,9 @@ jobs:
   atualizar:
     runs-on: ubuntu-latest
     steps:
-      - name: Conferir horario de Washington
+      - name: Liberar execucao
         id: horario
-        env:
-          EVENTO: ${{ github.event_name }}
-        run: |
-          HORA="$(TZ=America/New_York date +%H)"
-          if [ "$EVENTO" = "workflow_dispatch" ] || [ "$HORA" = "07" ] || [ "$HORA" = "08" ] || [ "$HORA" = "09" ] || [ "$HORA" = "10" ]; then
-            echo "executar=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "executar=false" >> "$GITHUB_OUTPUT"
-          fi
+        run: echo "executar=true" >> "$GITHUB_OUTPUT"
 
       - uses: actions/checkout@v4
         if: steps.horario.outputs.executar == 'true'

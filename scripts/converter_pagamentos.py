@@ -18,7 +18,11 @@ def source_text(raw):
         raw = base64.b64decode(obj["ContentBytes"], validate=True)
     if raw.startswith((b"\xff\xfe", b"\xfe\xff")):
         return raw.decode("utf-16")
-    return raw.decode("utf-8-sig")
+    try:
+        return raw.decode("utf-8-sig")
+    except UnicodeDecodeError:
+        # Exportacoes do Tesouro/Power Automate podem chegar em ANSI/Windows-1252.
+        return raw.decode("cp1252")
 
 def value_number(x):
     s = str(x or "").strip().replace(" ", "").replace("\u00a0", "")

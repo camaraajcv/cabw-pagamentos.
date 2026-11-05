@@ -3,8 +3,10 @@ name: CABW - Atualizacao automatica completa
 on:
   workflow_dispatch:
   schedule:
-    # Executa em horario local de Washington e evita minutos de maior carga do GitHub.
-    - cron: '7,22,37,52 7-10 * * 1-5'
+    # Rotina redundante em horario local de Washington.
+    # A janela ampliada reduz o risco de atrasos ou descarte do scheduler do GitHub.
+    # Minutos fora do inicio da hora evitam os periodos de maior carga.
+    - cron: '7,22,37,52 6-13 * * 1-5'
       timezone: 'America/New_York'
 
 permissions:

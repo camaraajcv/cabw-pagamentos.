@@ -2,6 +2,11 @@ name: CABW - Atualizacao automatica completa
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - '.automation/heartbeat.txt'
   schedule:
     # Rotina redundante em horario local de Washington.
     # A janela ampliada reduz o risco de atrasos ou descarte do scheduler do GitHub.

@@ -2,6 +2,30 @@
 """Ler CSV privado do Drive para o importador LOA CABW."""
 import json
 import os
+import base64
+import csv
+import io
+from openpyxl import load_workbook
+
+def normalize_source(payload: bytes) -> bytes:
+    raw = payload
+    stripped = raw.lstrip()
+    if stripped.startswith(b"{"):
+        wrapper = json.loads(raw.decode("utf-8-sig"))
+        content_b64 = wrapper.get("ContentBytes")
+        if not isinstance(content_b64, str):
+            raise SystemExit("Envelope do Power Automate sem ContentBytes.")
+        raw = base64.b64decode(content_b64)
+    if raw.startswith(b"PK\x03\x04"):
+        wb = load_workbook(io.BytesIO(raw), read_only=True, data_only=True)
+        ws = wb.active
+        out = io.StringIO(newline="")
+        writer = csv.writer(out, lineterminator="\n")
+        for row in ws.iter_rows(values_only=True):
+            writer.writerow(["" if v is None else v for v in row])
+        return out.getvalue().encode("utf-8-sig")
+    return raw
+
 from pathlib import Path
 from google.oauth2 import service_account
 from google.auth.transport.requests import Request
@@ -50,5 +74,6 @@ response = requests.get(
 response.raise_for_status()
 if len(response.content) < 30:
     raise SystemExit("Fonte vazia; arquivo atual nao sera alterado")
-Path("loa-2026/fonte.csv").write_bytes(response.content)
-print("CSV obtido com sucesso (" + str(len(response.content)) + " bytes)")
+normalized = normalize_source(response.content)
+Path("loa-2026/fonte.csv").write_bytes(normalized)
+print("Fonte LOA obtida e normalizada (" + str(len(normalized)) + " bytes)")

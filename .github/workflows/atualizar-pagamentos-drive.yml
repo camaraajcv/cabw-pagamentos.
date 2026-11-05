@@ -59,7 +59,9 @@ jobs:
             python scripts/publicar_pagamentos.py
             echo "Pagamentos: dados novos detectados."
           else
-            echo "Pagamentos: fonte sem alteracao; nada a publicar."
+            # Sincroniza a interface (mes padrao/carimbo) mesmo sem mudanca monetaria.
+            python scripts/publicar_pagamentos.py
+            echo "Pagamentos: dados iguais; interface sincronizada para a competencia mais recente."
           fi
 
       - name: Commitar pagamentos se houver mudanca

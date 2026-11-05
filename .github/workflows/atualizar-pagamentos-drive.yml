@@ -33,7 +33,7 @@ jobs:
           python-version: '3.12'
 
       - name: Instalar dependencias
-        run: python -m pip install google-auth requests
+        run: python -m pip install google-auth requests openpyxl
 
       - name: Ler fonte de pagamentos do Google Drive
         env:

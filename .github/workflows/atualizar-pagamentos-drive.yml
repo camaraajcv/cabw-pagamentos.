@@ -2,12 +2,6 @@ name: CABW - Pagamentos automaticos
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
-    paths:
-      - '.automation/heartbeat.txt'
-      - '.automation/pagamentos-heartbeat.txt'
   schedule:
     - cron: '7,22,37,52 6-13 * * 1-5'
       timezone: 'America/New_York'

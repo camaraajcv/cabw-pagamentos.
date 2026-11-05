@@ -1,17 +1,116 @@
-name: CABW - LOA 2026 manual (contingencia)
+name: CABW - LOA 2026 automatica
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - '.automation/heartbeat.txt'
+  schedule:
+    - cron: '12,27,42,57 6-13 * * 1-5'
+      timezone: 'America/New_York'
 
 permissions:
-  contents: read
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: cabw-loa-2026
+  cancel-in-progress: false
 
 jobs:
-  aviso:
+  loa:
     runs-on: ubuntu-latest
     steps:
-      - name: Informar rotina vigente
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Instalar dependencias
+        run: python -m pip install google-auth requests
+
+      - name: Ler fonte LOA do Google Drive
+        env:
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+        run: python scripts/drive_to_loa.py
+
+      - name: Converter e validar LOA
         run: |
-          echo "A atualizacao automatica da LOA foi consolidada em:"
-          echo "CABW - Atualizacao automatica completa"
-          echo "Este workflow permanece apenas como referencia/contingencia."
+          rm -f loa-2026/dados-novos.json
+          node loa-2026/atualizar-loa.cjs loa-2026/fonte.csv loa-2026/dados.json loa-2026/dados-novos.json
+          test -f loa-2026/dados-novos.json
+          python scripts/conciliar_valores_loa.py
+          python - <<'PY'
+          import copy, json
+          from pathlib import Path
+          atual_path = Path("loa-2026/dados.json")
+          novo_path = Path("loa-2026/dados-novos.json")
+          atual = json.loads(atual_path.read_text(encoding="utf-8"))
+          novo = json.loads(novo_path.read_text(encoding="utf-8"))
+          def sem_carimbo(obj):
+              obj = copy.deepcopy(obj)
+              if isinstance(obj, dict) and isinstance(obj.get("data"), dict):
+                  obj["data"].pop("updatedAt", None)
+              return obj
+          if sem_carimbo(atual) == sem_carimbo(novo):
+              novo_path.unlink()
+              print("LOA: fonte sem alteracao; nada a publicar.")
+          else:
+              novo_path.replace(atual_path)
+              print("LOA: dados novos detectados.")
+          PY
+          python -m json.tool loa-2026/dados.json > /dev/null
+
+      - name: Commitar LOA se houver mudanca
+        id: publicar
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          if git diff --quiet -- loa-2026/dados.json; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git add loa-2026/dados.json
+          git commit -m 'CABW: atualizar LOA 2026 pelo Drive'
+          for tentativa in 1 2 3; do
+            if git push origin HEAD:main; then
+              echo "changed=true" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            git pull --rebase origin main
+          done
+          exit 1
+
+      - name: Sincronizar branch apos publicacao
+        if: steps.publicar.outputs.changed == 'true'
+        run: git pull --rebase origin main
+
+      - name: Montar GitHub Pages
+        if: steps.publicar.outputs.changed == 'true'
+        run: |
+          mkdir -p site-publicado
+          cp index.html site-publicado/index.html
+          cp fornecedores.js site-publicado/fornecedores.js
+          cp -R loa-2026 site-publicado/loa-2026
+          cp -R sdpp site-publicado/sdpp
+          rm -f site-publicado/loa-2026/fonte.csv site-publicado/loa-2026/dados-novos.json
+
+      - name: Preparar GitHub Pages
+        if: steps.publicar.outputs.changed == 'true'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site-publicado
+
+      - name: Publicar GitHub Pages
+        if: steps.publicar.outputs.changed == 'true'
+        uses: actions/deploy-pages@v4

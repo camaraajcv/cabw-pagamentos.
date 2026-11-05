@@ -1,4 +1,4 @@
-name: CABW - Atualizacao automatica completa
+name: CABW - Pagamentos automaticos
 
 on:
   workflow_dispatch:
@@ -8,9 +8,6 @@ on:
     paths:
       - '.automation/heartbeat.txt'
   schedule:
-    # Rotina redundante em horario local de Washington.
-    # A janela ampliada reduz o risco de atrasos ou descarte do scheduler do GitHub.
-    # Minutos fora do inicio da hora evitam os periodos de maior carga.
     - cron: '7,22,37,52 6-13 * * 1-5'
       timezone: 'America/New_York'
 
@@ -20,130 +17,76 @@ permissions:
   id-token: write
 
 concurrency:
-  group: cabw-atualizacao-completa
+  group: cabw-pagamentos
   cancel-in-progress: false
 
 jobs:
-  atualizar:
+  pagamentos:
     runs-on: ubuntu-latest
     steps:
-      - name: Liberar execucao
-        id: horario
-        run: echo "executar=true" >> "$GITHUB_OUTPUT"
-
       - uses: actions/checkout@v4
-        if: steps.horario.outputs.executar == 'true'
         with:
           fetch-depth: 0
 
       - uses: actions/setup-python@v5
-        if: steps.horario.outputs.executar == 'true'
         with:
           python-version: '3.12'
 
-      - uses: actions/setup-node@v4
-        if: steps.horario.outputs.executar == 'true'
-        with:
-          node-version: '22'
-
       - name: Instalar dependencias
-        if: steps.horario.outputs.executar == 'true'
         run: python -m pip install google-auth requests
 
-      - name: Ler fontes privadas do Google Drive
-        if: steps.horario.outputs.executar == 'true'
+      - name: Ler fonte de pagamentos do Google Drive
         env:
           GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
-        run: |
-          python scripts/drive_to_pagamentos.py
-          python scripts/drive_to_loa.py
+        run: python scripts/drive_to_pagamentos.py
 
-      - name: Validar pagamentos e atualizar somente se os dados mudaram
-        if: steps.horario.outputs.executar == 'true'
+      - name: Converter e validar pagamentos
         run: |
           python scripts/converter_pagamentos.py
           python - <<'PY'
           import json, re
           from pathlib import Path
-
           html = Path("index.html").read_text(encoding="utf-8")
           m = re.search(r'<script id="dataset" type="application/json">(.*?)</script>', html, re.S)
           if not m:
               raise SystemExit("Dataset atual nao localizado no index.html")
           atual = json.loads(m.group(1))
           novo = json.loads(Path("novo-dataset.json").read_text(encoding="utf-8"))
-
           Path(".pagamentos-alterados").write_text("1" if atual != novo else "0")
           PY
           if [ "$(cat .pagamentos-alterados)" = "1" ]; then
             python scripts/publicar_pagamentos.py
             echo "Pagamentos: dados novos detectados."
           else
-            echo "Pagamentos: fonte sem alteracao de dados; carimbo preservado."
+            echo "Pagamentos: fonte sem alteracao; nada a publicar."
           fi
 
-      - name: Validar LOA e atualizar somente se os dados mudaram
-        if: steps.horario.outputs.executar == 'true'
-        run: |
-          rm -f loa-2026/dados-novos.json
-          node loa-2026/atualizar-loa.cjs loa-2026/fonte.csv loa-2026/dados.json loa-2026/dados-novos.json
-          test -f loa-2026/dados-novos.json
-          python scripts/conciliar_valores_loa.py
-          python - <<'PY'
-          import copy, json
-          from pathlib import Path
-
-          atual_path = Path("loa-2026/dados.json")
-          novo_path = Path("loa-2026/dados-novos.json")
-          atual = json.loads(atual_path.read_text(encoding="utf-8"))
-          novo = json.loads(novo_path.read_text(encoding="utf-8"))
-
-          def sem_carimbo(obj):
-              obj = copy.deepcopy(obj)
-              if isinstance(obj, dict) and isinstance(obj.get("data"), dict):
-                  obj["data"].pop("updatedAt", None)
-              return obj
-
-          if sem_carimbo(atual) == sem_carimbo(novo):
-              novo_path.unlink()
-              print("LOA: fonte sem alteracao de dados; carimbo preservado.")
-          else:
-              novo_path.replace(atual_path)
-              print("LOA: dados novos detectados.")
-          PY
-          python -m json.tool loa-2026/dados.json > /dev/null
-
-      - name: Publicar no Git apenas quando houver mudancas reais
+      - name: Commitar pagamentos se houver mudanca
         id: publicar
-        if: steps.horario.outputs.executar == 'true'
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-
-          if git diff --quiet -- index.html loa-2026/dados.json; then
+          if git diff --quiet -- index.html; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
-            echo "Nenhuma mudanca real nas fontes. Nada sera publicado."
             exit 0
           fi
-
-          git add index.html loa-2026/dados.json
-          git commit -m 'CABW: atualizar paineis automaticamente pelo Drive'
-
+          git add index.html
+          git commit -m 'CABW: atualizar painel de pagamentos pelo Drive'
           for tentativa in 1 2 3; do
             if git push origin HEAD:main; then
               echo "changed=true" >> "$GITHUB_OUTPUT"
-              echo "Paineis atualizados no GitHub."
               exit 0
             fi
-            echo "Push concorrente detectado; tentativa $tentativa de 3."
             git pull --rebase origin main
           done
-
-          echo "::error::Nao foi possivel publicar apos tres tentativas."
           exit 1
 
-      - name: Montar publicacao sem fontes privadas
-        if: steps.horario.outputs.executar == 'true' && steps.publicar.outputs.changed == 'true'
+      - name: Sincronizar branch apos publicacao
+        if: steps.publicar.outputs.changed == 'true'
+        run: git pull --rebase origin main
+
+      - name: Montar GitHub Pages
+        if: steps.publicar.outputs.changed == 'true'
         run: |
           mkdir -p site-publicado
           cp index.html site-publicado/index.html
@@ -153,11 +96,11 @@ jobs:
           rm -f site-publicado/loa-2026/fonte.csv site-publicado/loa-2026/dados-novos.json
 
       - name: Preparar GitHub Pages
-        if: steps.horario.outputs.executar == 'true' && steps.publicar.outputs.changed == 'true'
+        if: steps.publicar.outputs.changed == 'true'
         uses: actions/upload-pages-artifact@v3
         with:
           path: site-publicado
 
       - name: Publicar GitHub Pages
-        if: steps.horario.outputs.executar == 'true' && steps.publicar.outputs.changed == 'true'
+        if: steps.publicar.outputs.changed == 'true'
         uses: actions/deploy-pages@v4

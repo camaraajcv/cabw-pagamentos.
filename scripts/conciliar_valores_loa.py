@@ -14,6 +14,7 @@ from pathlib import Path
 BASE=Path("loa-2026/dados.json")
 NOVO=Path("loa-2026/dados-novos.json")
 FONTE=Path("novo-dataset.json")
+HTML=Path("index.html")
 MONTHS=["JAN","FEV","MAR","ABR","MAI","JUN","JUL","AGO","SET","OUT","NOV","DEZ"]
 
 def cents(n):
@@ -31,7 +32,14 @@ def total(rows,field="paid"):
 def main():
     current=json.loads(BASE.read_text(encoding="utf-8"))
     obj=json.loads(NOVO.read_text(encoding="utf-8"))
-    payments=json.loads(FONTE.read_text(encoding="utf-8"))
+    if FONTE.exists():
+        payments=json.loads(FONTE.read_text(encoding="utf-8"))
+    else:
+        html=HTML.read_text(encoding="utf-8")
+        m=re.search(r'<script id="dataset" type="application/json">(.*?)</script>',html,re.S)
+        if not m:
+            raise ValueError("Dataset de pagamentos nao localizado no index.html")
+        payments=json.loads(m.group(1))
     data=obj["data"]
     month=data["reference"]
     match=re.fullmatch(r"(20\d{2})-(0[1-9]|1[0-2])",month)

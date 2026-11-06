@@ -1,7 +1,19 @@
 /* CABW - Painel de Pagamentos usando a mesma linguagem visual/estrutura do LOA 2026 */
-(function(){
+(async function(){
 "use strict";
-const ds=JSON.parse(document.getElementById("dataset").textContent);
+let ds=null;
+try{
+  const r=await fetch("./pagamentos-dados.json?ts="+Date.now(),{cache:"no-store"});
+  if(!r.ok) throw new Error("HTTP "+r.status);
+  ds=await r.json();
+}catch(e){
+  const node=document.getElementById("dataset");
+  if(node&&node.textContent.trim()) ds=JSON.parse(node.textContent);
+}
+if(!ds||!Array.isArray(ds.months)||!Array.isArray(ds.rows)||!ds.rows.length){
+  document.body.insertAdjacentHTML("afterbegin",'<div class="notice" style="margin:12px">Base de pagamentos não disponível nesta publicação.</div>');
+  return;
+}
 const months=ds.months||[], rows=ds.rows||[];
 const $=id=>document.getElementById(id);
 const money=v=>"US$ "+new Intl.NumberFormat("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2}).format(v||0);

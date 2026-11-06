@@ -83,7 +83,15 @@ function renderFilters(){
 function renderOverview(){
  const rr=currentRows(), total=sum(rr), ex=sum(rr,r=>r[idx.type]==="exercicio"), rp=sum(rr,r=>r[idx.type]==="rap");
  const vendorCount=new Set(rr.map(r=>norm(r[idx.vendor]))).size;
- const series=months.map(m=>rows.filter(r=>r[idx.month]===m).reduce((a,r)=>a+Number(r[idx.amount]||0),0));
+ const movementRows=rows.filter(r=>{
+   if(state.type&&r[idx.type]!==state.type)return false;
+   if(state.nd&&r[idx.nd]!==state.nd)return false;
+   if(state.pi&&r[idx.pi]!==state.pi)return false;
+   if(state.ug&&String(r[idx.ug])!==state.ug)return false;
+   if(state.vendor&&!norm(r[idx.vendor]).includes(norm(state.vendor))&&!norm(r[idx.code]).includes(norm(state.vendor)))return false;
+   return true;
+ });
+ const series=months.map(m=>movementRows.filter(r=>r[idx.month]===m).reduce((a,r)=>a+Number(r[idx.amount]||0),0));
  const mov=movement(series), mi=months.indexOf(state.month);
  $("kpi-total").textContent=money(total);$("kpi-exercicio").textContent=money(ex);$("kpi-rp").textContent=money(rp);$("kpi-vendors").textContent=vendorCount.toLocaleString("pt-BR");$("kpi-movement").textContent=money(mi>=0?mov[mi]:0);
  $("record-count").textContent=rows.length.toLocaleString("pt-BR")+" registros";$("position-month").textContent=monthLabel(state.month);$("scope-summary").textContent=rr.length.toLocaleString("pt-BR")+" registros no recorte · "+monthLabel(state.month);

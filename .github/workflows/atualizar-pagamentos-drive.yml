@@ -76,14 +76,16 @@ jobs:
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
 
           cp index.html /tmp/index.html
+          cp pagamentos-dados.json /tmp/pagamentos-dados.json
           git fetch origin main
           git reset --hard origin/main
           cp /tmp/index.html index.html
+          cp /tmp/pagamentos-dados.json pagamentos-dados.json
 
-          if git diff --quiet -- index.html; then
+          if git diff --quiet -- index.html pagamentos-dados.json; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
           else
-            git add index.html
+            git add index.html pagamentos-dados.json
             git commit -m 'CABW: atualizar painel de pagamentos pelo Drive'
             git push origin HEAD:main
             echo "changed=true" >> "$GITHUB_OUTPUT"
@@ -95,6 +97,7 @@ jobs:
           cp index.html site-publicado/index.html
           cp painel.js site-publicado/painel.js
           cp painel.css site-publicado/painel.css
+          cp pagamentos-dados.json site-publicado/pagamentos-dados.json
           cp -R loa-2026 site-publicado/loa-2026
           cp -R sdpp site-publicado/sdpp
           rm -f site-publicado/loa-2026/fonte.csv site-publicado/loa-2026/dados-novos.json

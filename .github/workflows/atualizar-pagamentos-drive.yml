@@ -3,6 +3,7 @@ name: CABW - Pagamentos automaticos
 # force-consolidated-ui-2026-11-06-2
 # force-percent-execution-2026-11-06
 # force-ug-attention-history-2026-11-06
+# force-ug-aliases-2026-11-06
 
 on:
   workflow_dispatch:

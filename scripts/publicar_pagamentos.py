@@ -32,4 +32,5 @@ if "./loa-2026/style.css" not in result or "./painel.js" not in result:
     raise SystemExit("HTML final nao esta ligado ao CSS/JS do novo painel.")
 
 html_file.write_text(result,encoding="utf-8")
+Path("pagamentos-dados.json").write_text(dataset,encoding="utf-8")
 print("Painel publicado usando estrutura e CSS do LOA 2026.")

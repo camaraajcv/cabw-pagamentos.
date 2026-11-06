@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <meta name="color-scheme" content="light"/>
+  <title>CABW | Painel de Pagamentos</title>
+  <link rel="stylesheet" href="./loa-2026/style.css"/>
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar" aria-label="Navegação principal">
+    <div class="identity"><img src="./loa-2026/cabw.webp" alt="Brasão da CABW"/><div>CABW<span>DIVISÃO DE FINANÇAS</span></div></div>
+    <div class="side-line"></div>
+    <span class="nav-label">PORTAL DA DIVISÃO DE FINANÇAS</span>
+    <a class="nav" href="./loa-2026/"><span>HOME / LOA 2026</span></a>
+    <a class="nav active" aria-current="page" href="./"><span>Pagamentos realizados</span></a>
+    <div class="subnav">
+      <button class="selected" data-tab="overview">Visão gerencial</button>
+      <button data-tab="vendors">Empresas</button>
+      <button data-tab="details">Detalhamento</button>
+    </div>
+    <div class="sidebar-bottom">
+      <div class="gold-line"></div>
+      <p>COMISSÃO AERONÁUTICA<br/>BRASILEIRA EM WASHINGTON</p>
+      <span>Support, Acquisition and Logistics</span>
+      <small>DF · Portal gerencial</small>
+    </div>
+  </aside>
+
+  <div class="content">
+    <header class="topbar">
+      <div><span class="breadcrumb">CABW › Finanças ›</span><strong>Painel de Pagamentos</strong></div>
+      <div class="top-actions"><span class="private-badge">Portal CABW</span></div>
+    </header>
+
+    <main>
+      <div class="page-heading">
+        <div>
+          <div class="eyebrow">TESOURO GERENCIAL · CABW</div>
+          <h1>Pagamentos realizados<span>.</span></h1>
+          <p>Execução financeira por empresa, exercício e restos a pagar.</p>
+        </div>
+        <div class="date-block">
+          <span>POSIÇÃO DA BASE</span>
+          <strong id="position-month">—</strong>
+          <small id="updated-at">__UPDATED_AT__</small>
+        </div>
+      </div>
+
+      <div class="source-line">
+        <span>Base de pagamentos CABW</span><span class="dot">·</span>
+        <span id="record-count">— registros</span><span class="dot">·</span><span>USD</span>
+      </div>
+
+      <section class="filter-panel">
+        <div class="section-top"><span>Filtros de análise</span><button class="text-button" id="clear-filters">Limpar filtros</button></div>
+        <div class="filter-grid">
+          <label>Competência<select id="month" aria-label="Mês de referência"></select></label>
+          <label>Empresa<input id="vendor-search" type="search" placeholder="Nome ou código"/></label>
+          <label>Recursos<select id="resource-type"><option value="">Exercício + RP</option><option value="exercicio">Exercício</option><option value="rap">Restos a pagar</option></select></label>
+          <label>Natureza de despesa<select id="nd-filter"><option value="">Todas</option></select></label>
+          <label>Plano interno<select id="pi-filter"><option value="">Todos</option></select></label>
+        </div>
+      </section>
+
+      <div class="scope-line"><span id="scope-summary">—</span><span>Todos os gráficos respondem aos filtros</span></div>
+
+      <section id="overview-view">
+        <div class="kpi-grid">
+          <article class="kpi featured"><div><span>TOTAL PAGO</span></div><strong id="kpi-total">—</strong><p>Exercício + restos a pagar</p><div class="featured-line"></div></article>
+          <article class="kpi"><div><span>EXERCÍCIO</span></div><strong id="kpi-exercicio">—</strong><p>Crédito do exercício corrente</p></article>
+          <article class="kpi"><div><span>RESTOS A PAGAR</span></div><strong id="kpi-rp">—</strong><p>Obrigações de exercícios anteriores</p></article>
+          <article class="kpi"><div><span>EMPRESAS</span></div><strong id="kpi-vendors">—</strong><p>Favorecidos no recorte</p></article>
+          <article class="kpi rate"><div><span>MOVIMENTO DO MÊS</span></div><strong id="kpi-movement">—</strong><p>Variação da posição acumulada</p></article>
+        </div>
+
+        <div class="chart-grid">
+          <section class="panel breakdown">
+            <div class="panel-heading"><div><span class="eyebrow">DISTRIBUIÇÃO DA EXECUÇÃO</span><h2>Maiores favorecidos</h2><p>Clique em uma barra para filtrar por empresa.</p></div></div>
+            <div class="bars distribution-bars" id="vendor-bars"></div>
+          </section>
+          <section class="panel">
+            <div class="panel-heading"><div><span class="eyebrow">EVOLUÇÃO</span><h2>Pagamentos acumulados</h2><p>Exercício, RP e total ao longo do ano.</p></div></div>
+            <div id="trend-chart"></div>
+          </section>
+        </div>
+      </section>
+
+      <section id="vendors-view" hidden>
+        <section class="panel">
+          <div class="panel-heading"><div><span class="eyebrow">ANÁLISE POR FAVORECIDO</span><h2>Consulta por empresa</h2><p>Selecione qualquer empresa para acompanhar movimento mensal e saldo acumulado.</p></div></div>
+          <div class="filter-bottom">
+            <label class="inline-label">Empresa<select id="vendor-select"><option value="">Selecione uma empresa</option></select></label>
+          </div>
+          <div class="kpi-grid" id="vendor-kpis"></div>
+          <div class="chart-grid">
+            <section class="panel"><div class="panel-heading"><div><span class="eyebrow">MOVIMENTO</span><h2>Movimento mensal</h2></div></div><div id="vendor-monthly-chart"></div></section>
+            <section class="panel"><div class="panel-heading"><div><span class="eyebrow">SALDO</span><h2>Saldo acumulado</h2></div></div><div id="vendor-balance-chart"></div></section>
+          </div>
+          <div class="table-scroll"><table><thead><tr><th>Mês</th><th>Movimento mensal</th><th>Saldo acumulado</th></tr></thead><tbody id="vendor-history"></tbody></table></div>
+        </section>
+      </section>
+
+      <section id="details-view" hidden>
+        <section class="panel">
+          <div class="panel-heading"><div><span class="eyebrow">DETALHAMENTO</span><h2>Registros do recorte</h2><p>Pagamentos filtrados por competência, empresa, tipo de recurso, ND e PI.</p></div></div>
+          <div class="table-scroll"><table><thead><tr><th>Empenho</th><th>Empresa</th><th>ND</th><th>PI</th><th>Tipo</th><th>Valor</th></tr></thead><tbody id="details-body"></tbody></table></div>
+        </section>
+      </section>
+    </main>
+  </div>
+</div>
+
+<script id="dataset" type="application/json">__DATASET__</script>
+<script src="./painel.js" defer></script>
+</body>
+</html>

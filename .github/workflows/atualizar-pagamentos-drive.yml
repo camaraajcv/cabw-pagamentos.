@@ -73,27 +73,22 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+
+          cp index.html /tmp/index.html
+          git fetch origin main
+          git reset --hard origin/main
+          cp /tmp/index.html index.html
+
           if git diff --quiet -- index.html; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
-            exit 0
+          else
+            git add index.html
+            git commit -m 'CABW: atualizar painel de pagamentos pelo Drive'
+            git push origin HEAD:main
+            echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
-          git add index.html
-          git commit -m 'CABW: atualizar painel de pagamentos pelo Drive'
-          for tentativa in 1 2 3; do
-            if git push origin HEAD:main; then
-              echo "changed=true" >> "$GITHUB_OUTPUT"
-              exit 0
-            fi
-            git pull --rebase origin main
-          done
-          exit 1
-
-      - name: Sincronizar branch apos publicacao
-        if: steps.publicar.outputs.changed == 'true'
-        run: git pull --rebase origin main
 
       - name: Montar GitHub Pages
-        if: steps.publicar.outputs.changed == 'true'
         run: |
           mkdir -p site-publicado
           cp index.html site-publicado/index.html
@@ -103,11 +98,9 @@ jobs:
           rm -f site-publicado/loa-2026/fonte.csv site-publicado/loa-2026/dados-novos.json
 
       - name: Preparar GitHub Pages
-        if: steps.publicar.outputs.changed == 'true'
         uses: actions/upload-pages-artifact@v3
         with:
           path: site-publicado
 
       - name: Publicar GitHub Pages
-        if: steps.publicar.outputs.changed == 'true'
         uses: actions/deploy-pages@v4

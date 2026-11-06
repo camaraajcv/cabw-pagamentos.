@@ -1,4 +1,5 @@
 name: CABW - Pagamentos automaticos
+# deploy-reset-2026-11-06
 
 on:
   workflow_dispatch:

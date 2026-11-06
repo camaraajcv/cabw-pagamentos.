@@ -76,3 +76,6 @@ th,td{padding:9px 8px}
 .chart-tooltip-row strong{font-size:11px;color:#fff;font-variant-numeric:tabular-nums;white-space:nowrap}
 .interactive-svg{cursor:crosshair}
 @media(max-width:760px){.ug-bars{max-height:300px}.chart-tooltip{min-width:175px}}
+
+.bar-value em{display:block;color:#8b6f12;font-style:normal;font-size:8px;font-weight:700;margin-top:2px}
+.kpi p{line-height:1.45}

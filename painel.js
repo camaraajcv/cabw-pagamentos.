@@ -95,9 +95,18 @@ function renderOverview(){
  const ugList=[...ugMap.values()].sort((a,b)=>b.value-a.value),ugMax=Math.max(1,...ugList.map(x=>x.value));
  $("ug-bars").innerHTML=ugList.map(v=>'<button class="bar-row'+(state.ug===v.code?' selected':'')+'" data-ug="'+v.code+'"><span class="bar-name">'+v.name+' <small>'+v.code+'</small></span><span class="bar-track"><i style="width:'+Math.max(1,v.value/ugMax*100)+'%"></i></span><span class="bar-value">'+money(v.value)+'</span></button>').join("")||'<div class="small-empty">Sem UGs no recorte.</div>';
  $("ug-bars").querySelectorAll("[data-ug]").forEach(b=>b.onclick=()=>{const code=b.dataset.ug||"";state.ug=state.ug===code?"":code;renderAll()});
- const totalSeries=months.map(m=>rows.filter(r=>r[idx.month]===m).reduce((a,r)=>a+Number(r[idx.amount]||0),0));
- const exSeries=months.map(m=>rows.filter(r=>r[idx.month]===m&&r[idx.type]==="exercicio").reduce((a,r)=>a+Number(r[idx.amount]||0),0));
- const rpSeries=months.map(m=>rows.filter(r=>r[idx.month]===m&&r[idx.type]==="rap").reduce((a,r)=>a+Number(r[idx.amount]||0),0));
+ const trendMatches=r=>{
+   if(state.type&&r[idx.type]!==state.type)return false;
+   if(state.nd&&r[idx.nd]!==state.nd)return false;
+   if(state.pi&&r[idx.pi]!==state.pi)return false;
+   if(state.ug&&String(r[idx.ug])!==state.ug)return false;
+   if(state.vendor&&!norm(r[idx.vendor]).includes(norm(state.vendor))&&!norm(r[idx.code]).includes(norm(state.vendor)))return false;
+   return true;
+ };
+ const trendRows=rows.filter(trendMatches);
+ const totalSeries=months.map(m=>trendRows.filter(r=>r[idx.month]===m).reduce((a,r)=>a+Number(r[idx.amount]||0),0));
+ const exSeries=months.map(m=>trendRows.filter(r=>r[idx.month]===m&&r[idx.type]==="exercicio").reduce((a,r)=>a+Number(r[idx.amount]||0),0));
+ const rpSeries=months.map(m=>trendRows.filter(r=>r[idx.month]===m&&r[idx.type]==="rap").reduce((a,r)=>a+Number(r[idx.amount]||0),0));
  svgLine($("trend-chart"),[{name:"Total",values:totalSeries},{name:"Exercício",values:exSeries},{name:"RP",values:rpSeries}],months);
 }
 function renderVendor(){

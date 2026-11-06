@@ -40,6 +40,17 @@ function rpInscribedBase(ugCode){
  const m=monthISO(state.month);
  return loa.rpRows.filter(r=>r.month===m&&(!ugCode||r.ug===ugCode)&&(!state.ug||r.ug===state.ug)&&(!state.nd||r.nd===state.nd)&&(!state.pi||r.pi===state.pi)).reduce((a,r)=>a+Number(r.inscribed||0),0);
 }
+function loaBudgetAt(month,ugCode){
+ if(!loa||!Array.isArray(loa.rows))return 0;
+ const m=monthISO(month);
+ return loa.rows.filter(r=>r.month===m&&(!ugCode||r.ug===ugCode)&&(!state.nd||r.nd===state.nd)&&(!state.pi||r.pi===state.pi)).reduce((a,r)=>a+Number(r.budget||0),0);
+}
+function exercisePaidAt(month,ugCode){
+ return rows.filter(r=>r[idx.month]===month&&r[idx.type]==="exercicio"&&(!ugCode||String(r[idx.ug])===String(ugCode))&&(!state.nd||r[idx.nd]===state.nd)&&(!state.pi||r[idx.pi]===state.pi)).reduce((a,r)=>a+Number(r[idx.amount]||0),0);
+}
+function ugNameFromCode(code){
+ return UGS[String(code)]||String(code||"");
+}
 const vendors=[...new Map(rows.filter(r=>r[idx.vendor]).map(r=>[norm(r[idx.vendor]),{key:norm(r[idx.vendor]),name:r[idx.vendor],code:r[idx.code]}])).values()].sort((a,b)=>a.name.localeCompare(b.name,"pt-BR"));
 
 function options(select,values,labelFn=x=>x){
@@ -128,10 +139,45 @@ function renderOverview(){
  const list=[...grouped.values()].sort((a,b)=>b.value-a.value).slice(0,18),max=Math.max(1,...list.map(x=>x.value));
  $("vendor-bars").innerHTML=list.map(v=>'<button class="bar-row'+(norm(state.vendor)===norm(v.name)?' selected':'')+'" data-vendor="'+v.name.replaceAll('"','&quot;')+'"><span class="bar-name">'+v.name+'</span><span class="bar-track"><i style="width:'+Math.max(1,v.value/max*100)+'%"></i></span><span class="bar-value">'+money(v.value)+'</span></button>').join("")||'<div class="small-empty">Sem dados no recorte.</div>';
  $("vendor-bars").querySelectorAll("[data-vendor]").forEach(b=>b.onclick=()=>{const name=b.dataset.vendor||"";state.vendor=norm(state.vendor)===norm(name)?"":name;$("vendor-search").value=state.vendor;renderAll()});
- const ugMap=new Map();rr.forEach(r=>{const code=String(r[idx.ug]||"").trim(),v=ugMap.get(code)||{code:code,name:ugLabel(r),value:0};v.value+=Number(r[idx.amount]||0);ugMap.set(code,v)});
- const ugList=[...ugMap.values()].sort((a,b)=>b.value-a.value),ugMax=Math.max(1,...ugList.map(x=>x.value));
- $("ug-bars").innerHTML=ugList.map(v=>{const credit=budgetBase(v.code),ins=rpInscribedBase(v.code),base=state.type==="exercicio"?credit:state.type==="rap"?ins:credit+ins;const rate=!state.vendor&&base>0?percent(v.value,base):"";return '<button class="bar-row'+(state.ug===v.code?' selected':'')+'" data-ug="'+v.code+'"><span class="bar-name">'+v.name+' <small>'+v.code+'</small></span><span class="bar-track"><i style="width:'+Math.max(1,v.value/ugMax*100)+'%"></i></span><span class="bar-value">'+money(v.value)+(rate?' <em>'+rate+'</em>':'')+'</span></button>'}).join("")||'<div class="small-empty">Sem UGs no recorte.</div>';
+ const selectedISO=monthISO(state.month);
+ const loaUgs=loa&&Array.isArray(loa.rows)?[...new Set(loa.rows.filter(r=>r.month===selectedISO).map(r=>String(r.ug||"")).filter(Boolean))]:[];
+ const paymentUgs=[...new Set(rr.map(r=>String(r[idx.ug]||"")).filter(Boolean))];
+ const ugCodes=[...new Set([...loaUgs,...paymentUgs])];
+ const ugList=ugCodes.map(code=>{
+   const paid=rr.filter(r=>String(r[idx.ug])===code&&r[idx.type]==="exercicio").reduce((a,r)=>a+Number(r[idx.amount]||0),0);
+   const credit=loaBudgetAt(state.month,code);
+   const rate=credit>0?paid/credit:0;
+   return {code,name:ugNameFromCode(code),paid,credit,rate};
+ }).filter(v=>v.credit>0||v.paid>0)
+   .sort((a,b)=>(a.rate-b.rate)||(b.credit-a.credit));
+ const zeroCount=ugList.filter(v=>v.credit>0&&v.paid===0).length;
+ const low25=ugList.filter(v=>v.credit>0&&v.rate>0&&v.rate<.25).length;
+ const low50=ugList.filter(v=>v.credit>0&&v.rate>=.25&&v.rate<.5).length;
+ $("ug-attention").innerHTML='<span class="ug-chip zero">'+zeroCount+' UG'+(zeroCount===1?'':'s')+' com 0%</span><span class="ug-chip low">'+low25+' abaixo de 25%</span><span class="ug-chip watch">'+low50+' entre 25% e 50%</span>';
+ const ugMax=Math.max(1,...ugList.map(x=>x.credit));
+ $("ug-bars").innerHTML=ugList.map(v=>{
+   const exec=percent(v.paid,v.credit),bar=Math.max(0,Math.min(100,v.rate*100));
+   return '<button class="bar-row ug-exec-row'+(state.ug===v.code?' selected':'')+'" data-ug="'+v.code+'"><span class="bar-name">'+v.name+' <small>'+v.code+'</small></span><span class="bar-track ug-credit-track" title="Crédito recebido '+money(v.credit)+'"><i style="width:'+bar+'%"></i></span><span class="bar-value">'+exec+'<em>'+money(v.paid)+' / '+money(v.credit)+'</em></span></button>';
+ }).join("")||'<div class="small-empty">Sem UGs no recorte.</div>';
  $("ug-bars").querySelectorAll("[data-ug]").forEach(b=>b.onclick=()=>{const code=b.dataset.ug||"";state.ug=state.ug===code?"":code;renderAll()});
+
+ const historyCode=state.ug||ugList[0]?.code||"";
+ if(historyCode){
+   const creditSeries=months.map(m=>loaBudgetAt(m,historyCode));
+   const paidSeries=months.map(m=>exercisePaidAt(m,historyCode));
+   const hIndex=months.indexOf(state.month),hCredit=creditSeries[hIndex]||0,hPaid=paidSeries[hIndex]||0;
+   $("ug-history-title").textContent=ugNameFromCode(historyCode)+" · crédito recebido × pagamentos";
+   $("ug-history-subtitle").textContent="Histórico da posição acumulada do exercício. Clique em outra UG para comparar.";
+   svgLine($("ug-history-chart"),[{name:"Crédito recebido",values:creditSeries},{name:"Pagamentos",values:paidSeries}],months);
+   const firstCredit=months.find((m,i)=>creditSeries[i]>0);
+   const firstPaid=months.find((m,i)=>paidSeries[i]>0);
+   $("ug-history-summary").innerHTML='<div><span>Execução atual</span><strong>'+percent(hPaid,hCredit)+'</strong></div><div><span>Primeiro crédito</span><strong>'+(firstCredit?monthLabel(firstCredit):"—")+'</strong></div><div><span>Primeiro pagamento</span><strong>'+(firstPaid?monthLabel(firstPaid):"Ainda não houve")+'</strong></div><div><span>Saldo sem pagamento</span><strong>'+money(Math.max(0,hCredit-hPaid))+'</strong></div>';
+ }else{
+   $("ug-history-title").textContent="Crédito recebido × pagamentos";
+   $("ug-history-subtitle").textContent="Nenhuma UG disponível no recorte.";
+   $("ug-history-chart").innerHTML="";
+   $("ug-history-summary").innerHTML="";
+ }
  const trendMatches=r=>{
    if(state.type&&r[idx.type]!==state.type)return false;
    if(state.nd&&r[idx.nd]!==state.nd)return false;

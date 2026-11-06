@@ -24,7 +24,7 @@ permissions:
 
 concurrency:
   group: cabw-pagamentos
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   pagamentos:

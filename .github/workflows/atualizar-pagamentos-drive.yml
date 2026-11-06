@@ -2,6 +2,8 @@ name: CABW - Pagamentos automaticos
 
 on:
   workflow_dispatch:
+  repository_dispatch:
+    types: [pagamentos-drive-updated]
   schedule:
     - cron: '7,22,37,52 6-13 * * 1-5'
       timezone: 'America/New_York'

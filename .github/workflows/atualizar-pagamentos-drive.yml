@@ -8,6 +8,7 @@ on:
       - 'fornecedores.js'
       - 'painel-template.html'
       - 'painel.js'
+      - 'painel.css'
       - 'scripts/publicar_pagamentos.py'
       - '.github/workflows/atualizar-pagamentos-drive.yml'
   repository_dispatch:
@@ -93,6 +94,7 @@ jobs:
           mkdir -p site-publicado
           cp index.html site-publicado/index.html
           cp painel.js site-publicado/painel.js
+          cp painel.css site-publicado/painel.css
           cp -R loa-2026 site-publicado/loa-2026
           cp -R sdpp site-publicado/sdpp
           rm -f site-publicado/loa-2026/fonte.csv site-publicado/loa-2026/dados-novos.json

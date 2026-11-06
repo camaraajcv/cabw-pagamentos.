@@ -56,7 +56,7 @@ function renderOverview(){
  $("record-count").textContent=rows.length.toLocaleString("pt-BR")+" registros";$("position-month").textContent=monthLabel(state.month);$("scope-summary").textContent=rr.length.toLocaleString("pt-BR")+" registros no recorte · "+monthLabel(state.month);
  const grouped=new Map();rr.forEach(r=>{const k=norm(r[idx.vendor]),v=grouped.get(k)||{name:r[idx.vendor],value:0};v.value+=Number(r[idx.amount]||0);grouped.set(k,v)});
  const list=[...grouped.values()].sort((a,b)=>b.value-a.value).slice(0,18),max=Math.max(1,...list.map(x=>x.value));
- $("vendor-bars").innerHTML=list.map(v=>'<button class="bar-row" data-vendor="'+v.name.replaceAll('"','&quot;')+'"><span class="bar-label"><strong>'+v.name+'</strong><small>'+money(v.value)+'</small></span><span class="bar-track"><i style="width:'+Math.max(1,v.value/max*100)+'%"></i></span></button>').join("")||'<div class="empty">Sem dados no recorte.</div>';
+ $("vendor-bars").innerHTML=list.map(v=>'<button class="bar-row" data-vendor="'+v.name.replaceAll('"','&quot;')+'"><span class="bar-name"><strong>'+v.name+'</span><span class="bar-value">'+money(v.value)+'</span><span class="bar-track"><i style="width:'+Math.max(1,v.value/max*100)+'%"></i></span></button>').join("")||'<div class="empty">Sem dados no recorte.</div>';
  $("vendor-bars").querySelectorAll("[data-vendor]").forEach(b=>b.onclick=()=>{state.vendor=b.dataset.vendor;$("vendor-search").value=state.vendor;renderAll()});
  const totalSeries=months.map(m=>rows.filter(r=>r[idx.month]===m).reduce((a,r)=>a+Number(r[idx.amount]||0),0));
  const exSeries=months.map(m=>rows.filter(r=>r[idx.month]===m&&r[idx.type]==="exercicio").reduce((a,r)=>a+Number(r[idx.amount]||0),0));

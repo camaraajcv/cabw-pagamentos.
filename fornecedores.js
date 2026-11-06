@@ -1,7 +1,7 @@
 /* Consulta por favorecido - CABW | modulo carregado apos o painel principal. */
 (function(){
 "use strict";
-var node=document.getElementById("dataset"),base=document.querySelector(".counts"),month=document.getElementById("month");
+var node=document.getElementById("dataset"),base=document.getElementById("cross-analysis")||document.querySelector(".counts"),month=document.getElementById("month");
 if(!node||!base||!month||document.getElementById("fornecedor-consulta"))return;
 var data=JSON.parse(node.textContent),months=data.months,rows=data.rows;
 var normalize=function(x){return String(x||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim().toLocaleUpperCase("pt-BR")};

@@ -15,14 +15,31 @@ if(!ds||!Array.isArray(ds.months)||!Array.isArray(ds.rows)||!ds.rows.length){
   return;
 }
 const months=ds.months||[], rows=ds.rows||[];
+let loa=null;
+try{
+  const lr=await fetch("./loa-2026/dados.json?ts="+Date.now(),{cache:"no-store"});
+  if(lr.ok){const lj=await lr.json();loa=lj.data||lj;}
+}catch(e){console.warn("Base LOA indisponível para percentuais",e)}
 const $=id=>document.getElementById(id);
 const money=v=>"US$ "+new Intl.NumberFormat("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2}).format(v||0);
+const percent=(a,b)=>b&&b>0?new Intl.NumberFormat("pt-BR",{style:"percent",maximumFractionDigits:1}).format(a/b):"—";
 const norm=v=>String(v||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toUpperCase().trim();
 const monthLabel=m=>{const p=String(m||"").split("/");const names={JAN:"Jan",FEV:"Fev",MAR:"Mar",ABR:"Abr",MAI:"Mai",JUN:"Jun",JUL:"Jul",AGO:"Ago",SET:"Set",OUT:"Out",NOV:"Nov",DEZ:"Dez"};return (names[p[0]]||p[0])+" "+(p[1]||"")};
 let state={month:months[months.length-1]||"",vendor:"",type:"",nd:"",pi:"",ug:"",tab:"overview"};
 const idx={month:0,commitment:1,code:2,vendor:3,action:4,ug:6,ugName:7,nd:8,pi:10,amount:12,type:13};
 const UGS={"120038":"DIRMAB","120026":"PAMA-LS","120001":"GABAER","120068":"PAMA-SP","120048":"PAME-RJ","120071":"CELOG","120049":"PAMA-GL","120090":"CABW","120036":"DECEA","120058":"DIRSA","120111":"EMAER","120136":"DIRAP","120142":"IEAv","120700":"DIREF","120106":"CENIPA","120110":"DCTA","120047":"PAMB-RJ","120624":"BAAN","120115":"COMAE","120128":"CCA-RJ","120132":"DIRENS","120032":"DTI","120130":"COMGAP","120054":"UNIFA","120035":"CTLA","120091":"CABE","120127":"CISCEA","120141":"IAE","120143":"IFI","120197":"IAOp","120283":"GECAMP","120299":"IPEV"};
 const ugLabel=r=>UGS[String(r[idx.ug]||"").trim()]||String(r[idx.ugName]||r[idx.ug]||"").trim();
+const monthISO=m=>{const p=String(m||"").split("/"),names={JAN:"01",FEV:"02",MAR:"03",ABR:"04",MAI:"05",JUN:"06",JUL:"07",AGO:"08",SET:"09",OUT:"10",NOV:"11",DEZ:"12"};return p.length===2?p[1]+"-"+(names[p[0]]||"01"):""};
+function budgetBase(ugCode){
+ if(!loa||!Array.isArray(loa.rows))return 0;
+ const m=monthISO(state.month);
+ return loa.rows.filter(r=>r.month===m&&(!ugCode||r.ug===ugCode)&&(!state.ug||r.ug===state.ug)&&(!state.nd||r.nd===state.nd)&&(!state.pi||r.pi===state.pi)).reduce((a,r)=>a+Number(r.budget||0),0);
+}
+function rpInscribedBase(ugCode){
+ if(!loa||!Array.isArray(loa.rpRows))return 0;
+ const m=monthISO(state.month);
+ return loa.rpRows.filter(r=>r.month===m&&(!ugCode||r.ug===ugCode)&&(!state.ug||r.ug===state.ug)&&(!state.nd||r.nd===state.nd)&&(!state.pi||r.pi===state.pi)).reduce((a,r)=>a+Number(r.inscribed||0),0);
+}
 const vendors=[...new Map(rows.filter(r=>r[idx.vendor]).map(r=>[norm(r[idx.vendor]),{key:norm(r[idx.vendor]),name:r[idx.vendor],code:r[idx.code]}])).values()].sort((a,b)=>a.name.localeCompare(b.name,"pt-BR"));
 
 function options(select,values,labelFn=x=>x){
@@ -94,6 +111,18 @@ function renderOverview(){
  const series=months.map(m=>movementRows.filter(r=>r[idx.month]===m).reduce((a,r)=>a+Number(r[idx.amount]||0),0));
  const mov=movement(series), mi=months.indexOf(state.month);
  $("kpi-total").textContent=money(total);$("kpi-exercicio").textContent=money(ex);$("kpi-rp").textContent=money(rp);$("kpi-vendors").textContent=vendorCount.toLocaleString("pt-BR");$("kpi-movement").textContent=money(mi>=0?mov[mi]:0);
+ const vendorScoped=!!state.vendor;
+ const credit=vendorScoped?0:budgetBase(""),rpInscribed=vendorScoped?0:rpInscribedBase(""),combinedBase=credit+rpInscribed;
+ const totalNote=$("kpi-total").nextElementSibling,exNote=$("kpi-exercicio").nextElementSibling,rpNote=$("kpi-rp").nextElementSibling;
+ if(vendorScoped){
+   totalNote.textContent="Recorte por favorecido · percentual orçamentário não aplicável";
+   exNote.textContent="Crédito recebido não é apropriado por empresa";
+   rpNote.textContent="RP inscrito não é apropriado por empresa";
+ }else{
+   totalNote.textContent=combinedBase?percent(total,combinedBase)+" da base consolidada (crédito + RP inscrito)":"Exercício + restos a pagar";
+   exNote.textContent=credit?percent(ex,credit)+" do crédito recebido · base "+money(credit):"Crédito recebido não disponível";
+   rpNote.textContent=rpInscribed?percent(rp,rpInscribed)+" do RP inscrito · base "+money(rpInscribed):"RP inscrito não disponível";
+ }
  $("record-count").textContent=rows.length.toLocaleString("pt-BR")+" registros";$("position-month").textContent=monthLabel(state.month);$("scope-summary").textContent=rr.length.toLocaleString("pt-BR")+" registros no recorte · "+monthLabel(state.month);
  const grouped=new Map();rr.forEach(r=>{const k=norm(r[idx.vendor]),v=grouped.get(k)||{name:r[idx.vendor],value:0};v.value+=Number(r[idx.amount]||0);grouped.set(k,v)});
  const list=[...grouped.values()].sort((a,b)=>b.value-a.value).slice(0,18),max=Math.max(1,...list.map(x=>x.value));
@@ -101,7 +130,7 @@ function renderOverview(){
  $("vendor-bars").querySelectorAll("[data-vendor]").forEach(b=>b.onclick=()=>{const name=b.dataset.vendor||"";state.vendor=norm(state.vendor)===norm(name)?"":name;$("vendor-search").value=state.vendor;renderAll()});
  const ugMap=new Map();rr.forEach(r=>{const code=String(r[idx.ug]||"").trim(),v=ugMap.get(code)||{code:code,name:ugLabel(r),value:0};v.value+=Number(r[idx.amount]||0);ugMap.set(code,v)});
  const ugList=[...ugMap.values()].sort((a,b)=>b.value-a.value),ugMax=Math.max(1,...ugList.map(x=>x.value));
- $("ug-bars").innerHTML=ugList.map(v=>'<button class="bar-row'+(state.ug===v.code?' selected':'')+'" data-ug="'+v.code+'"><span class="bar-name">'+v.name+' <small>'+v.code+'</small></span><span class="bar-track"><i style="width:'+Math.max(1,v.value/ugMax*100)+'%"></i></span><span class="bar-value">'+money(v.value)+'</span></button>').join("")||'<div class="small-empty">Sem UGs no recorte.</div>';
+ $("ug-bars").innerHTML=ugList.map(v=>{const credit=budgetBase(v.code),ins=rpInscribedBase(v.code),base=state.type==="exercicio"?credit:state.type==="rap"?ins:credit+ins;const rate=!state.vendor&&base>0?percent(v.value,base):"";return '<button class="bar-row'+(state.ug===v.code?' selected':'')+'" data-ug="'+v.code+'"><span class="bar-name">'+v.name+' <small>'+v.code+'</small></span><span class="bar-track"><i style="width:'+Math.max(1,v.value/ugMax*100)+'%"></i></span><span class="bar-value">'+money(v.value)+(rate?' <em>'+rate+'</em>':'')+'</span></button>'}).join("")||'<div class="small-empty">Sem UGs no recorte.</div>';
  $("ug-bars").querySelectorAll("[data-ug]").forEach(b=>b.onclick=()=>{const code=b.dataset.ug||"";state.ug=state.ug===code?"":code;renderAll()});
  const trendMatches=r=>{
    if(state.type&&r[idx.type]!==state.type)return false;

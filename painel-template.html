@@ -87,10 +87,18 @@
           </section>
         </div>
 
-        <section class="panel ug-panel">
-          <div class="panel-heading"><div><span class="eyebrow">DISTRIBUIÇÃO POR UNIDADE</span><h2>Pagamentos por UG responsável</h2><p>Clique em uma UG para filtrar o painel. Clique novamente na mesma UG para limpar.</p></div></div>
-          <div class="bars distribution-bars ug-bars" id="ug-bars"></div>
-        </section>
+        <div class="chart-grid ug-analysis-grid">
+          <section class="panel ug-panel">
+            <div class="panel-heading"><div><span class="eyebrow">DISTRIBUIÇÃO POR UNIDADE</span><h2>Execução por UG responsável</h2><p>Inclui UGs com execução zero. Clique para analisar; clique novamente para limpar.</p></div></div>
+            <div class="ug-attention" id="ug-attention"></div>
+            <div class="bars distribution-bars ug-bars" id="ug-bars"></div>
+          </section>
+          <section class="panel ug-history-panel">
+            <div class="panel-heading"><div><span class="eyebrow">HISTÓRICO DA UG</span><h2 id="ug-history-title">Crédito recebido × pagamentos</h2><p id="ug-history-subtitle">Selecione uma UG para acompanhar desde quando o recurso foi recebido.</p></div></div>
+            <div id="ug-history-chart"></div>
+            <div class="ug-history-summary" id="ug-history-summary"></div>
+          </section>
+        </div>
       </section>
 
       <section id="vendors-view" hidden>

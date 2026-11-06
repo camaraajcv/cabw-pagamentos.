@@ -2,6 +2,8 @@ name: CABW - LOA 2026 automatica
 
 on:
   workflow_dispatch:
+  repository_dispatch:
+    types: [loa-drive-updated]
   schedule:
     - cron: '12,27,42,57 6-13 * * 1-5'
       timezone: 'America/New_York'

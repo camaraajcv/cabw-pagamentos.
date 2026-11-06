@@ -2,6 +2,13 @@ name: CABW - Pagamentos automaticos
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'fornecedores.js'
+      - 'painel-loa-theme.css'
+      - 'scripts/publicar_pagamentos.py'
+      - '.github/workflows/atualizar-pagamentos-drive.yml'
   repository_dispatch:
     types: [pagamentos-drive-updated]
   schedule:
@@ -90,6 +97,7 @@ jobs:
           mkdir -p site-publicado
           cp index.html site-publicado/index.html
           cp fornecedores.js site-publicado/fornecedores.js
+          cp painel-loa-theme.css site-publicado/painel-loa-theme.css
           cp -R loa-2026 site-publicado/loa-2026
           cp -R sdpp site-publicado/sdpp
           rm -f site-publicado/loa-2026/fonte.csv site-publicado/loa-2026/dados-novos.json

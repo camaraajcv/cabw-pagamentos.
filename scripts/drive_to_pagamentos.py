@@ -28,7 +28,8 @@ def normalize_source(payload: bytes) -> bytes:
 
 from pathlib import Path
 import requests
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta, time
+from zoneinfo import ZoneInfo
 from google.oauth2 import service_account
 from google.auth.transport.requests import Request
 
@@ -57,11 +58,41 @@ metadata = meta.json()
 modified = metadata.get("modifiedTime")
 if not modified:
     raise SystemExit("Pagamentos: nao foi possivel obter modifiedTime da fonte.")
+def age_in_weekdays_hours(start: datetime, end: datetime) -> float:
+    """Conta horas de segunda a sexta no fuso da CABW, ignorando o fim de semana."""
+    tz = ZoneInfo("America/New_York")
+    cursor = start.astimezone(tz)
+    end_local = end.astimezone(tz)
+    seconds = 0.0
+    while cursor < end_local:
+        next_midnight = datetime.combine(
+            cursor.date() + timedelta(days=1), time.min, tzinfo=tz
+        )
+        segment_end = min(next_midnight, end_local)
+        if cursor.weekday() < 5:
+            seconds += (
+                segment_end.astimezone(timezone.utc)
+                - cursor.astimezone(timezone.utc)
+            ).total_seconds()
+        cursor = next_midnight
+    return seconds / 3600
+
+
 modified_dt = datetime.fromisoformat(modified.replace("Z", "+00:00"))
-age_hours = (datetime.now(timezone.utc) - modified_dt).total_seconds() / 3600
-print(f"Pagamentos: fonte {metadata.get('name')} modificada em {modified} ({age_hours:.1f} h atras).")
-if age_hours > 30:
-    raise SystemExit(f"Pagamentos: FONTE DESATUALIZADA - ultima modificacao {modified}.")
+now = datetime.now(timezone.utc)
+age_hours = (now - modified_dt).total_seconds() / 3600
+if age_hours < -0.1:
+    raise SystemExit("Pagamentos: horario de modificacao da fonte esta no futuro.")
+weekday_hours = age_in_weekdays_hours(modified_dt, now)
+print(
+    f"Pagamentos: fonte {metadata.get('name')} modificada em {modified} "
+    f"({age_hours:.1f} h corridas; {weekday_hours:.1f} h de segunda a sexta)."
+)
+if weekday_hours > 30:
+    raise SystemExit(
+        f"Pagamentos: FONTE DESATUALIZADA - ultima modificacao {modified}; "
+        f"{weekday_hours:.1f} h em dias uteis (limite: 30 h)."
+    )
 response = requests.get(
     f"https://www.googleapis.com/drive/v3/files/{FILE_ID}",
     headers={"Authorization": f"Bearer {credentials.token}"},

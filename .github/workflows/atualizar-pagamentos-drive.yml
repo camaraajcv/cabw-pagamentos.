@@ -15,6 +15,7 @@ on:
       - 'painel.js'
       - 'painel.css'
       - 'scripts/publicar_pagamentos.py'
+      - 'scripts/drive_to_pagamentos.py'
       - '.github/workflows/atualizar-pagamentos-drive.yml'
   repository_dispatch:
     types: [pagamentos-drive-updated]

@@ -8,13 +8,13 @@ import json
 import re
 import sys
 from collections import defaultdict
-from datetime import datetime, timezone
 from pathlib import Path
 
 BASE=Path("loa-2026/dados.json")
 NOVO=Path("loa-2026/dados-novos.json")
 FONTE=Path("novo-dataset.json")
 HTML=Path("index.html")
+META=Path("loa-2026/fonte-meta.json")
 MONTHS=["JAN","FEV","MAR","ABR","MAI","JUN","JUL","AGO","SET","OUT","NOV","DEZ"]
 
 def cents(n):
@@ -78,8 +78,14 @@ def main():
             raise ValueError("Total nao conciliado: "+kind)
         audit[kind]={"linhas":len(payment_rows),"grupos":len(targets),"total":round(loatotal/100,2)}
     previous=current["data"]
-    # Carimbo da carga efetuada, independente da variacao dos valores.
-    data["updatedAt"]=datetime.now(timezone.utc).isoformat().replace("+00:00","Z")
+    if not META.exists():
+        raise ValueError("Metadados da fonte LOA nao localizados")
+    source_meta=json.loads(META.read_text(encoding="utf-8"))
+    source_modified=source_meta.get("modifiedTime")
+    if not source_modified:
+        raise ValueError("modifiedTime da fonte LOA ausente")
+    # O painel passa a exibir a data real da fonte no Drive, nao a data do ultimo commit.
+    data["updatedAt"]=source_modified
     # Nao modificar registros de meses anteriores. A LOA usa posicoes mensais.
     for field in ("rows","rpRows"):
         original=[r for r in previous[field] if r["month"]!=month]
@@ -87,7 +93,7 @@ def main():
         if original!=updated:
             raise ValueError("Historico preservado nao coincide: "+field)
     NOVO.write_text(json.dumps(obj,ensure_ascii=False,separators=(",",":")),encoding="utf-8")
-    print("CONCILIACAO_MONETARIA_APROVADA "+json.dumps({"competencia":month,**audit},ensure_ascii=False))
+    print("CONCILIACAO_MONETARIA_APROVADA "+json.dumps({"competencia":month,"fonte":source_modified,**audit},ensure_ascii=False))
 
 if __name__=="__main__":
     try:

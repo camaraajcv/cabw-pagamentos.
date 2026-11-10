@@ -2,6 +2,13 @@ name: CABW - LOA 2026 automatica
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/drive_to_loa.py'
+      - 'scripts/conciliar_valores_loa.py'
+      - 'loa-2026/atualizar-loa.cjs'
+      - '.github/workflows/atualizar-loa-drive.yml'
   repository_dispatch:
     types: [loa-drive-updated]
   schedule:
@@ -48,23 +55,18 @@ jobs:
           test -f loa-2026/dados-novos.json
           python scripts/conciliar_valores_loa.py
           python - <<'PY'
-          import copy, json
+          import json
           from pathlib import Path
           atual_path = Path("loa-2026/dados.json")
           novo_path = Path("loa-2026/dados-novos.json")
           atual = json.loads(atual_path.read_text(encoding="utf-8"))
           novo = json.loads(novo_path.read_text(encoding="utf-8"))
-          def sem_carimbo(obj):
-              obj = copy.deepcopy(obj)
-              if isinstance(obj, dict) and isinstance(obj.get("data"), dict):
-                  obj["data"].pop("updatedAt", None)
-              return obj
-          if sem_carimbo(atual) == sem_carimbo(novo):
+          if atual == novo:
               novo_path.unlink()
               print("LOA: fonte sem alteracao; nada a publicar.")
           else:
               novo_path.replace(atual_path)
-              print("LOA: dados novos detectados.")
+              print("LOA: dados ou carimbo da fonte atualizados.")
           PY
           python -m json.tool loa-2026/dados.json > /dev/null
 
@@ -100,7 +102,7 @@ jobs:
           cp fornecedores.js site-publicado/fornecedores.js
           cp -R loa-2026 site-publicado/loa-2026
           cp -R sdpp site-publicado/sdpp
-          rm -f site-publicado/loa-2026/fonte.csv site-publicado/loa-2026/dados-novos.json
+          rm -f site-publicado/loa-2026/fonte.csv site-publicado/loa-2026/fonte-meta.json site-publicado/loa-2026/dados-novos.json
 
       - name: Preparar GitHub Pages
         if: steps.publicar.outputs.changed == 'true'

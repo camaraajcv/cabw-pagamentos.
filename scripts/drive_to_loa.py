@@ -76,4 +76,17 @@ if len(response.content) < 30:
     raise SystemExit("Fonte vazia; arquivo atual nao sera alterado")
 normalized = normalize_source(response.content)
 Path("loa-2026/fonte.csv").write_bytes(normalized)
+Path("loa-2026/fonte-meta.json").write_text(
+    json.dumps(
+        {
+            "id": metadata.get("id"),
+            "name": metadata.get("name"),
+            "modifiedTime": modified,
+            "size": metadata.get("size"),
+        },
+        ensure_ascii=False,
+        separators=(",", ":"),
+    ),
+    encoding="utf-8",
+)
 print("Fonte LOA obtida e normalizada (" + str(len(normalized)) + " bytes)")

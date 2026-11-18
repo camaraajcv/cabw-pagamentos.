@@ -89,10 +89,12 @@ print(
     f"({age_hours:.1f} h corridas; {weekday_hours:.1f} h de segunda a sexta)."
 )
 if weekday_hours > 30:
-    raise SystemExit(
+    print(
         f"Pagamentos: FONTE DESATUALIZADA - ultima modificacao {modified}; "
         f"{weekday_hours:.1f} h em dias uteis (limite: 30 h)."
     )
+    # O workflow distingue espera de fonte nova de erro na leitura.
+    raise SystemExit(3)
 response = requests.get(
     f"https://www.googleapis.com/drive/v3/files/{FILE_ID}",
     headers={"Authorization": f"Bearer {credentials.token}"},
@@ -105,3 +107,4 @@ if len(response.content) < 100:
 normalized = normalize_source(response.content)
 Path("pagamentos-fonte.csv").write_bytes(normalized)
 print(f"Fonte de pagamentos obtida e normalizada ({len(normalized)} bytes).")
+

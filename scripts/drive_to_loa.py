@@ -64,7 +64,9 @@ modified_dt = datetime.fromisoformat(modified.replace("Z", "+00:00"))
 age_hours = (datetime.now(timezone.utc) - modified_dt).total_seconds() / 3600
 print(f"LOA: fonte {metadata.get('name')} modificada em {modified} ({age_hours:.1f} h atras).")
 if age_hours > 30:
-    raise SystemExit(f"LOA: FONTE DESATUALIZADA - ultima modificacao {modified}.")
+    print(f"LOA: FONTE DESATUALIZADA - ultima modificacao {modified}.")
+    # O workflow distingue espera de fonte nova de erro na leitura.
+    raise SystemExit(3)
 response = requests.get(
     "https://www.googleapis.com/drive/v3/files/" + FILE_ID,
     params={"alt": "media"},
@@ -90,3 +92,4 @@ Path("loa-2026/fonte-meta.json").write_text(
     encoding="utf-8",
 )
 print("Fonte LOA obtida e normalizada (" + str(len(normalized)) + " bytes)")
+

@@ -60,14 +60,15 @@ jobs:
             0) echo "fresh=true" >> "$GITHUB_OUTPUT" ;;
             3)
               echo "fresh=false" >> "$GITHUB_OUTPUT"
-              echo "::warning title=Pagamentos CABW::CSV do Drive acima de 30 horas úteis. Aguardando nova fonte."
-              echo "Pagamentos CABW: aguardando CSV atualizado no Drive. Dados e carimbo preservados." >> "$GITHUB_STEP_SUMMARY"
+              echo "::warning title=Pagamentos CABW::CSV do Drive acima de 30 horas úteis. Verificando a base publicada enquanto aguarda nova fonte."
               ;;
             *) exit "$status" ;;
           esac
 
       - name: Converter e validar pagamentos
-        if: steps.fonte.outputs.fresh == 'true'
+        id: validar
+        env:
+          FONTE_RECENTE: ${{ steps.fonte.outputs.fresh }}
         run: |
           python scripts/converter_pagamentos.py
           python - <<'PY'
@@ -81,40 +82,68 @@ jobs:
           novo = json.loads(Path("novo-dataset.json").read_text(encoding="utf-8"))
           Path(".pagamentos-alterados").write_text("1" if atual != novo else "0")
           PY
-          if [ "$(cat .pagamentos-alterados)" = "1" ]; then
+          if [ "$FONTE_RECENTE" = "false" ]; then
+            if [ "$(cat .pagamentos-alterados)" = "0" ]; then
+              python scripts/publicar_pagamentos.py --somente-conferencia
+              echo "publish=stamp" >> "$GITHUB_OUTPUT"
+              echo "Pagamentos CABW: dados conferidos, sem mudança de valores. Aguardando CSV mais recente no Drive." >> "$GITHUB_STEP_SUMMARY"
+            else
+              echo "::warning title=Pagamentos CABW::O CSV antigo difere da base publicada. Aguardando nova fonte."
+              echo "Pagamentos CABW: CSV antigo com diferenças. Base e carimbo preservados." >> "$GITHUB_STEP_SUMMARY"
+            fi
+          elif [ "$(cat .pagamentos-alterados)" = "1" ]; then
             python scripts/publicar_pagamentos.py
+            echo "publish=data" >> "$GITHUB_OUTPUT"
             echo "Pagamentos: dados novos detectados."
           else
             # Sincroniza a interface (mes padrao/carimbo) mesmo sem mudanca monetaria.
             python scripts/publicar_pagamentos.py
+            echo "publish=data" >> "$GITHUB_OUTPUT"
             echo "Pagamentos: dados iguais; interface sincronizada para a competencia mais recente."
           fi
 
       - name: Commitar pagamentos se houver mudanca
-        if: steps.fonte.outputs.fresh == 'true'
+        if: steps.validar.outputs.publish != ''
         id: publicar
+        env:
+          PUBLICACAO: ${{ steps.validar.outputs.publish }}
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
 
-          cp index.html /tmp/index.html
-          cp pagamentos-dados.json /tmp/pagamentos-dados.json
-          git fetch origin main
-          git reset --hard origin/main
-          cp /tmp/index.html index.html
-          cp /tmp/pagamentos-dados.json pagamentos-dados.json
+          arquivos=(index.html)
+          mensagem='CABW: registrar conferência do painel de pagamentos'
+          if [ "$PUBLICACAO" = "data" ]; then
+            arquivos+=(pagamentos-dados.json)
+            mensagem='CABW: atualizar painel de pagamentos pelo Drive'
+          fi
 
-          if git diff --quiet -- index.html pagamentos-dados.json; then
+          temp=$(mktemp -d)
+          trap 'rm -rf "$temp"' EXIT
+          cp "${arquivos[@]}" "$temp"
+          git fetch origin main
+          for arquivo in "${arquivos[@]}"; do
+            if [ "$(git rev-parse "HEAD:$arquivo")" != "$(git rev-parse "origin/main:$arquivo")" ]; then
+              echo "::error::$arquivo mudou desde a conferência. Execute a rotina novamente."
+              exit 1
+            fi
+          done
+          git reset --hard origin/main
+          for arquivo in "${arquivos[@]}"; do
+            cp "$temp/$arquivo" "$arquivo"
+          done
+
+          if git diff --quiet -- "${arquivos[@]}"; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
           else
-            git add index.html pagamentos-dados.json
-            git commit -m 'CABW: atualizar painel de pagamentos pelo Drive'
+            git add "${arquivos[@]}"
+            git commit -m "$mensagem"
             git push origin HEAD:main
             echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Montar GitHub Pages
-        if: steps.fonte.outputs.fresh == 'true' || github.event_name == 'push'
+        if: steps.fonte.outputs.fresh == 'true' || steps.publicar.outputs.changed == 'true' || github.event_name == 'push'
         id: pages
         run: bash scripts/montar-pages.sh
 
@@ -127,4 +156,5 @@ jobs:
       - name: Publicar GitHub Pages
         if: steps.pages.outcome == 'success'
         uses: actions/deploy-pages@v4
+
 

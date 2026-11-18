@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Publica o painel de pagamentos usando a mesma estrutura visual do LOA 2026."""
 import json
+import re
+import sys
 from datetime import datetime
 from pathlib import Path
 from zoneinfo import ZoneInfo
@@ -13,6 +15,30 @@ dataset=dataset_path.read_text(encoding="utf-8")
 parsed=json.loads(dataset)
 if not parsed.get("rows") or not parsed.get("months"):
     raise SystemExit("Dataset de pagamentos vazio ou invalido.")
+
+now = datetime.now(ZoneInfo("America/New_York"))
+date_label = now.strftime("%d/%m/%Y %H:%M")
+if sys.argv[1:] == ["--somente-conferencia"]:
+    html = html_file.read_bytes().decode("utf-8")
+    current = re.search(
+        r'<script id="dataset" type="application/json">(.*?)</script>', html, re.S
+    )
+    if not current or json.loads(current.group(1)) != parsed:
+        raise SystemExit("O dataset publicado difere da fonte conferida.")
+    result, count = re.subn(
+        r'(<small id="updated-at">)(?:Atualizada|Conferida) em '
+        r'\d{2}/\d{2}/\d{4} \d{2}:\d{2}(</small>)',
+        lambda stamp: stamp[1] + "Conferida em " + date_label + stamp[2],
+        html,
+    )
+    if count != 1:
+        raise SystemExit("Carimbo de conferência não localizado de forma única.")
+    html_file.write_bytes(result.encode("utf-8"))
+    print("Conferência registrada no index.html; valores iguais à fonte.")
+    sys.exit(0)
+if len(sys.argv) != 1:
+    raise SystemExit("Opção de publicação desconhecida.")
+
 if not template_path.exists():
     raise SystemExit("Template visual do painel nao localizado.")
 
@@ -22,8 +48,7 @@ if template.count("__DATASET__")!=1:
 if template.count("__UPDATED_AT__")!=1:
     raise SystemExit("Placeholder de atualizacao invalido no template.")
 
-now=datetime.now(ZoneInfo("America/New_York"))
-updated="Atualizada em "+now.strftime("%d/%m/%Y %H:%M")
+updated="Atualizada em "+date_label
 result=template.replace("__DATASET__",dataset).replace("__UPDATED_AT__",updated)
 
 if result.count('<script id="dataset" type="application/json">')!=1:
@@ -34,3 +59,4 @@ if "./loa-2026/style.css" not in result or "./painel.js" not in result:
 html_file.write_text(result,encoding="utf-8")
 Path("pagamentos-dados.json").write_text(dataset,encoding="utf-8")
 print("Painel publicado usando estrutura e CSS do LOA 2026.")
+

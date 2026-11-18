@@ -88,13 +88,12 @@ print(
     f"Pagamentos: fonte {metadata.get('name')} modificada em {modified} "
     f"({age_hours:.1f} h corridas; {weekday_hours:.1f} h de segunda a sexta)."
 )
-if weekday_hours > 30:
+stale = weekday_hours > 30
+if stale:
     print(
         f"Pagamentos: FONTE DESATUALIZADA - ultima modificacao {modified}; "
         f"{weekday_hours:.1f} h em dias uteis (limite: 30 h)."
     )
-    # O workflow distingue espera de fonte nova de erro na leitura.
-    raise SystemExit(3)
 response = requests.get(
     f"https://www.googleapis.com/drive/v3/files/{FILE_ID}",
     headers={"Authorization": f"Bearer {credentials.token}"},
@@ -104,7 +103,14 @@ response = requests.get(
 response.raise_for_status()
 if len(response.content) < 100:
     raise SystemExit("Arquivo vazio: nenhuma atualizacao executada.")
+expected_size = metadata.get("size")
+if expected_size is not None and len(response.content) != int(expected_size):
+    raise SystemExit("Tamanho baixado diverge dos metadados do Drive.")
 normalized = normalize_source(response.content)
 Path("pagamentos-fonte.csv").write_bytes(normalized)
 print(f"Fonte de pagamentos obtida e normalizada ({len(normalized)} bytes).")
+if stale:
+    # O workflow usa o arquivo somente para conferência da base existente.
+    raise SystemExit(3)
+
 

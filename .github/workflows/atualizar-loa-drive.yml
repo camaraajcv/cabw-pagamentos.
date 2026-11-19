@@ -30,6 +30,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          # Usa a base publicada atual também em reexecuções.
+          ref: refs/heads/main
           fetch-depth: 0
 
       - uses: actions/setup-python@v5
@@ -65,7 +67,10 @@ jobs:
         run: |
           rm -f loa-2026/dados-novos.json
           node loa-2026/atualizar-loa.cjs loa-2026/fonte.csv loa-2026/dados.json loa-2026/dados-novos.json
-          test -f loa-2026/dados-novos.json
+          if [ ! -f loa-2026/dados-novos.json ]; then
+            # O importador só grava a saída quando a estrutura LOA muda.
+            cp loa-2026/dados.json loa-2026/dados-novos.json
+          fi
           python scripts/conciliar_valores_loa.py
           python - <<'PY'
           import json
@@ -74,7 +79,11 @@ jobs:
           novo_path = Path("loa-2026/dados-novos.json")
           atual = json.loads(atual_path.read_text(encoding="utf-8"))
           novo = json.loads(novo_path.read_text(encoding="utf-8"))
-          if atual == novo:
+          atual_sem_carimbo = dict(atual, data=dict(atual["data"]))
+          novo_sem_carimbo = dict(novo, data=dict(novo["data"]))
+          atual_sem_carimbo["data"].pop("updatedAt", None)
+          novo_sem_carimbo["data"].pop("updatedAt", None)
+          if atual_sem_carimbo == novo_sem_carimbo:
               novo_path.unlink()
               print("LOA: fonte sem alteracao; nada a publicar.")
           else:
@@ -121,4 +130,5 @@ jobs:
       - name: Publicar GitHub Pages
         if: steps.publicar.outputs.changed == 'true'
         uses: actions/deploy-pages@v4
+
 

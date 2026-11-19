@@ -40,6 +40,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          # Uma reexecução precisa converter sobre a base publicada atual.
+          ref: refs/heads/main
           fetch-depth: 0
 
       - uses: actions/setup-python@v5
@@ -156,5 +158,6 @@ jobs:
       - name: Publicar GitHub Pages
         if: steps.pages.outcome == 'success'
         uses: actions/deploy-pages@v4
+
 
 

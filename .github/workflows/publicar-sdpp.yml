@@ -1,0 +1,52 @@
+name: SDPP - Validar e publicar portal
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'sdpp/**'
+      - '.github/workflows/publicar-sdpp.yml'
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: cabw-sdpp-publicacao
+  cancel-in-progress: false
+
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: refs/heads/main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Validar geracao dos XMLs
+        run: |
+          node --check sdpp/engine.js
+          node --check sdpp/app.js
+          node sdpp/tests/accounting.test.js
+          node sdpp/tests/compatibility.test.js
+
+      - name: Montar GitHub Pages
+        run: bash scripts/montar-pages.sh
+
+      - name: Preparar GitHub Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site-publicado
+
+      - name: Publicar GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

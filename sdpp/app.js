@@ -41,7 +41,7 @@ function result(kind,r){
  clearResult(kind);activeResults[kind]=r;const host=$(`#${kind}-result`);host.replaceChildren();
  const files=r.files||[{xml:r.xml,filename:r.filename}];
  host.append(el('div','result-success',`✓ ${files.length===1?'XML gerado':files.length+' XMLs gerados'}. Confira os valores e as classificações antes de importar no SIAFI.`));
- if(files.length>1)host.append(el('div','notice',`O lote tem ${r.metrics.accountingLines} linhas contábeis e ultrapassa o limite de 100 por arquivo. Foram gerados ${files.length} XMLs separados, com uma FL em cada arquivo e sequenciais de ${files[0].sequence} a ${files.at(-1).sequence}. As DFL e suas AFL do mesmo empenho e subelemento foram mantidas juntas.`));
+ if(files.length>1)host.append(el('div','notice',`O lote tem ${r.metrics.accountingLines} linhas contábeis e ultrapassa o limite de 100 por arquivo. Foram gerados ${files.length} XMLs separados, com uma FL em cada arquivo e sequenciais de ${files[0].sequence} a ${files[files.length - 1].sequence}. As DFL e suas AFL do mesmo empenho e subelemento foram mantidas juntas.`));
  const metrics=el('div','metrics');metrics.append(metric('Lançamentos informados',String(r.metrics.items)),metric(kind==='ne'?'Empenhos no arquivo':'Arquivos XML / FLs',String(r.metrics.details)),metric(kind==='ne'?'Valor total':'Valor líquido da folha',SDPP.br(r.metrics.total)));
  if(kind==='dh')metrics.append(metric('PCO positivo',SDPP.br(r.metrics.positive)),metric('Anulações',SDPP.br(r.metrics.negative)),metric('Pagamentos',SDPP.br(r.metrics.payments)),metric('Outros lançamentos',SDPP.br(r.metrics.others)),metric('Apropriação aos centros',SDPP.br(r.metrics.cc)),metric('Linhas contábeis no lote',String(r.metrics.accountingLines)));
  host.append(metrics);
@@ -58,7 +58,7 @@ function result(kind,r){
  if(files.length===1){const link=links[0].cloneNode(true);link.className='primary';actions.append(link);}
  else{
   const all=el('button','primary',`Baixar XMLs (${files.length} arquivos) ↓`);all.type='button';all.addEventListener('click',()=>{links.forEach(link=>link.click());hint.textContent='Downloads solicitados. Se o navegador pedir, permita vários downloads; você também pode baixar cada XML separadamente ou usar o pacote ZIP.';});actions.append(all);
-  const archive=el('a','secondary','Baixar pacote ZIP ↓');const url=URL.createObjectURL(new Blob([SDPP.zip(files)],{type:'application/zip'}));objectUrls[kind].push(url);archive.href=url;archive.download=`DH001_XMLs_${files[0].sequence}_a_${files.at(-1).sequence}.zip`;actions.append(archive);
+  const archive=el('a','secondary','Baixar pacote ZIP ↓');const url=URL.createObjectURL(new Blob([SDPP.zip(files)],{type:'application/zip'}));objectUrls[kind].push(url);archive.href=url;archive.download=`DH001_XMLs_${files[0].sequence}_a_${files[files.length - 1].sequence}.zip`;actions.append(archive);
  }
  const hint=el('p','field-help',files.length===1?'Arquivo gerado neste dispositivo.':'O botão solicita um download por XML. O pacote ZIP contém os mesmos arquivos separados.');host.append(actions,hint);
  files.forEach((f,i)=>{

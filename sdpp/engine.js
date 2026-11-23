@@ -69,7 +69,7 @@ function ne(input){
 }
 function parsePco(text){
  const lines=table(text,[5,6],'PCO').map(({parts:p,line})=>{
-  const [empe,sub0,sit0,a]=p;const supplied=p.length===6?p[4]:'';const v=p.at(-1);const sub=digits(sub0);const sit=sit0.toUpperCase();
+  const [empe,sub0,sit0,a]=p;const supplied=p.length===6?p[4]:'';const v=p[p.length - 1];const sub=digits(sub0);const sit=sit0.toUpperCase();
   if(![1,2,8].includes(sub.length))fail(`PCO, linha ${line}: informe subelemento de 2 dígitos ou NDD de 8 dígitos.`);
   const enteredAmount=money(v);
   const amount=sit.startsWith('AFL')?-abs(enteredAmount):sit.startsWith('DFL')?abs(enteredAmount):enteredAmount;

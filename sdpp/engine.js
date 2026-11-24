@@ -39,6 +39,7 @@ const CC_ESPECIAL=new Set(['33900802','33900804','33909208','33909233']);
 const ccFor=(ndd,standard)=>CC_ESPECIAL.has(digits(ndd))?'992300':standard;
 function ne(input){
  const cpf=code(digits(input.cpf),11,'CPF');const ug=code(input.ug,6,'UG executora');date(input.eventDate,'Data do empenho');
+ const sequence=String(input.sequence??'1').trim();if(!/^[1-9]\d{0,3}$/.test(sequence))fail('O sequencial de geração deve estar entre 1 e 9999, sem zero à esquerda.');
  const rows=table(input.data,[7],'Dados orçamentários').map(({parts:p,line})=>{
   const [esfera,ptres,ndd0,fonte,ugr,pi,v]=p;const ndd=digits(ndd0);
   code(ptres,6,`PTRES na linha ${line}`);code(ndd,8,`NDD na linha ${line}`);
@@ -63,7 +64,7 @@ function ne(input){
   xml+=items.map((item,i)=>`<itemEmpenho>${tag('numSeqItem',i+1)}${tag('codSubElemento',item.sub)}${tag('descricao',`${input.itemDescription} - ND ${r.nd} SE ${item.sub}`)}<operacaoItemEmpenho>${tag('tipoOperacaoItemEmpenho','INCLUSAO')}${tag('quantidade','1')}${tag('vlrUnitario',fmt(item.amount))}${tag('vlrOperacao',fmt(item.amount))}</operacaoItemEmpenho></itemEmpenho>`).join('');
   return `<sb:detalhe><ns2:orcEmpenhoDados>${xml}</ns2:orcEmpenhoDados></sb:detalhe>`;
  }).join('');
- const header={codigoLayout:'NE001',dataGeracao:dmy(input.eventDate),sequencialGeracao:'1',anoReferencia:'2026',ugResponsavel:ug,cpfResponsavel:cpf,identificadorOrigem:'SIAFI-STN'};
+ const header={codigoLayout:'NE001',dataGeracao:dmy(input.eventDate),sequencialGeracao:sequence,anoReferencia:'2026',ugResponsavel:ug,cpfResponsavel:cpf,identificadorOrigem:'SIAFI-STN'};
  const xml=`<?xml version="1.0" encoding="utf-8"?><sb:arquivo xmlns:ns2="${ORC}" xmlns:sb="${SB}"><sb:header>${Object.entries(header).map(([k,v])=>tag('sb:'+k,v)).join('')}</sb:header><sb:detalhes>${details}</sb:detalhes><sb:trailler>${tag('sb:quantidadeDetalhe',sorted.length)}</sb:trailler></sb:arquivo>`;
  return {xml,filename:'NE001.xml',metrics:{items:rows.length,details:sorted.length,total:sum(rows)},warnings:[],rows:rows.map(r=>({ndd:r.ndd,ptres:r.ptres,account:r.account||'—',value:br(r.amount)}))};
 }

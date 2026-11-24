@@ -17,6 +17,7 @@ on:
 
 permissions:
   contents: write
+  actions: read
   pages: write
   id-token: write
 
@@ -27,6 +28,9 @@ concurrency:
 jobs:
   loa:
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -121,14 +125,39 @@ jobs:
         if: steps.publicar.outputs.changed == 'true'
         run: bash scripts/montar-pages.sh
 
+      - name: Configurar GitHub Pages
+        if: steps.publicar.outputs.changed == 'true'
+        uses: actions/configure-pages@v5
+
       - name: Preparar GitHub Pages
         if: steps.publicar.outputs.changed == 'true'
         uses: actions/upload-pages-artifact@v3
         with:
+          name: github-pages
           path: site-publicado
+
+      - name: Confirmar artefato da publicacao
+        if: steps.publicar.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for tentativa in 1 2 3 4 5; do
+            quantidade=$(gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}/artifacts" --jq '[.artifacts[] | select(.name == "github-pages" and .expired == false)] | length')
+            if [ "$quantidade" = "1" ]; then
+              echo "Artefato github-pages confirmado."
+              exit 0
+            fi
+            echo "Tentativa ${tentativa}: artefato ainda nao disponivel (quantidade: ${quantidade})."
+            sleep 5
+          done
+          echo "ERRO: o artefato github-pages nao foi encontrado para esta execucao."
+          exit 1
 
       - name: Publicar GitHub Pages
         if: steps.publicar.outputs.changed == 'true'
+        id: deployment
         uses: actions/deploy-pages@v4
+        with:
+          artifact_name: github-pages
 
 

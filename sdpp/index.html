@@ -5,7 +5,7 @@
  <meta name="description" content="Portal SDPP — DIRAD. Geração de empenhos e liquidação da folha de pagamento via XML, com processamento local no navegador.">
  <meta name="theme-color" content="#102e4a"><title>Portal SDPP · DIRAD</title>
  <link rel="icon" href="assets/dirad.png"><link rel="stylesheet" href="styles.css">
- <script defer src="engine.js?v=20261123-1"></script><script defer src="app.js?v=20261123-1"></script>
+ <script defer src="engine.js?v=20261124-2"></script><script defer src="app.js?v=20261124-2"></script>
 </head>
 <body>
  <a class="skip" href="#conteudo">Pular para o conteúdo</a>
@@ -71,7 +71,7 @@
       <div class="notice"><strong>Duas camadas de regras:</strong> os XSD fornecidos descrevem a estrutura, a ordem e o formato dos campos. As contas automáticas, os centros de custos e as conferências da folha são configurações do portal. O XSD, por si só, não determina quais contas devem ser usadas em cada situação.</div>
      </article>
      <article class="panel guide-block" id="guia-ne"><div class="panel-title"><span>02</span><div><h2>Geração de empenhos — NE001</h2><p>Da linha orçamentária à nota de empenho.</p></div></div>
-      <h3>O que informar</h3><p>Preencha o CPF do responsável, a UG executora, a data, o processo e as descrições. Escolha o tipo de empenho e o amparo legal. O módulo usa <strong>exercício 2026</strong> e favorecido <strong>120052</strong>, conforme o gerador atual.</p>
+      <h3>O que informar</h3><p>Preencha o CPF do responsável, a UG executora, a data, o processo e as descrições. Escolha o tipo de empenho, o amparo legal e informe o sequencial de geração do arquivo (de 1 a 9999, sem zero à esquerda). O módulo usa <strong>exercício 2026</strong> e favorecido <strong>120052</strong>, conforme o gerador atual.</p>
       <div class="format-bar">Esfera · PTRES · NDD · Fonte · UGR · PI · Valor</div>
       <div class="table-scroll"><table><thead><tr><th>Coluna</th><th>O que significa</th><th>Exemplo</th></tr></thead><tbody><tr><td>Esfera</td><td>Identifica a esfera orçamentária da despesa.</td><td>1</td></tr><tr><td>PTRES</td><td>Programa de trabalho resumido da dotação.</td><td>168870</td></tr><tr><td>NDD</td><td>ND com 6 dígitos, seguida do subelemento com 2 dígitos.</td><td>31909294 = 319092 + 94</td></tr><tr><td>Fonte</td><td>Fonte de recursos, com 10 caracteres.</td><td>1000000000</td></tr><tr><td>UGR</td><td>Unidade responsável pela dotação.</td><td>120052</td></tr><tr><td>PI</td><td>Plano interno, com até 11 caracteres.</td><td>TESTE</td></tr><tr><td>Valor</td><td>Valor positivo que será empenhado.</td><td>1.000,00</td></tr></tbody></table></div>
       <div class="code-example"><span>Exemplo de uma linha</span><code>1 168870 31909294 1000000000 120052 TESTE 1.000,00</code></div>

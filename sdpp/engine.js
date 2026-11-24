@@ -34,7 +34,15 @@ function table(text,cols,label){
   return [{parts,line:index+1}];
  });
 }
-const PASSIVO={'31909294':'218910100','33909259':'211210100','33909208':'211310100','33909293':'211310100'};
+const PASSIVO_SPSFA=new Set(['168870','249586','137835','269163']);
+const PASSIVO_BENEFICIOS=new Set(['214543','214544','260069','260071']);
+const PASSIVO_INDENIZACOES=new Set(['168871','168869']);
+function contaPassivo(ptres,ndd){
+ if(PASSIVO_SPSFA.has(ptres))return '211110101';
+ if(PASSIVO_BENEFICIOS.has(ptres)&&ndd==='33909208')return '211310100';
+ if(PASSIVO_INDENIZACOES.has(ptres)&&ndd==='31909294')return '218910100';
+ return '211110101';
+}
 const CC_ESPECIAL=new Set(['33900802','33900804','33909208','33909233']);
 const ccFor=(ndd,standard)=>CC_ESPECIAL.has(digits(ndd))?'992300':standard;
 function ne(input){
@@ -47,10 +55,10 @@ function ne(input){
   return {esfera,ptres,ndd,nd:ndd.slice(0,6),sub:ndd.slice(-2),fonte,ugr,pi,amount:money(v,true)};
  });
  if(!rows.length)fail('Informe ao menos uma linha de dados orçamentários.');
- const selected=new Set(input.ptres||[]),groups=new Map();
+ const groups=new Map();
  for(const r of rows){
-  r.account=PASSIVO[r.ndd]||((selected.has(r.ptres)||['319092','339092'].includes(r.nd))?input.account:null);
-  if(r.account!==null)code(r.account,9,'Conta do passivo anterior');
+  r.account=contaPassivo(r.ptres,r.ndd);
+  code(r.account,9,'Conta do passivo anterior');
   const key=JSON.stringify([r.esfera,r.ptres,r.nd,r.fonte,r.ugr,r.pi,r.account]);
   if(!groups.has(key))groups.set(key,[]);groups.get(key).push(r);
  }

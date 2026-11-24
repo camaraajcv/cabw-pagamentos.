@@ -16,7 +16,7 @@ function fields(container,prefix,specs){
 }
 fields('#ne-identification','ne',[['cpf','CPF do responsável'],['ug','UG executora','120052'],['eventDate','Data do empenho',today,'date'],['process','NUP / processo']]);
 fields('#ne-descriptions','ne',[['description','Descrição geral do empenho'],['itemDescription','Descrição dos itens']]);
-fields('#ne-settings','ne',[['type','Tipo de empenho','1','select',[['1','1 · Ordinário'],['3','3 · Estimativo'],['5','5 · Global']]],['legal','Modalidade / amparo legal','104','select',legal]]);
+fields('#ne-settings','ne',[['type','Tipo de empenho','1','select',[['1','1 · Ordinário'],['3','3 · Estimativo'],['5','5 · Global']]],['legal','Modalidade / amparo legal','104','select',legal],['sequence','Sequencial de geração','1']]);
 fields('#ne-passivo','ne',[['account','Conta padrão do passivo','211110101'],['ptresText','PTRES com passivo (separados por vírgula)','168870, 249586, 137835']]);
 fields('#dh-basic-fields','dh',[['ug','UG emitente','120052'],['year','Ano do documento',year],['dhType','Tipo de documento hábil','FL'],['emissionDate','Data de emissão',today,'date'],['dueDate','Data de vencimento',today,'date'],['attestDate','Data do ateste',today,'date'],['payUg','UG pagadora','120052'],['creditor','Credor / devedor (UG)','120052'],['payDate','Data do pagamento',today,'date'],['description','Descrição do pagamento'],['process','NUP / processo'],['docNumber','Documento de origem'],['docIssuer','Identificação do emitente','120052']]);
 fields('#dh-pco-settings','dh',[['empeUg','UG dos empenhos','120052']]);

@@ -177,7 +177,7 @@ function dhDetail(d,input){
  xml+=`<dadosBasicos>${tags(basic,Object.keys(basic))}<docOrigem>${tags(doc,Object.keys(doc))}</docOrigem></dadosBasicos>`;
  function groupXml(g,name,itemName){return `<${name}>${tag('numSeqItem',g.seq)}${tag('codSit',g.sit)}${tag('codUgEmpe',input.empeUg)}${g.items.map(it=>`<${itemName}>${dhItem(it)}</${itemName}>`).join('')}</${name}>`;}
  xml+=d.pco.map(g=>groupXml(g,'pco','pcoItem')).join('');
- xml+=d.others.map((o,i)=>`<outrosLanc>${tag('numSeqItem',i+1)}${tag('codSit',o.sit)}${tag('vlr',fmt(o.amount))}${o.a?tag('numClassA',o.a):''}${o.b?tag('numClassB',o.b):''}${o.d?tag('numClassD',o.d):''}${o.normal?tag('tpNormalEstorno',o.normal):''}</outrosLanc>`).join('');
+ xml+=d.others.map((o,i)=>`<outrosLanc>${tag('numSeqItem',i+1)}${tag('codSit',o.sit)}${tag('vlr',fmt(o.amount))}${o.a?tag('numClassA',o.a):''}${o.b?tag('numClassB',o.b):''}${o.normal?tag('tpNormalEstorno',o.normal):''}</outrosLanc>`).join('');
  xml+=d.da.map(g=>groupXml(g,'despesaAnular','despesaAnularItem')).join('');
  const centers=new Map();for(const type of ['pco','others','da'])for(const r of d.refs[type]){if(!centers.has(r.cc))centers.set(r.cc,{pco:[],others:[],da:[]});centers.get(r.cc)[type].push(r);}
  let ccSeq=0;for(const [cc,refs] of centers){

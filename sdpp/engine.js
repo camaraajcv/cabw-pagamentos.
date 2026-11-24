@@ -80,7 +80,8 @@ function parsePco(text){
 function parseOthers(text){return table(text,[6],'Outros lançamentos').map(({parts:p,line})=>{
  const [sit0,a,b,ndd,normal,v]=p;const sit=sit0.toUpperCase();const ne=normal.toUpperCase();
  if(ne&&!['N','E'].includes(ne))fail(`Outros lançamentos, linha ${line}: use N ou E.`);
- const amount=money(v);return {sit,a:digits(a),b:['PRV001','PRV002','PRV003'].includes(sit)?digits(b):'',d:['PRV001','PRV002','PRV003'].includes(sit)?'':digits(b),ndd:digits(ndd),normal:ne,amount};
+ const classCode=digits(b);const isProvision=['PRV001','PRV002','PRV003'].includes(sit);
+ const amount=money(v);return {sit,a:digits(a),b:isProvision?classCode:'',d:!isProvision&&!/^0+$/.test(classCode)?classCode:'',ndd:digits(ndd),normal:ne,amount};
 });}
 function parsePayments(text,input){return table(text,[5],'Pagamentos').map(({parts:p,line})=>{
  const [cnpj,bank,agency,cit,v]=p;const amount=money(v);if(amount<0n)fail(`Pagamento negativo na linha ${line}.`);

@@ -15,6 +15,7 @@ on:
       - 'painel-template.html'
       - 'painel.js'
       - 'painel.css'
+      - 'sdpp/**'
       - 'scripts/publicar_pagamentos.py'
       - 'scripts/drive_to_pagamentos.py'
       - 'scripts/montar-pages.sh'

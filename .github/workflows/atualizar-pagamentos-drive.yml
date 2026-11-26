@@ -33,9 +33,8 @@ permissions:
   id-token: write
 
 concurrency:
-  # Evita publicacoes simultaneas no mesmo GitHub Pages pelas tres rotinas.
-  group: cabw-pages-publicacao
-  cancel-in-progress: false
+  group: cabw-pagamentos
+  cancel-in-progress: true
 
 jobs:
   pagamentos:

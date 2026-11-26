@@ -22,7 +22,8 @@ permissions:
   id-token: write
 
 concurrency:
-  group: cabw-loa-2026
+  # Evita publicacoes simultaneas no mesmo GitHub Pages pelas tres rotinas.
+  group: cabw-pages-publicacao
   cancel-in-progress: false
 
 jobs:
@@ -30,7 +31,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: ${{ steps.deployment.outputs.page_url || steps.deployment_retry.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -153,9 +154,21 @@ jobs:
           echo "ERRO: o artefato github-pages nao foi encontrado para esta execucao."
           exit 1
 
-      - name: Publicar GitHub Pages
+      - name: Publicar GitHub Pages - tentativa inicial
         if: steps.publicar.outputs.changed == 'true'
         id: deployment
+        continue-on-error: true
+        uses: actions/deploy-pages@v4
+        with:
+          artifact_name: github-pages
+
+      - name: Aguardar nova tentativa do GitHub Pages
+        if: (steps.publicar.outputs.changed == 'true') && steps.deployment.outcome == 'failure'
+        run: sleep 30
+
+      - name: Publicar GitHub Pages - segunda tentativa
+        if: (steps.publicar.outputs.changed == 'true') && steps.deployment.outcome == 'failure'
+        id: deployment_retry
         uses: actions/deploy-pages@v4
         with:
           artifact_name: github-pages

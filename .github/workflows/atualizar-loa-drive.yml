@@ -22,8 +22,7 @@ permissions:
   id-token: write
 
 concurrency:
-  # Evita publicacoes simultaneas no mesmo GitHub Pages pelas tres rotinas.
-  group: cabw-pages-publicacao
+  group: cabw-loa-2026
   cancel-in-progress: false
 
 jobs:

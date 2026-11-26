@@ -154,4 +154,33 @@ assert.throws(
   /Subtotal do demonstrativo PR.*não confere|Conferência bloqueada/
 );
 
+
+// Regressão: vários demonstrativos PR de mesmo código, cada um com subtotal próprio.
+const syntheticEntry=(suffix,bruto,liquido)=>[
+  "12.345.678/0001-"+suffix+"       CONSIGNATARIA TESTE       1       "+bruto,
+  "34140             CONTRIB ASSOCIATIVA - TESTE      1     3,53",
+  "                         DF                           3,53",
+  "001/012345/0000000000012   BRASILIA                  "+liquido
+];
+const repeatedPrPages=[
+  ["L.A54170.ZO - CONSULTA CONSIGNACAO MENSAL","VALOR LIQUIDO...........: 100,00"],
+  ["L.A54170.ZO - CONSULTA CONSIGNACAO MENSAL",...syntheticEntry("90","53,53","50,00")],
+  ["L.A54170.PR - CONSULTA CONSIGNACAO MENSAL","VALOR LIQUIDO...........: 20,00"],
+  ["L.A54170.PR - CONSULTA CONSIGNACAO MENSAL",...syntheticEntry("91","23,53","20,00")],
+  ["L.A54170.PR - CONSULTA CONSIGNACAO MENSAL","VALOR LIQUIDO...........: 30,00"],
+  ["L.A54170.PR - CONSULTA CONSIGNACAO MENSAL",...syntheticEntry("92","33,53","30,00")]
+];
+const repeatedPr=parsePdfLines(repeatedPrPages);
+assert.equal(repeatedPr.total,10000);
+assert.equal(repeatedPr.soma,10000);
+assert.equal(repeatedPr.rows.length,3);
+assert.equal(repeatedPr.auxiliaryTotals.length,2);
+assert.equal(repeatedPr.auxiliaryTotals[0].value,2000);
+assert.equal(repeatedPr.auxiliaryTotals[1].value,3000);
+assert.equal(repeatedPr.rows[1].auxiliaryIndex,0);
+assert.equal(repeatedPr.rows[2].auxiliaryIndex,1);
+const invalidRepeatedPr=repeatedPrPages.map(lines=>[...lines]);
+invalidRepeatedPr[4][1]="VALOR LIQUIDO...........: 30,01";
+assert.throws(()=>parsePdfLines(invalidRepeatedPr),/Subtotal do demonstrativo PR na página 5 não confere/);
+
 console.log("OK: leitura SIAPE, totais, exclusões, bancos, XML DH001/DH002 e validações.");
